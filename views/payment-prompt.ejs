@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Size Chart - Retrospect Apparel Co.</title>
+
+    <!-- STYLE LINKS -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
+    <link rel="icon" href="images/retrospect-icon.png" type="image/png">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <% if(curr_user){                                    %>
+    <%      if(curr_user.user_type == 0) {               %>
+    <%-         include ('partials/user-navbar')    %>
+    <%      } else if (curr_user.user_type > 0){         %>
+    <%-          include ('partials/admin-navbar')  %>
+    <%      }                                       %>
+    <%} else{                                       %>
+    <%-     include ('partials/navbar')             %>
+    <%}                                             %>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <div class="payment-main">
+            
+            <h1>Payment</h1>
+            
+            <div class="payment-instructions">
+                <p> 
+                    Payment is through <span class="highlight">GCash QR code</span> displayed below. Make sure to double check and 
+                    pay the exact amount <span class="highlight">If you opt to pay at a later date</span>, you may pay through gcash by 
+                    going to your <span class="highlight">"Shopping Cart"</span> and clicking <span class="highlight">"how to pay"</span> 
+                    in the top  right corner.
+                </p>
+
+                <div class="gcash-payment">
+                    <p class="highlight"> GCash </p>
+                    <img src="../images/retrospect-gcash.jpg" alt="Gcash QR Code">
+                </div>
+
+                <a href="/shopping-cart"><button class="next-btn"> NEXT </button></a>
+                
+            </div>
+
+            <!-- FOOTER -->
+            <%- include ('partials/footer-links') %>
+        </div>
+    </main>        
+</body>
+</html>

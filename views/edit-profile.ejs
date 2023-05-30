@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Profile - Retrospect Apparel Co.</title>
+    
+        <!-- STYLE LINKS -->
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
+        <link rel="icon" href="images/retrospect-icon.png" type="image/png">
+        <script src="https://kit.fontawesome.com/679532c273.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+    <!-- NAVBAR -->
+        <% if(curr_user){                                   %>
+        <%      if(curr_user.user_type == 0) {              %>
+        <%-         include ('partials/user-navbar')        %>
+        <%      } else if (curr_user.user_type > 0){        %>
+        <%-          include ('partials/admin-navbar')      %>
+        <%      }                                           %>
+        <%} else{                                           %>
+        <%-     include ('partials/navbar')                 %>
+        <%}                                                 %>
+
+        <main class="main-profile">
+            <!-- ERROR MSG -->
+            <% if(msg){ %>
+                <div class="error-msg" id="error-msg">
+                    <%= msg %>
+                    <div class="error-msg-btn" onclick="hideMSG()">x</div>
+                </div>
+            <% } %>
+
+            <h1>Edit Profile | <%= user.username %></h1> 
+            <form action="/update-profile" class="edit-profile" method="post">
+                <input type="hidden" name="user_id" value="<%= user._id %>" >
+                <div>
+                    <h2>Username</h2>
+                    <input type="text" name="userName" value="<%= user.username %>">
+                </div>
+                <!-- <div>
+                    <h2>Name</h2>
+                    <input type="text" name="fullName" value="<%= //user.username %>">Garhy Aaron P. Guarnes
+                </div> -->
+                <div>
+                    <h2>Email</h2>
+                    <input class="contact_no" type="text" name="emailAddress"  pattern="[^@]+@[^@]+.[a-zA-Z]{2,6}" value="<%= user.email %>">
+                </div>
+                <div>
+                    <h2>Contact Number</h2>
+                    <input type="number" name="contactNumber" value="<%= user.contact_no %>">
+                </div>
+                <div>
+                    <h2>Shipping Address</h2>
+                    <input type="text" name="shippingAddress" class="edit-profile-address"value="<%= user.address %>">
+                </div>
+                <input type="submit">
+            </form>
+        </main>
+
+    <!-- Hides the error message -->
+	<script> 
+        function hideMSG(){
+          const msg = document.getElementById("error-msg");
+          msg.style.display = "none";
+        }
+    </script> 
+    </body>
+</html>

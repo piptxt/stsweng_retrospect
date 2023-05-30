@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Retrospect Apparel Co.</title>
+
+    <!-- STYLE LINKS -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
+    <link href="https://cdjns.cloudfare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/679532c273.js" crossorigin="anonymous"></script>
+    
+    <!-- ICON -->
+    <link rel="icon" href="images/retrospect-icon.png" type="image/png">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <% if(curr_user){                                    %>
+    <%      if(curr_user.user_type == 0) {               %>
+    <%-         include ('partials/user-navbar')    %>
+    <%      } else if (curr_user.user_type > 0){         %>
+    <%-          include ('partials/admin-navbar')  %>
+    <%      }                                       %>
+    <%} else{                                       %>
+    <%-     include ('partials/navbar')             %>
+    <%}                                             %> 
+
+    <!-- MAIN CONTENT -->
+    <section class="SCart">
+        <div class="main_SCart">
+            <!-- ERROR MSG -->
+            <% if(msg){ %>
+                <div class="error-msg" id="error-msg">
+                    <%= msg %>
+                    <div class="error-msg-btn" onclick="hideMSG()">x</div>
+                </div>
+            <% } %>
+            <h1>Shopping Cart</h1>
+
+            <a href="/payment-options" class="payment-options"> 
+                <p> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/></svg> 
+                    how to pay
+                </p> 
+            </a>
+
+                <div class="project">
+                    <div class="shop">
+                        <% let total_price = 0;%>
+                        <% cart_items.forEach((cart_item) => { %>
+                        <%      cart_item.items.forEach((item) => {%>
+                                    <!-- Items -->
+                                    <div class="box">
+                                        
+                                        <img class="cart-item-img" src="/images/items/<%= item.item_photo %>" alt="">
+            
+                                        <div class="content">
+                                            <h3><%= item.item_name %></h3> <!-- NAME OF PRODUCT-->
+                                            <h4>Price: <%= item.price %></h4> <!-- PRICE OF PRODUCT-->
+                                            <p class="unit">Size: <%= item.size %></p>
+                                            <p class="unit">Quantity: <%= item.quantity %> </p> <!-- HOW MANY THE USER WANTS TO BUY -->
+                                            
+                                            <p class="btn-area">
+                                                <i class="fa fa-trash"></i>
+                                                <a href="/delete-item/<%=cart_item.username%>/<%= item.item_name%>/<%= item.size%>" class="btn2">Remove</a> <!-- REMOVE PRODUCT -->
+                                            </p>
+                                        </div>
+                                    </div>
+                        <%          total_price += (item.quantity * item.price);%>
+                        <%      }); %>
+                        <% }); %>
+                </div>
+        </div>
+        <div class="right-bar">
+            <p><span>Subtotal</span> <span>PHP <%= total_price %></span></p>
+            <hr>
+            <form action="/checkout" method="post">
+                <input type="hidden" name="user_id" value="<%=curr_user._id%>">
+                <input type="hidden" name="total_price" value="<%=total_price%>">
+                <button type="submit" class="checkout-btn"> <i class="fa-solid fa-cart-shopping"></i> Checkout </button>
+            </form>
+        </div>
+    </section>
+    
+    
+    <main>
+        <!-- FOOTER -->
+        <%- include('partials/footer-links') %>   
+    </main>
+
+
+    <!-- Hides the error message -->
+	<script> 
+        function hideMSG(){
+          const msg = document.getElementById("error-msg");
+          msg.style.display = "none";
+        }
+    </script> 
+</body>
+</html>

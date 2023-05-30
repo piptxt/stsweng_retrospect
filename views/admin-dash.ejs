@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Retrospect Apparel Co.</title>
+
+        <!-- STYLE LINKS -->
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
+
+        <!-- ICON -->
+        <link rel="icon" href="images/retrospect-icon.png" type="image/png">
+    </head>
+
+    <body>
+        <!-- NAVBAR -->
+        <%- include ('partials/admin-navbar')  %>
+
+
+        <% if(msg){ %>
+        <div class="msg-wrapper">
+          <div class="success-msg" id="success-msg">
+            <%= msg %>
+            <div class="error-msg-btn" onclick="hideMSG()">x</div>
+          </div>
+        </div>
+        <%} %>
+
+        <main class="admin-dash">
+            <h1>Seller Dashboard</h1>
+
+            <h2>Inventory Management</h2>
+
+            <!-- INVENTORY TRACKING --> 
+            <div class="inventory-tracking admin-sec">
+
+              <% all_items.forEach((item) => {%>
+              <div class="admin-card">
+                  <h2> <%= item.item_name %></h2>
+                  <img src="../images/items/<%= item.item_photo %>" alt="shirt pic" class="inv-item-card">
+                  <ul class>
+                      <li> Price: <%= item.price %></li>
+                      <% let total_stock = 0                    %>
+                      <% item.availability.forEach((availability) => {       %>
+                      <%    total_stock += availability.stock   %>
+                      <%})                                      %>
+                      <li> Total Stock: <%= total_stock %></li>
+                  </ul>
+
+                  <form action="/edit-item" method="post">
+                    <input type="hidden" name="edit_item" value="<%=item._id%>">
+                    <button class="item-btns" type="submit"> Edit Item </button>
+                  </form>
+                  <a href="/delete-item/<%=item._id%>"><input class="item-btns" type="button" name="inv-del" value="delete"></input></a>
+              </div>
+              <% }); %>
+
+              <div class="item-edit-modal" id="item-modal">
+                <div class="item-edit-modal-content">
+                  Hello its me
+                  <form class=item-edit-form action="update-item" method="POST">
+                    <label for="product-name"> Product Name<label><br>
+                    <input type="text" name="product-name" value=""><br>
+                    <label for="product-photo"> Product Photo<label><br>
+                    <input type="button" name="product-photo" value="Upload"><br>
+                    <label for="product-price"> Unit price<label><br>
+                    <input type="text" name="product-price" value=""><br>
+                    <label for="product-stock"> Stock Amount<label><br>
+                    <input type="number" name="product-stock" value=""><br>
+                    <input type="submit" name="product-save" value="Save Changes">
+                    <button type="button" class="close">Close</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="admin-card additem">
+                  <a href="/create-item"><input class="item-btns" type="button" name="inv-edit" value="ADD ITEM"></input></a>
+              </div>
+
+                <div class="item-edit-modal" id="item-add-modal">
+                  <div class="item-edit-modal-content">
+                    <form class=item-edit-form action="add-item" method="POST">
+                      <label for="product-name"> Product Name<label><br>
+                      <input type="text" name="product-name" value=""><br>
+                      <label for="product-photo"> Product Photo<label><br>
+                      <input type="button" name="product-photo" value="Upload"><br>
+                      <label for="product-price"> Unit price<label><br>
+                      <input type="text" name="product-price" value=""><br>
+                      <label for="product-stock"> Stock Amount<label><br>
+                      <input type="number" name="product-stock" value=""><br>
+                      <input type="submit" name="product-add" value="Add Item">
+                      <button type="button" class="close">Close</button>
+                    </form>
+                  </div>
+                </div>
+            </div>
+			
+			<h2>Blog Management</h2>
+
+            <!-- BLOG TRACKING --> 
+            <div class="inventory-tracking admin-sec">
+
+              <% all_blogs.forEach((blog) => {%>
+              <div class="admin-card">
+                  <h2> <%= blog.blog_name %></h2>
+                  <img src="../images/items/<%= blog.blog_photo %>" alt="shirt pic" class="inv-item-card">
+                  <ul class>
+                      <li> Name: <%= blog.blog_name %></li>
+                      <li> Description: <%= blog.description %></li>
+                  </ul>
+
+                  <form action="/edit-blog" method="post">
+                    <input type="hidden" name="edit_blog" value="<%=blog._id%>">
+                    <button class="item-btns" type="submit"> Edit Blog </button>
+                  </form>
+                  <a href="/delete-blog/<%=blog._id%>"><input class="item-btns" type="button" name="inv-del" value="delete"></input></a>
+              </div>
+              <% }); %>
+
+              <div class="admin-card additem">
+                  <a href="/create-blog"><input class="item-btns" type="button" name="inv-edit" value="ADD BLOG"></input></a>
+              </div>
+            </div>
+			
+			
+
+            <h2>Admin User Management</h2>
+            
+            <% all_users.forEach((user) => { %>
+            <div class="admin-UM admin-sec">
+              <div class="admin-card">
+                  <h2><%=user.username %></h2>
+                  <% let user_type; %>
+                  <% if(user.user_type == 0) {          %>
+                  <%    user_type = "Regular User";     %>  
+                  <% } else if (user.user_type == 1) {  %>
+                  <%    user_type = "Admin";            %>
+                  <% } else {                           %>
+                  <%    user_type = "Super User";       %>
+                  <% }                                  %>                
+                                     
+                  <h3>User Type: <%= user_type %></h3>
+
+                  <form action="/edit-user" method="post">
+                    <input type="hidden" name="user_id" value="<%= user._id %>"></input>
+                    <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
+                  </form>
+                  <a href="/delete-user/<%=user._id%>"><button class="user-btns" type="button" name="delete-user" >Delete User</button></a>
+              </div>
+            </div>
+
+            <div class="item-edit-modal" id="admin-edit-modal">
+              <div class="item-edit-modal-content">
+                <form class=admin-add-form action="add-admin" method="POST">
+                  <label for="admin-name"> Username Name<label><br>
+                  <input type="text" name="admin-name" value=""><br>
+                  <label for="admin-pass"> Admin Password<label><br>
+                  <input type="text" name="admin-password" value=""><br>
+                  <input type="submit" name="admin-add" value="Create Admin User">
+                  <button type="button" class="close" onclick="">Close</button>
+                </form>
+              </div>
+            </div>
+            <% }) %>
+
+            <div class="admin-card additem">
+              <a href="/create-admin"><input class="user-btns" type="button" name="inv-edit" value="Create Admin" ></input></a> <!--id="myBtn-modal-add-user"-->
+            </div>
+
+            <div class="item-edit-modal" id="admin-add-modal">
+              <div class="item-edit-modal-content">
+                <form class=admin-add-form action="add-admin" method="POST">
+                  <label for="admin-name"> Username Name<label><br>
+                  <input type="text" name="admin-name" value=""><br>
+                  <label for="admin-pass"> Admin Password<label><br>
+                  <input type="text" name="admin-password" value=""><br>
+                  <input type="submit" name="admin-add" value="Create Admin User">
+                  <button type="button" class="close" onclick="">Close</button>
+                </form>
+              </div>
+            </div>
+
+            <h2>Current Orders</h2>
+
+            <% orders.forEach((order) => { %>
+            <div class="current-orders admin-sec">
+              <div class="admin-card orders-card">
+                  <h2><%= order.username %></h2>
+                  <h3>Order #<%= order._id %></h3>
+                  <h3>Status: <%= order.status %></h3>
+                  <% 
+                  let num_items = 0;
+                  order.items.forEach((item) => {
+                    num_items += item.quantity;
+                  })
+                  %>
+                  <h4>Number of Items: <%= num_items %> </h4>
+                  <a href="/revert-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="revert-status" value="Revert Status"></input></a>
+                  <a href="/advance-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="advance-status" value="Advance Status"></input></a>
+                  <a href="/cancel-order/<%= order._id %>"><input class="order-btns" type="button" name="order-cancel" value="Cancel Order"></input></a>
+              </div>
+            </div>
+            <% })%>
+            
+        </main>
+    </body>
+
+    <!-- Inventory Management Modal -->
+    <script>
+      var modal = document.getElementById("item-modal");
+      var addModal = document.getElementById("item-add-modal");
+      var addUserModal = document.getElementById("admin-add-modal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+      var btnAdd = document.getElementById("myBtn-modal");
+      var btnAddUser = document.getElementById("myBtn-modal-add-user");
+      // Get the <span> element that closes the modal
+      var span = document.querySelector('.close');
+
+      // When the user clicks on the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
+      btnAdd.onclick = function() {
+        addModal.style.display = "block";
+      }
+      btnAddUser.onclick = function() {
+        addUserModal.style.display = "block";
+      }
+
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+    </script>
+
+    <!-- Hide Success MSG -->
+    <script>
+      function hideMSG(){
+        const msg = document.getElementById("success-msg");
+        msg.style.display = "none";
+        msg.style.backgroundColor = "rgba(0, 120, 0, 0.9)";
+      }
+    </script>
+</html>
