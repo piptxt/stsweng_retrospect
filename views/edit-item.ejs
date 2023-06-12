@@ -65,17 +65,30 @@
             <div class="admin-form">
                 <h3> AVAILABITY </h3>
                 <% edit_item.availability.forEach((availability) => { %>
-                <form action="/delete-availability" method="post">
-                    <div class="form-row">
+                <span>
+                    <form action="/edit-availability" method="post">
+                        <div class="form-row">
+                            <input type="hidden" name="item_id" value="<%=edit_item._id%>">
+                            <input type="hidden" name="size" value="<%=availability.size%>">
+                            <input type="hidden" name="stock" value="<%=availability.stock%>">
+                            <label for="size"> SIZE : <input type="type" name="new_size" value="<%=availability.size%>"> </label>
+                            <label for="|"> | </label>
+                            <label for="stock"> STOCK : <input type="number" name="new_stock" value="<%=availability.stock%>"> </label>
+                            
+                            <button type="submit" class="edit-btn"> Edit Availability </button>
+                        </div>
+                    </form>
+                </span>
+                <span>
+                    <form action="/delete-availability" method="post">
                         <input type="hidden" name="item_id" value="<%=edit_item._id%>">
                         <input type="hidden" name="size" value="<%=availability.size%>">
                         <input type="hidden" name="stock" value="<%=availability.stock%>">
-                        <label for="size"> SIZE : <%=availability.size%> </label>
-                        <label for="|"> | </label>
-                        <label for="stock"> STOCK : <%=availability.stock%> </label>
+                        
                         <button type="submit" class="delete-btn"> Delete Availability </button>
-                    </div>
-                </form>
+                    </form>
+                </span>
+                
                 <% })%>
                 <div class="form-row">
                     <form action="/add-availability" method="post">

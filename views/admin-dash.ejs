@@ -199,8 +199,21 @@
                   })
                   %>
                   <h4>Number of Items: <%= num_items %> </h4>
-                  <a href="/revert-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="revert-status" value="Revert Status"></input></a>
-                  <a href="/advance-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="advance-status" value="Advance Status"></input></a>
+
+                  <form action="/update-order-status" method="post">
+                    <input type="hidden" name="order_id" value="<%= order._id %>">
+                    <label for="order_status">Edit Order Status</label><br>
+                    <select name="order_status" id="order_status">
+                      <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
+                      <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
+                      <option value="Out for Delivery."> Out for Delivery. </option> 
+                      <option value="Order Received."> Order Received. </option> 
+                    </select>
+
+                    <button class="order-btns" type="submit"> Update Status </button>
+                  </form>
+                  <!-- <a href="/revert-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="revert-status" value="Revert Status"></input></a>
+                  <a href="/advance-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="advance-status" value="Advance Status"></input></a> -->
                   <a href="/cancel-order/<%= order._id %>"><input class="order-btns" type="button" name="order-cancel" value="Cancel Order"></input></a>
               </div>
             </div>
