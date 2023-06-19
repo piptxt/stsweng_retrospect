@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main", "order-status-(customer-and-admin)-and-inventory-management" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "order-status-(customer-and-admin)-and-inventory-management" ]
+    branches: [ "main" ]
 
 jobs:
   build:
