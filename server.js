@@ -8,6 +8,12 @@ const mongoDBStore = require('connect-mongodb-session')(session);
 
 let app = express();
 
+// Function for Google Login
+function isLoggedIn(req,res,next) {
+    req.user ? next() : res.sendStatus(401);
+}
+
+// Middleware
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -41,7 +47,8 @@ app.use(session({
     secret: 'some secret ya foo',
     resave: false,
     saveUninitialized: true,
-    store: sessionStore
+    store: sessionStore,
+    cookie: {secure: false} // Google Login
 }));
 const isAuth = (req, res, next) => {
     if (req.session.isAuth) {
@@ -55,6 +62,13 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Google Login
+require('./auth');
+const passport = require('passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // SCHEMAS
 const UserModel = require('./models/userDB');
 const UserCartModel = require('./models/user_cartDB');
@@ -67,13 +81,48 @@ const { AsyncResource } = require('async_hooks');
 const usercart = require('./models/user_cartDB');
 const blogs = require('./models/blogsDB');
 
+// Google Login Pages
+app.get('/auth/google',
+  passport.authenticate('google', { scope:
+      [ 'email', 'profile' ] }
+));
+
+app.get( '/auth/google/callback',
+    passport.authenticate( 'google', {
+        successRedirect: '/',
+        failureRedirect: '/auth/google/failure' // need to configure for google login failure
+}));
+
+app.get('/auth/google/failure',(req,res)=>{
+    res.send('Something went wrong');
+});
+
+app.get('/auth/protected', isLoggedIn,(req,res)=>{
+    let name = req.user.displayName;
+    console.log(req.user);
+    res.send(`Hello ${name}`);
+});
+
 // LANDING PAGE
 app.get('/', async function(req, res){
     let curr_user = null;
 
     if(req.session.isAuth){
+        // curr_user = await UserModel.findOne({ _id:req.session._id});
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    // Google Account Logged In
+    if (req.user) {
+        console.log(req.user);
+        console.log(req.session);
+        curr_user = new UserModel({
+            username: req.user.displayName,
+            user_type: 0,
+            email: req.user.email
+        });
+    }
+
     res.render('landing-page', {
         curr_user: curr_user
     });
@@ -84,6 +133,16 @@ app.get('/landing-page', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = new UserModel({
+            username: req.user.displayName,
+            user_type: 0,
+            email: req.user.email
+        });
+    }
+
     res.render('landing-page',{
         curr_user: curr_user
     });
@@ -96,6 +155,16 @@ app.get('/about-us', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = new UserModel({
+            username: req.user.displayName,
+            user_type: 0,
+            email: req.user.email
+        });
+    }
+
     res.render('about-us',{
         curr_user: curr_user
     });
@@ -107,6 +176,15 @@ app.get('/shop', async function(req, res){
 
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = new UserModel({
+            username: req.user.displayName,
+            user_type: 0,
+            email: req.user.email
+        });
     }
 
     const items = await ItemsModel.find({});
@@ -123,6 +201,15 @@ app.get('/shopping-cart', async function(req, res){
     let curr_user = null;
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = new UserModel({
+            username: req.user.displayName,
+            user_type: 0,
+            email: req.user.email
+        });
     }
 
     const cart_items = await UserCartModel.find({user_id: req.session._id});
@@ -213,6 +300,15 @@ app.post('/checkout', async function(req, res) {
         curr_user = await UserModel.findOne({ _id: req.session._id});
     } else {
 
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = new UserModel({
+            username: req.user.displayName,
+            user_type: 0,
+            email: req.user.email
+        });
     }
 
     const {user_id, total_price} = req.body;
@@ -311,7 +407,7 @@ app.post('/user-login', async function(req, res){
 // LOG OUT
 app.get('/log-out', function(req, res){
 
-    if(isAuth){
+    if(isAuth || req.user){
         req.session.isAuth = false;
         req.session.destroy((err) => {
             if (err) throw err;
@@ -321,6 +417,17 @@ app.get('/log-out', function(req, res){
             return res.redirect('/landing-page');
         })
     }
+
+    // if (req.user){
+    //     console.log(req.session);
+    //     req.session.destroy((err) => {
+    //         if (err) throw err;
+
+    //         console.log(req.session);
+    //         console.log('log out success!');
+    //         return res.send("See you again!");
+    //     })
+    // }
 
 });
 
