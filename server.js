@@ -455,20 +455,32 @@ app.get('/advance-status/:order_id/:status', async function(req, res) {
 
     res.redirect('/admin/:order_id/:status');
 });
+// UPDATE ORDER STATUS
 app.post('/update-order-status', async function(req, res) {
 
     const order_id = req.body.order_id;
     const order_status = req.body.order_status
 
-    console.log(order_id + ", " + order_status)
+    const updated_status = await updateOrderStatus(order_id, order_status)
 
-    await OrdersModel.updateOne({_id: order_id},{
-        $set: {status: order_status}
-    })
+    console.log(updated_status._id + " " + updated_status.username +" " + updated_status.status);
 
     return res.redirect('/admin');
 })
-// Revert Status
+// UPDATE ORDER STATUS HELPER
+async function updateOrderStatus(order_id, order_status){
+
+    // gets the order document from the DB and updates the corresponding order status
+    const updated_status = await OrdersModel.findOneAndUpdate({_id: order_id},{
+        $set: {status: order_status}
+    }, {
+        new: true // Gets the updated document
+    });
+    return updated_status;
+}
+module.exports = updateOrderStatus;
+
+// CANCEL ORDER
 app.get('/cancel-order/:order_id', async function(req, res) {
     const order_id = req.params.order_id;
     console.log("Cancelled Order: " + order_id);

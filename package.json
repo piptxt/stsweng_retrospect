@@ -10,12 +10,15 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "jest"
+    "test": "jest --forceExit "
   },
   "name": "iteration1",
   "description": "Iteration 2 (w/ data processing)",
   "version": "1.0.0",
   "main": "server.js",
   "author": "The Handsome Men",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
 }
