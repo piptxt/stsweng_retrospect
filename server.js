@@ -180,7 +180,7 @@ app.post('/add-to-cart', async function(req, res){
         }
     });
 
-    if(find_item) { // IF ITEMS EXIST JUST ADD CURRENT ITEM
+    if(find_item && quantity) { // IF ITEMS EXIST JUST ADD CURRENT ITEM AND THERE IS A QUANIITY
         const user_cart = await UserCartModel.updateOne({
                 user_id: req.session._id,
                 items: {
@@ -195,7 +195,7 @@ app.post('/add-to-cart', async function(req, res){
                     "items.$.total_price": total_price
                 }
             });
-    } else { // IF ITEM DOES NOT EXIST
+    } else if(quantity){ // IF ITEM DOES NOT EXIST && there is a quantity
         const user_cart = await UserCartModel.updateOne(
             {user_id: req.session._id},
             {$push: {items: item}}
@@ -667,6 +667,11 @@ app.post('/update-user-details', async function(req, res){
         }
     })
     console.log(edited_user);
+    const edited_usercart = await UserCartModel.updateOne({user_id: user_id},{
+        $set: {
+            username: username
+        }
+    })
 
     res.session = edited_user;
     console.log(req.session);
