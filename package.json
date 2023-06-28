@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "jest --forceExit "
+    "test": "jest --forceExit --runInBand"
   },
   "name": "iteration1",
   "description": "Iteration 2 (w/ data processing)",
