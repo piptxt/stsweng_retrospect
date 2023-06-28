@@ -1056,6 +1056,7 @@ app.post('/add-availability', async function(req, res){
        edit_item: edit_item 
     });
 });
+
 // Edit Availability
 app.post('/edit-availability', async function(req, res) {
     let curr_user = null;
@@ -1075,16 +1076,25 @@ app.post('/edit-availability', async function(req, res) {
     const {item_id, size, stock, new_size, new_stock} = req.body;
 
     const edit_item = await ItemsModel.findOne({_id: item_id});
+    console.log(edit_item);
 
     const takenSize = await ItemsModel.findOne({_id: item_id, availability: { $elemMatch: {size: new_size, stock: new_stock}}});
     if(takenSize) {
-        return res.render('edit-item', {
+        res.render('edit-item', {
             curr_user: curr_user,
             msg: "Size already exists",
             edit_item: edit_item 
         });
     }
+    console.log(item_id + " " + size + " " + stock + " " + new_size + " " + new_stock); 
+    
+    editStockAvailability(item_id, size, stock, new_size, new_stock);
 
+    return res.redirect('admin');
+
+})
+// Helper Function
+async function editStockAvailability(item_id, size, stock, new_size, new_stock) {
     await ItemsModel.updateOne({_id: item_id, availability: { $elemMatch: {size: size, stock: stock}} },{
         $set: {
             'availability.$.size': new_size,
@@ -1092,11 +1102,13 @@ app.post('/edit-availability', async function(req, res) {
         }
     });
 
-    console.log(item_id + " " + size + " " + stock + " " + new_size + " " + new_stock);
+    const newly_edit_item = await ItemsModel.findOne({_id: item_id, availability: { $elemMatch: {size: new_size, stock: new_stock}} });
+    // console.log(newly_edit_item._id);
+    return newly_edit_item;
+}
+module.exports = editStockAvailability;
+;
 
-    return res.redirect('admin');
-
-});
 // Delete Availability
 app.post('/delete-availability', async function(req, res) {
 
