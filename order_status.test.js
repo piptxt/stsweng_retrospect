@@ -1,13 +1,26 @@
 const updateOrderStatus = require('./server');
 
-const order_id = '6486d086b1bb788a1427cd61';
-const order_status = 'Out for Delivery.'
-
+// TEST FOR ALL ORDER STATUS
 test('Should update the status of the corresponding order', async () => {
-    const updated_order = await updateOrderStatus(order_id, order_status);
-    const _id = String(updated_order._id);
-    const status = String(updated_order.status);
+    const order_id = '649bf8d7142724079e47bb8f';
 
-    expect(_id).toBe(order_id);
-    expect(status).toBe(order_status);
+    let order_status = 'Waiting for Payment Confirmation.'
+    let updated_order = await updateOrderStatus(order_id, order_status);
+    expect(String(updated_order._id)).toBe(order_id);
+    expect(String(updated_order.status)).toBe(order_status);
+
+    order_status = 'Payment Successful! Preparing your Order.'
+    updated_order = await updateOrderStatus(order_id, order_status);
+    expect(String(updated_order._id)).toBe(order_id);
+    expect(String(updated_order.status)).toBe(order_status);
+
+    order_status = 'Out for Delivery.'
+    updated_order = await updateOrderStatus(order_id, order_status);
+    expect(String(updated_order._id)).toBe(order_id);
+    expect(String(updated_order.status)).toBe(order_status);
+
+    order_status = 'Order Received.'
+    updated_order = await updateOrderStatus(order_id, order_status);
+    expect(String(updated_order._id)).toBe(order_id);
+    expect(String(updated_order.status)).toBe(order_status);
 });
