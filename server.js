@@ -294,7 +294,7 @@ app.get('/delete-item/:user_id/:item_name/:size', async function(req, res) {
 
     if(req.user) {
         curr_user = await UserModel.findOne({ email:req.user.email});
-        delete_item = await UserCartModel.updateOne(
+        const delete_item = await UserCartModel.updateOne(
         {user_id: curr_user._id},
         {$pull: {
             items: {
