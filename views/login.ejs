@@ -6,6 +6,9 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Login - Retrospect Apparel Co.</title>
 
+      <!-- Script for Google Login -->
+      <!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
+      
       <!-- STYLE LINKS -->
       <link rel="stylesheet" href="style.css">
       <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
@@ -42,6 +45,15 @@
                 <input type="submit" name="login-submit" value="Login">
                 <p>Or <a href="/signup">Create an Account</a></p>
               </form>
+              
+              <a href="/auth/google">Login with Google</a>
+
+              <!-- <div id="g_id_onload"
+                  data-client_id="203874483088-1lnm4pvknegm2fv3keh6kt1c42va47o7.apps.googleusercontent.com"
+                  data-callback="handleCredentialResponse">
+              </div>
+              <div class="g_id_signin" data-type="standard"></div>
+              <a href="#" onclick="signOut();">Sign out</a> -->
           </div>
         </div>
       </div>
@@ -54,5 +66,23 @@
           msg.style.backgroundColor = "rgba(160, 0, 0, 0.9)";
         }
       </script>
+      <!-- <script>
+        // Google Login get profile information Function
+        function onSignIn(googleUser) {
+          var profile = googleUser.getBasicProfile();
+          console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+          console.log('Name: ' + profile.getName());
+          console.log('Image URL: ' + profile.getImageUrl());
+          console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+      </script>
+      <script>
+        function signOut() {
+          var auth2 = gapi.auth2.getAuthInstance();
+          auth2.signOut().then(function () {
+            console.log('User signed out.');
+          });
+        }
+      </script> -->
   </body>
 </html>

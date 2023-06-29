@@ -1,4 +1,4 @@
-const express = require('express');
+    const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const mongoose = require('mongoose');
@@ -8,6 +8,12 @@ const mongoDBStore = require('connect-mongodb-session')(session);
 
 let app = express();
 
+// Function for Google Login
+function isLoggedIn(req,res,next) {
+    req.user ? next() : res.sendStatus(401);
+}
+
+// Middleware
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -41,7 +47,8 @@ app.use(session({
     secret: 'some secret ya foo',
     resave: false,
     saveUninitialized: true,
-    store: sessionStore
+    store: sessionStore,
+    cookie: {secure: false} // Google Login
 }));
 const isAuth = (req, res, next) => {
     if (req.session.isAuth) {
@@ -55,6 +62,13 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Google Login
+require('./auth');
+const passport = require('passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // SCHEMAS
 const UserModel = require('./models/userDB');
 const UserCartModel = require('./models/user_cartDB');
@@ -67,6 +81,28 @@ const { AsyncResource } = require('async_hooks');
 const usercart = require('./models/user_cartDB');
 const blogs = require('./models/blogsDB');
 
+// Google Login Pages
+app.get('/auth/google',
+  passport.authenticate('google', { scope:
+      [ 'email', 'profile' ] }
+));
+
+app.get( '/auth/google/callback',
+    passport.authenticate( 'google', {
+        successRedirect: '/',
+        failureRedirect: '/auth/google/failure' // need to configure for google login failure
+}));
+
+app.get('/auth/google/failure',(req,res)=>{
+    res.send('Something went wrong');
+});
+
+app.get('/auth/protected', isLoggedIn,(req,res)=>{
+    let name = req.user.displayName;
+    console.log(req.user);
+    res.send(`Hello ${name}`);
+});
+
 // LANDING PAGE
 app.get('/', async function(req, res){
     let curr_user = null;
@@ -74,6 +110,51 @@ app.get('/', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    // Google Account Logged In
+    if (req.user) {
+        console.log(req.user);
+        console.log(req.session);
+
+        const existingEmail = await UserModel.findOne({ email: req.user.email});
+        // Validation if there is already an existing record with same id
+        if (existingEmail) {
+            console.log('Account already exists');
+            curr_user = await UserModel.findOne({ email:req.user.email});
+            console.log(curr_user);
+        } else {
+            const space = /\s/.test(req.user.given_name);
+            const giveName = req.user.given_name;
+
+            var firstname = "";
+            
+            if(space) {
+                firstname = giveName.split(' ')[0];
+            } else {
+                firstname = giveName;
+            }
+            
+            curr_user = new UserModel({
+                username: firstname,
+                user_type: 0,
+                email: req.user.email,
+                password: "google_account"
+            });
+            await curr_user.save();
+
+            //create cart for the user
+            const newUserCart = await UserCartModel({
+                user_id: curr_user,
+                username: req.user.displayName,
+                items: []
+            });
+            await newUserCart.save();
+
+            console.log('success!')
+            console.log(curr_user);
+        } 
+    }
+
     res.render('landing-page', {
         curr_user: curr_user
     });
@@ -84,6 +165,39 @@ app.get('/landing-page', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    // Google Account Logged In
+    if (req.user) {
+        console.log(req.user);
+        console.log(req.session);
+
+        const existingEmail = await UserModel.findOne({ email: req.user.email});
+        // Validation if there is already an existing record with same id
+        if (existingEmail) {
+            console.log('Account already exists');
+            curr_user = await UserModel.findOne({ email:req.user.email});
+            console.log(curr_user);
+        } else {
+            curr_user = new UserModel({
+                username: req.user.displayName,
+                user_type: 0,
+                email: req.user.email,
+                password: "google_account"
+            });
+            await curr_user.save();
+
+            //create cart for the user
+            const newUserCart = await UserCartModel({
+                user_id: curr_user,
+                username: req.user.displayName,
+                items: []
+            });
+            await newUserCart.save();
+
+            console.log('success!')
+        } 
+    }
+
     res.render('landing-page',{
         curr_user: curr_user
     });
@@ -96,6 +210,12 @@ app.get('/about-us', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+
     res.render('about-us',{
         curr_user: curr_user
     });
@@ -107,6 +227,11 @@ app.get('/shop', async function(req, res){
 
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
     const items = await ItemsModel.find({});
@@ -125,7 +250,20 @@ app.get('/shopping-cart', async function(req, res){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
 
-    const cart_items = await UserCartModel.find({user_id: req.session._id});
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    var cart_items = "";
+    
+    if(req.session.isAuth){
+        cart_items = await UserCartModel.find({user_id: req.session._id});
+    }
+
+    if(req.user){
+        cart_items = await UserCartModel.find({user_id: curr_user._id});
+    }
+    
     // console.log(cart_items);
 
     return res.render('shopping-cart', {
@@ -139,7 +277,10 @@ app.get('/delete-item/:user_id/:item_name/:size', async function(req, res) {
     const {user_id, item_name, size} = req.params
 
     console.log(req.params);
-    const delete_item = await UserCartModel.updateOne(
+
+    const delete_item = "";
+    if(req.session.isAuth) {
+        delete_item = await UserCartModel.updateOne(
         {user_id: req.session._id},
         {$pull: {
             items: {
@@ -149,6 +290,21 @@ app.get('/delete-item/:user_id/:item_name/:size', async function(req, res) {
             }
         }
     );
+    }
+
+    if(req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        delete_item = await UserCartModel.updateOne(
+        {user_id: curr_user._id},
+        {$pull: {
+            items: {
+                item_name: item_name,
+                size: size
+                }
+            }
+        }
+    );
+    }
 
     res.redirect('/shopping-cart');
 });
@@ -156,7 +312,7 @@ app.get('/delete-item/:user_id/:item_name/:size', async function(req, res) {
 //ADD ITEM TO USER CART
 app.post('/add-to-cart', async function(req, res){
 
-    if(req.session.isAuth == undefined){
+    if(req.session.isAuth == undefined && req.user == undefined){
         console.log("Need Account Before adding to cart");
         return res.render('login', {
             msg: "An account is needed before adding to cart."
@@ -170,7 +326,9 @@ app.post('/add-to-cart', async function(req, res){
 
     const item =  {item_name, item_photo, price, size, quantity, total_price}
 
-    const find_item = await UserCartModel.findOne({
+    var find_item = "";
+    if (req.session.isAuth) {
+        find_item = await UserCartModel.findOne({
         user_id: req.session._id,
         items: {
             $elemMatch: {
@@ -179,9 +337,26 @@ app.post('/add-to-cart', async function(req, res){
             }
         }
     });
-
-    if(find_item && quantity) { // IF ITEMS EXIST JUST ADD CURRENT ITEM AND THERE IS A QUANIITY
-        const user_cart = await UserCartModel.updateOne({
+    }
+    
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        find_item = await UserCartModel.findOne({
+        user_id: curr_user._id,
+        items: {
+            $elemMatch: {
+                item_name: item_name,
+                size: size
+            }
+        }
+    });
+    console.log(find_item);
+    }
+    
+    var user_cart = "";
+    if (req.session.isAuth) {
+        if(find_item) { // IF ITEMS EXIST JUST ADD CURRENT ITEM
+        user_cart = await UserCartModel.updateOne({
                 user_id: req.session._id,
                 items: {
                     $elemMatch: {
@@ -195,12 +370,44 @@ app.post('/add-to-cart', async function(req, res){
                     "items.$.total_price": total_price
                 }
             });
-    } else if(quantity){ // IF ITEM DOES NOT EXIST && there is a quantity
-        const user_cart = await UserCartModel.updateOne(
+            console.log(user_cart);
+    } else { // IF ITEM DOES NOT EXIST
+        console.log("item doesnt exist")
+        user_cart = await UserCartModel.updateOne(
             {user_id: req.session._id},
             {$push: {items: item}}
         );
     }
+    }
+
+    if(req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        if(find_item) { // IF ITEMS EXIST JUST ADD CURRENT ITEM
+        user_cart = await UserCartModel.updateOne({
+                user_id: curr_user._id,
+                items: {
+                    $elemMatch: {
+                        item_name: item_name,
+                        size: size
+                    }
+                }
+            }, {
+                $inc:{
+                    "items.$.quantity": quantity,
+                    "items.$.total_price": total_price
+                }
+            });
+            console.log(user_cart);
+    } else { // IF ITEM DOES NOT EXIST
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        console.log("item doesnt exist")
+        user_cart = await UserCartModel.updateOne(
+            {user_id: curr_user.id},
+            {$push: {items: item}}
+        );
+    }
+    }
+    
 
     return res.redirect('/shop');
 });
@@ -215,13 +422,36 @@ app.post('/checkout', async function(req, res) {
 
     }
 
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email: req.user.email});
+    }
+
     const {user_id, total_price} = req.body;
 
-    const user_cart = await UserCartModel.findOne({user_id: user_id});
+    let user_cart = "";
+
+    if (req.session.isAuth) {
+        user_cart = await UserCartModel.findOne({user_id: user_id});
+    }
+
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        user_cart = await UserCartModel.findOne({user_id: curr_user._id});
+    }
     
     //if there are no items in cart
     if(user_cart.items == 0){
-        const cart_items = await UserCartModel.find({user_id: req.session._id});
+        let cart_items = "";
+        if (req.session.isAuth) {
+            cart_items = await UserCartModel.find({user_id: req.session._id});
+        }
+
+        if (req.user) {
+            curr_user = await UserModel.findOne({ email:req.user.email});
+            cart_items = await UserCartModel.find({user_id: curr_user._id});
+        }
+
         return res.render('shopping-cart', {
             curr_user: curr_user,
             cart_items: cart_items,
@@ -230,7 +460,15 @@ app.post('/checkout', async function(req, res) {
     }
     
     if(curr_user.address.length === 0 || curr_user.contact_no.length === 0){
-        const cart_items = await UserCartModel.find({user_id: req.session._id});
+        let cart_items = "";
+        if (req.session.isAuth) {
+            cart_items = await UserCartModel.find({user_id: req.session._id});
+        }
+
+        if (req.user) {
+            cart_items = await UserCartModel.find({email: req.user.email});
+        }
+
         return res.render('shopping-cart', {
             curr_user: curr_user,
             cart_items: cart_items,
@@ -263,6 +501,10 @@ app.get('/blog', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email: req.user.email});
+    }
 	
 	const blogs = await BlogsModel.find({});
 	
@@ -278,6 +520,11 @@ app.get('/size-chart', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email: req.user.email});
+    }
+
     return res.render('size-chart', {
         curr_user: curr_user
     });
@@ -311,7 +558,7 @@ app.post('/user-login', async function(req, res){
 // LOG OUT
 app.get('/log-out', function(req, res){
 
-    if(isAuth){
+    if(isAuth || req.user){
         req.session.isAuth = false;
         req.session.destroy((err) => {
             if (err) throw err;
@@ -381,6 +628,15 @@ app.get('/admin', async function(req, res){
     
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email: req.user.email});
 
         // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
         if(curr_user.user_type == 0){
@@ -502,6 +758,15 @@ app.get('/create-admin', async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     // Not allowed if user null
     if(!curr_user){
         return res.redirect('back');
@@ -521,6 +786,15 @@ app.post('/add-admin', async function(req, res){
 
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
 
         // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
         if(curr_user.user_type == 0){
@@ -594,6 +868,16 @@ app.get('/delete-user/:user_id', async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -618,6 +902,16 @@ app.post('/edit-user', async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -650,6 +944,16 @@ app.post('/update-user-details', async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -723,6 +1027,16 @@ app.post('/change-user-password', async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -762,6 +1076,16 @@ app.get('/create-item', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -784,6 +1108,16 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -826,6 +1160,16 @@ app.post('/edit-item', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -855,6 +1199,16 @@ app.post('/update-item-details', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -896,6 +1250,16 @@ app.get('/create-blog', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = req.user
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -919,6 +1283,16 @@ app.post('/add-blog', upload.single('blog_photo') ,async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -960,6 +1334,16 @@ app.post('/edit-blog', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -990,6 +1374,16 @@ app.post('/update-blog-details', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -1019,6 +1413,16 @@ app.post('/add-availability', async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -1046,6 +1450,16 @@ app.post('/add-availability', async function(req, res){
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -1074,6 +1488,16 @@ app.post('/edit-availability', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -1127,6 +1551,16 @@ app.post('/delete-availability', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -1165,6 +1599,16 @@ app.post('/update-availability', async function(req, res) {
             return res.redirect('back');
         }
     }
+
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+
     if(!curr_user){
         return res.redirect('back');
     }
@@ -1218,11 +1662,16 @@ app.post('/change-photo', upload.single('item_photo'), async function(req, res) 
 //PROFILE PAGE
 app.get('/profile', async function(req, res){
     let curr_user = null;
+    let user = "";
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+        user = await UserModel.findOne({_id: req.session._id});
     }
-
-    const user = await UserModel.findOne({_id: req.session._id})
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        user = await UserModel.findOne({email: req.user.email});
+    }
+    
     console.log(user);
 
     return res.render('profile', {
@@ -1230,15 +1679,21 @@ app.get('/profile', async function(req, res){
         user: user
     });
 });
-// EDIT PROFILE PAGAE
+
+// EDIT PROFILE PAGE
 app.get('/edit-profile', async function(req, res){
     let curr_user = null;
     let msg = null;
 
+    let user = "";
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+        user = await UserModel.findOne({_id:req.session._id});
     }
-    const user = await UserModel.findOne({_id: req.session._id})
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        user = await UserModel.findOne({email: req.user.email})
+    }
     console.log(user);
 
     return res.render('edit-profile', {
@@ -1252,9 +1707,12 @@ app.post('/update-profile', async function(req, res){
     let curr_user = null;
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+        const user = await UserModel.findOne({_id: req.session._id});
     }
-
-    const user = await UserModel.findOne({_id: req.session._id})
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+        const user = await UserModel.findOne({email: req.user.email});
+    }
 
     const {user_id, userName, emailAddress, contactNumber, shippingAddress} = req.body;
 
@@ -1311,6 +1769,9 @@ app.get('/tracker', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
     return res.render('tracker', {
         curr_user: curr_user
     });
@@ -1322,7 +1783,10 @@ app.get('/orders', async function(req, res) {
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
-    
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+
     const user_orders = await OrdersModel.find({user_id: curr_user._id});
     console.log(user_orders);
 
@@ -1338,6 +1802,9 @@ app.get('/payment-options', async function(req, res){
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
     }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
 
     res.render('payment-options', {
         curr_user: curr_user,
@@ -1348,6 +1815,9 @@ app.get('/payment-prompt', async function(req, res){
     let curr_user = null;
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
     res.render('payment-prompt', {
