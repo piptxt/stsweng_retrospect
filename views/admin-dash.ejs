@@ -7,11 +7,12 @@
         <title>Retrospect Apparel Co.</title>
 
         <!-- STYLE LINKS -->
-        <link rel="stylesheet" href="style.css">
+        <link href="style.css" rel="stylesheet" >
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
-
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <script src="https://kit.fontawesome.com/679532c273.js" crossorigin="anonymous"></script>
         <!-- ICON -->
         <link rel="icon" href="images/retrospect-icon.png" type="image/png">
     </head>
@@ -55,7 +56,7 @@
                     <input type="hidden" name="edit_item" value="<%=item._id%>">
                     <button class="item-btns" type="submit"> Edit Item </button>
                   </form>
-                  <a href="/delete-item/<%=item._id%>"><input class="item-btns" type="button" name="inv-del" value="delete"></input></a>
+                  <a href="/delete-item/<%=item._id%>"><input class="item-btns" type="button" name="inv-del" value="Delete Item"></input></a>
               </div>
               <% }); %>
 
@@ -78,7 +79,7 @@
               </div>
 
               <div class="admin-card additem">
-                  <a href="/create-item"><input class="item-btns" type="button" name="inv-edit" value="ADD ITEM"></input></a>
+                  <a href="/create-item"><input class="additem-btns" type="button" name="inv-edit" value="+ ADD ITEM"></input></a>
               </div>
 
                 <div class="item-edit-modal" id="item-add-modal">
@@ -115,43 +116,93 @@
 
                   <form action="/edit-blog" method="post">
                     <input type="hidden" name="edit_blog" value="<%=blog._id%>">
-                    <button class="item-btns" type="submit"> Edit Blog </button>
+                    <button class="blog-btns" type="submit"> Edit Blog </button>
                   </form>
-                  <a href="/delete-blog/<%=blog._id%>"><input class="item-btns" type="button" name="inv-del" value="delete"></input></a>
+                  <a href="/delete-blog/<%=blog._id%>"><input class="blog-btns" type="button" name="inv-del" value="Delete Blog"></input></a>
               </div>
               <% }); %>
 
               <div class="admin-card additem">
-                  <a href="/create-blog"><input class="item-btns" type="button" name="inv-edit" value="ADD BLOG"></input></a>
+                  <a href="/create-blog"><input class="additem-btns" type="button" name="inv-edit" value="+ ADD BLOG"></input></a>
               </div>
             </div>
 			
 			
 
-            <h2>Admin User Management</h2>
-            
-            <% all_users.forEach((user) => { %>
-            <div class="admin-UM admin-sec">
-              <div class="admin-card">
-                  <h2><%=user.username %></h2>
-                  <% let user_type; %>
-                  <% if(user.user_type == 0) {          %>
-                  <%    user_type = "Regular User";     %>  
-                  <% } else if (user.user_type == 1) {  %>
-                  <%    user_type = "Admin";            %>
-                  <% } else {                           %>
-                  <%    user_type = "Super User";       %>
-                  <% }                                  %>                
-                                     
-                  <h3>User Type: <%= user_type %></h3>
-
-                  <form action="/edit-user" method="post">
-                    <input type="hidden" name="user_id" value="<%= user._id %>"></input>
-                    <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
-                  </form>
-                  <a href="/delete-user/<%=user._id%>"><button class="user-btns" type="button" name="delete-user" >Delete User</button></a>
-              </div>
+          <h2>Admin User Management</h2>
+            <div class = "container">     
+                  <input type="text" id="search-input" placeholder="Search User" />
+                    <button id="search-button" onclick="searchUsers()">Search</i></button>              
             </div>
+              <div class="admin-columns">
+                <div class="regular-users-column">
+                  <% all_users.forEach((user) => { %>
+                  <% if(user.user_type == 0) { %>
+                  <div class="admin-UM admin-sec regular-user">
+                    <div class="regular-card">
+                      <h2><%= user.username %></h2>
+                      <% let user_type = "Regular User"; %>
+                      <h3>User Type: <%= user_type %></h3>
+                      <form action="/edit-user" method="post">
+                        <input type="hidden" name="user_id" value="<%= user._id %>">
+                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
+                      </form>
+                      <a href="/delete-user/<%= user._id %>">
+                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
+                      </a>
+                    </div>
+                  </div>
+                  <% } %>
+                  <% }) %>
+                </div>
+              
+                <div class="admins-column">
+                  <% all_users.forEach((user) => { %>
+                  <% if(user.user_type == 1) { %>
+                  <div class="admin-UM admin-sec admin">
+                    <div class="admin-card2">
+                      <h2><%= user.username %></h2>
+                      <% let user_type = "Admin"; %>
+                      <h3>User Type: <%= user_type %></h3>
+                      <form action="/edit-user" method="post">
+                        <input type="hidden" name="user_id" value="<%= user._id %>">
+                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
+                      </form>
+                      <a href="/delete-user/<%= user._id %>">
+                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
+                      </a>
+                    </div>
+                  </div>  
+                  <% } %>
+                  <% }) %>
+                </div>
+              </div>
+
+              <script>
+                function searchUsers() {
+                  var searchInput = document.getElementById("search-input").value.toLowerCase();
+                  var regularUsers = document.getElementsByClassName("regular-user");
+                  var admins = document.getElementsByClassName("admin");
+              
+                  Array.from(regularUsers).forEach(function(user) {
+                    var username = user.querySelector("h2").textContent.toLowerCase();
+                    if (username.includes(searchInput)) {
+                      user.style.display = "block";
+                    } else {
+                      user.style.display = "none";
+                    }
+                  });
+              
+                  Array.from(admins).forEach(function(user) {
+                    var username = user.querySelector("h2").textContent.toLowerCase();
+                    if (username.includes(searchInput)) {
+                      user.style.display = "block";
+                    } else {
+                      user.style.display = "none";
+                    }
+                  });
+                }
+              </script>
 
             <div class="item-edit-modal" id="admin-edit-modal">
               <div class="item-edit-modal-content">
@@ -165,10 +216,9 @@
                 </form>
               </div>
             </div>
-            <% }) %>
 
             <div class="admin-card additem">
-              <a href="/create-admin"><input class="user-btns" type="button" name="inv-edit" value="Create Admin" ></input></a> <!--id="myBtn-modal-add-user"-->
+              <a href="/create-admin"><input class="additem-btns" type="button" name="inv-edit" value="Create Admin" ></input></a> <!--id="myBtn-modal-add-user"-->
             </div>
 
             <div class="item-edit-modal" id="admin-add-modal">
@@ -184,40 +234,47 @@
               </div>
             </div>
 
-            <h2>Current Orders</h2>
+<h2>Current Orders</h2>
 
-            <% orders.forEach((order) => { %>
-            <div class="current-orders admin-sec">
-              <div class="admin-card orders-card">
-                  <h2><%= order.username %></h2>
-                  <h3>Order #<%= order._id %></h3>
-                  <h3>Status: <%= order.status %></h3>
-                  <% 
-                  let num_items = 0;
-                  order.items.forEach((item) => {
-                    num_items += item.quantity;
-                  })
-                  %>
-                  <h4>Number of Items: <%= num_items %> </h4>
+<div class="orders-container">
+  <% const orderStatuses = ['Waiting for Payment Confirmation.', 'Payment Successful! Preparing your Order.', 'Out for Delivery.', 'Order Received.']; %>
+  <% orderStatuses.forEach((status) => { %>
+  <div class="order-column">
+    <h3><%= status %></h3>
+    <% orders.filter(order => order.status === status).forEach((order) => { %>
+    <div class="current-orders admin-sec">
+      <div class="admin-card orders-card">
+        <h2><%= order.username %></h2>
+        <h4>Order #<%= order._id %></h4>
+        <h4>Status: <%= order.status %></h4>
+        <% 
+        let num_items = 0;
+        order.items.forEach((item) => {
+          num_items += item.quantity;
+        });
+        %>
+        <h4>Number of Items: <%= num_items %> </h4>
 
-                  <form action="/update-order-status" method="post">
-                    <input type="hidden" name="order_id" value="<%= order._id %>">
-                    <label for="order_status">Edit Order Status</label><br>
-                    <select name="order_status" id="order_status">
-                      <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
-                      <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
-                      <option value="Out for Delivery."> Out for Delivery. </option> 
-                      <option value="Order Received."> Order Received. </option> 
-                    </select>
+        <form action="/update-order-status" method="post">
+          <input type="hidden" name="order_id" value="<%= order._id %>">
+          <label for="order_status">Edit Order Status</label><br>
+          <select name="order_status" id="order_status">
+            <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
+            <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
+            <option value="Out for Delivery."> Out for Delivery. </option> 
+            <option value="Order Received."> Order Received. </option> 
+          </select>
 
-                    <button class="order-btns" type="submit"> Update Status </button>
-                  </form>
-                  <!-- <a href="/revert-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="revert-status" value="Revert Status"></input></a>
-                  <a href="/advance-status/<%= order._id %>/<%= order.status %>"><input class="order-btns" type="button" name="advance-status" value="Advance Status"></input></a> -->
-                  <a href="/cancel-order/<%= order._id %>"><input class="order-btns" type="button" name="order-cancel" value="Cancel Order"></input></a>
-              </div>
-            </div>
-            <% })%>
+          <button class="order-btns" type="submit"> Update Status </button>
+        </form>
+
+        <a href="/cancel-order/<%= order._id %>"><input class="order-btns" type="button" name="order-cancel" value="Cancel Order"></input></a>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% }) %>
+</div>
             
         </main>
     </body>

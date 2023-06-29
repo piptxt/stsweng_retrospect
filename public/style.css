@@ -4,6 +4,7 @@
 
     --bg-primary: #000000;
     --bg-secondary: #1c1c1c;
+    --bg-admin: #2bb33e;
     --font-primary: #ffffff;
 }
 
@@ -134,7 +135,7 @@ main{
 .nav-admin{
     color: #FFFFFF;
     width: fit-content;
-    background-color: #2bb33e;
+    background-color: var(--bg-admin);
     font-size: 1rem;
     font-weight: bold;
     margin: 2rem;
@@ -484,7 +485,7 @@ input[type=text]:focus,input[type=password]:focus{
     -webkit-box-sizing:border-box
 }
 .signupform-content .form-detail .form-row input:focus{
-    border-bottom:2px solid #2bb33e
+    border-bottom:2px solid var(--bg-admin)
 }
 .signupform-content .form-detail .register{
     background:var(--bg-secondary);
@@ -1061,6 +1062,31 @@ input[type=text]:focus,input[type=password]:focus{
     border-radius: 1rem;
 }
 
+.regular-card{
+    background-color: var(--bg-secondary);
+    color: var(--font-primary);
+    max-width: 30rem;
+    height: fit-content;
+    display: grid;
+    padding: 1rem;
+    margin: 1rem;
+
+    border-radius: 1rem;
+}
+
+.admin-card2{
+    background-color: var(--bg-secondary);
+    color: var(--bg-admin);
+    max-width: 30rem;
+    height: fit-content;
+    display: grid;
+    padding: 1rem;
+    margin: 1rem;
+    font-family: 'Montserrat';
+    font-weight: bold;
+    border-radius: 1rem; 
+}
+
 .inv-item-card{
     width: auto;
     height: 15rem;
@@ -1095,14 +1121,41 @@ input[type=text]:focus,input[type=password]:focus{
 .current-orders{
 
     display: grid;
-    gap: 2rem;
-
-    grid-template-columns: 1fr 1fr;
+    gap: 0.1rem;
+    grid-template-columns: repeat(4, 1fr);
 }
 
-.order-btns, .user-btns, .item-btns{
+.orders-card {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.orders-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+.order-column {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+.order-column h3{
+    text-align: center;
+    font-size: 7;
+}
+
+.item-btns, .blog-btns, .user-btns, .order-btns{
     width: 100%;
-    margin-bottom: 1rem;
+    font-family: 'Montserrat';
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.additem-btns{
+    width: 100%;
+    font-family: 'Montserrat';
+    font-weight: bold;
 }
 
 .success-msg{
@@ -1386,4 +1439,21 @@ input::-webkit-inner-spin-button {
   .next-btn:hover{
     background-color: #004671;
     transition: 500ms ease;
+  }
+
+  .admin-columns {
+    display: flex;
+  }
+  
+  .regular-users-column {
+    flex: 0.2;
+    margin-right: 20px; /* Adjust the spacing between columns */
+  }
+  
+  .admins-column {
+    flex: 0.2;
+  }
+  
+  .admin-UM {
+    margin-bottom: 20px; /* Adjust the vertical spacing between user cards */
   }
