@@ -11,11 +11,7 @@
   },
   "scripts": {
     "start": "node server.js",
-<<<<<<< HEAD
-    "test": "jest --forceExit"
-=======
     "test": "jest --forceExit --runInBand"
->>>>>>> order-status-(customer-and-admin)-and-inventory-management
   },
   "name": "iteration1",
   "description": "Iteration 2 (w/ data processing)",
