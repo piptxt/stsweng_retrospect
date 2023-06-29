@@ -1685,7 +1685,7 @@ app.get('/edit-profile', async function(req, res){
     let curr_user = null;
     let msg = null;
 
-    let user = "";
+    let user;
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
         user = await UserModel.findOne({_id:req.session._id});
@@ -1705,13 +1705,14 @@ app.get('/edit-profile', async function(req, res){
 // Update Profile
 app.post('/update-profile', async function(req, res){
     let curr_user = null;
+    let user = null;
     if(req.session.isAuth){
         curr_user = await UserModel.findOne({ _id:req.session._id});
-        const user = await UserModel.findOne({_id: req.session._id});
+        user = await UserModel.findOne({_id: req.session._id});
     }
     if(req.user){
         curr_user = await UserModel.findOne({ email:req.user.email});
-        const user = await UserModel.findOne({email: req.user.email});
+        user = await UserModel.findOne({email: req.user.email});
     }
 
     const {user_id, userName, emailAddress, contactNumber, shippingAddress} = req.body;
