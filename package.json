@@ -15,11 +15,8 @@
   },
   "scripts": {
     "start": "node server.js",
-<<<<<<< HEAD
-    "test": "jest --forceExit --runInBand"
-=======
+    "test": "jest --forceExit --runInBand",
     "dev": "nodemon server.js"
->>>>>>> google-login-2
   },
   "name": "iteration1",
   "description": "Iteration 2 (w/ data processing)",
