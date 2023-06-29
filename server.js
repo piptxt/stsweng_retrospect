@@ -453,9 +453,34 @@ app.get('/advance-status/:order_id/:status', async function(req, res) {
         })
     }
 
-    res.redirect('/admin');
+    res.redirect('/admin/:order_id/:status');
 });
-// Revert Status
+// UPDATE ORDER STATUS
+app.post('/update-order-status', async function(req, res) {
+
+    const order_id = req.body.order_id;
+    const order_status = req.body.order_status
+
+    const updated_status = await updateOrderStatus(order_id, order_status)
+
+    console.log(updated_status._id + " " + updated_status.username +" " + updated_status.status);
+
+    return res.redirect('/admin');
+})
+// UPDATE ORDER STATUS HELPER
+async function updateOrderStatus(order_id, order_status){
+
+    // gets the order document from the DB and updates the corresponding order status
+    const updated_status = await OrdersModel.findOneAndUpdate({_id: order_id},{
+        $set: {status: order_status}
+    }, {
+        new: true // Gets the updated document
+    });
+    return updated_status;
+}
+module.exports = updateOrderStatus;
+
+// CANCEL ORDER
 app.get('/cancel-order/:order_id', async function(req, res) {
     const order_id = req.params.order_id;
     console.log("Cancelled Order: " + order_id);
@@ -1036,6 +1061,59 @@ app.post('/add-availability', async function(req, res){
        edit_item: edit_item 
     });
 });
+
+// Edit Availability
+app.post('/edit-availability', async function(req, res) {
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+
+        // Not allowed if user type is a regular user (0). Only admin (1) and superuser (2) 
+        if(curr_user.user_type == 0){
+            return res.redirect('back');
+        }
+    }
+    if(!curr_user){
+        return res.redirect('back');
+    }
+
+    const {item_id, size, stock, new_size, new_stock} = req.body;
+
+    const edit_item = await ItemsModel.findOne({_id: item_id});
+    console.log(edit_item);
+
+    const takenSize = await ItemsModel.findOne({_id: item_id, availability: { $elemMatch: {size: new_size, stock: new_stock}}});
+    if(takenSize) {
+        res.render('edit-item', {
+            curr_user: curr_user,
+            msg: "Size already exists",
+            edit_item: edit_item 
+        });
+    }
+    console.log(item_id + " " + size + " " + stock + " " + new_size + " " + new_stock); 
+    
+    editStockAvailability(item_id, size, stock, new_size, new_stock);
+
+    return res.redirect('admin');
+
+})
+// Helper Function
+async function editStockAvailability(item_id, size, stock, new_size, new_stock) {
+    await ItemsModel.updateOne({_id: item_id, availability: { $elemMatch: {size: size, stock: stock}} },{
+        $set: {
+            'availability.$.size': new_size,
+            'availability.$.stock': new_stock
+        }
+    });
+
+    const newly_edit_item = await ItemsModel.findOne({_id: item_id, availability: { $elemMatch: {size: new_size, stock: new_stock}} });
+    // console.log(newly_edit_item._id);
+    return newly_edit_item;
+}
+module.exports = editStockAvailability;
+;
+
 // Delete Availability
 app.post('/delete-availability', async function(req, res) {
 
@@ -1101,7 +1179,7 @@ app.post('/update-availability', async function(req, res) {
             curr_user: curr_user,
             msg: "Size already exists",
             edit_item: edit_item 
-         });
+        });
     }
 
     await ItemsModel.updateOne({_id: item_id}, {
