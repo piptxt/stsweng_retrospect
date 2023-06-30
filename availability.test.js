@@ -1,5 +1,5 @@
 const ItemsModel = require('./models/itemsDB');
-const editStockAvailability = require('./server');
+const {editStockAvailability} = require('./app');
 
 const item_id = '6404b3cee60e3656fc4f6d1d';
 
@@ -12,7 +12,7 @@ test('Edit the stock availability of the corresponding item (adds 1)', async () 
     var new_stock = parseInt(old_stock) + 1;
 
     const newly_edit_item = await editStockAvailability(item_id, old_size, old_stock, new_size, new_stock);
-
+    // console.log(newly_edit_item);
     const _id = String(newly_edit_item._id);
     var i = 0;
     let size = "";
@@ -33,12 +33,12 @@ test('Edit the stock availability of the corresponding item (adds 1)', async () 
     expect(size).toBe(new_size);
     expect(stock).toBe(new_stock);
 
-    console.log("Old Values")
-    console.log("old size: " + old_size);
-    console.log("old stock: " + old_stock);
-    console.log("After Expect")
-    console.log("size: " + size + " = new_size: " + new_size);
-    console.log("stock: " + stock + " = new_stock: " + new_stock);
+    // console.log("Old Values")
+    // console.log("old size: " + old_size);
+    // console.log("old stock: " + old_stock);
+    // console.log("After Expect")
+    // console.log("size: " + size + " = new_size: " + new_size);
+    // console.log("stock: " + stock + " = new_stock: " + new_stock);
 
     await ItemsModel.updateOne({_id: item_id, availability: { $elemMatch: {size: new_size, stock: new_stock}} },{
         $set: {
@@ -47,7 +47,7 @@ test('Edit the stock availability of the corresponding item (adds 1)', async () 
         }
     });
 
-    console.log("Reverted Values")
-    console.log("reverted size: " + edit_item.availability[0].size);
-    console.log("reverted stock: " + edit_item.availability[0].stock);
+    // console.log("Reverted Values")
+    // console.log("reverted size: " + edit_item.availability[0].size);
+    // console.log("reverted stock: " + edit_item.availability[0].stock);
 });

@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "jest --forceExit --runInBand",
+    "test": "jest --detectOpenHandles --forceExit",
     "dev": "nodemon server.js"
   },
   "name": "iteration1",

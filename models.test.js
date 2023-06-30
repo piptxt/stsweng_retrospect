@@ -37,7 +37,7 @@ test('Should return the users with the corresponding admins', async () => {
     const user_type = 1;
 
     // EXPECTED VALUE(S)
-    const ex_admins = ["LebronJordan","RomanReigns", "idolnation", "kennymkl", "pipo_clems", "testing"];
+    const ex_admins = ["LebronJordan","RomanReigns", "awaw", "idolnation", "kennymkl", "pipo_clems", "testing"];
 
     // FIND ALL ADMINS
     const num_admins = await UserModel.find({user_type: user_type}).sort({username: 1});
@@ -55,7 +55,7 @@ test('Should return the users with the corresponding order numbers', async () =>
     const order_status = "Out for Delivery.";
 
     // EXPECTED VALUE(S)
-    const ex_orderids = ["6437c239ce197ed57034d6c4", "6486d086b1bb788a1427cd61", "643aba197b906759e595e48b"];
+    const ex_orderids = ["6486d086b1bb788a1427cd61", "643aba197b906759e595e48b", "6437e2f3b7a56ab0fd55a423"];
  
     const orders = await OrdersModel.find({status: order_status}).sort({username: 1});
     // CHECKS ALL OF THE ORDERS WITH THE CORRESPONDING STATUS
@@ -68,7 +68,7 @@ test('Should return the users with the corresponding order numbers', async () =>
 
 // TEST FOR CHECKING THE ITEMS IN THE USER'S CART
 test('Should return the users with the corresponding items of the user in their shopping cart', async () => {
-    const username = "testeristing";
+    const username = "testerist";
 
     // EXPECTED VALUE(S)
     const ex_items = ["NLND (Black) ", "NLND (Black) "]

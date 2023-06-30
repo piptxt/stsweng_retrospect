@@ -1,4 +1,5 @@
-const updateOrderStatus = require('./server');
+const {updateOrderStatus} = require('./app');
+
 
 // TEST FOR ALL ORDER STATUS
 test('Should update the status of the corresponding order', async () => {
