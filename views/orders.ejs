@@ -32,15 +32,19 @@
     <!-- MAIN CONTENT -->
 
     <main class="order-main">
-        <h1 class="order-header"> Orders </h1>
+        <h1 class="order-header"> Current Orders </h1>
 
-        <% user_orders.forEach((order) => {%>
+        <% orders.forEach((order) => {%>
         <div class="order-box">
             <div class="order-number">
                 <h2>Order #<%= order._id %></h2>
             </div>
             <div class="order-status">
                 <h2>Status: <%= order.status %></h2>
+            </div>
+            <div class="order-address">
+                <h3> Date Ordered: </h3>
+                <p> <%= order.date_ordered %> </p>
             </div>
             <div class="order-contact-no">
                 <h3> Contact Number: </h3>
@@ -74,7 +78,61 @@
             </div>
         </div>
         <% });%>
+        <br><br>
+
+        <!-- PAST ORDERS -->
+        <h1 class="order-header"> Past Orders </h1> 
+        <% past_orders.forEach((order) => {%>
+            <div class="order-box">
+                <div class="order-number">
+                    <h2>Order #<%= order._id %></h2>
+                </div>
+                <div class="order-status">
+                    <h2>Status: <%= order.status %></h2>
+                </div>
+                <div class="order-address">
+                    <h3> Date Ordered: </h3>
+                    <p> <%= order.date_ordered %> </p>
+                </div>
+                <div class="order-address">
+                    <h3> Date Delivered: </h3>
+                    <p> <%= order.date_delivered %> </p>
+                </div>
+                <div class="order-contact-no">
+                    <h3> Contact Number: </h3>
+                    <p> <%= order.contact_no %> </p>
+                </div>
+                <div class="order-address">
+                    <h3> Address: </h3>
+                    <p> <%= order.address %> </p>
+                </div>
+                <div class="order-item-list">
+                    <table class="item-table">
+                        <thead>
+                            <th class="item-header">Item</th>
+                            <th class="item-header">Price</th>
+                            <th class="item-header">Size</th>
+                            <th class="item-header">Quantity</th>
+                        </thead>
+                        <% order.items.forEach((item) => {%>
+                        <tr>
+                            <td class="item-data"> <%= item.item_name %> </td>
+                            <td class="item-data"> <%= item.price %> </td>
+                            <td class="item-data"> <%= item.size %> </td>
+                            <td class="item-data"> <%= item.quantity %> </td>
+                        </tr>
+                        <% }) %>
+                        <tfoot class="order-total">
+                            <td> Total: </td>
+                            <td> <%= order.total_price %> </td>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <% });%>
+
     </main>
+    <br><br><br><br><br>
     
     
     <main>
