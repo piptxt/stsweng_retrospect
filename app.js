@@ -6,6 +6,9 @@ const session = require('express-session');
 const { createHash } = require('crypto');
 const mongoDBStore = require('connect-mongodb-session')(session);
 
+//Email Notifications
+const sendEmail = require("./utils/sendEmail");
+
 let app = express();
 
 // Function for Google Login
@@ -278,7 +281,7 @@ app.get('/delete-item/:user_id/:item_name/:size', async function(req, res) {
 
     console.log(req.params);
 
-    const delete_item = "";
+    var delete_item = "";
     if(req.session.isAuth) {
         delete_item = await UserCartModel.updateOne(
         {user_id: req.session._id},
@@ -485,6 +488,18 @@ app.post('/checkout', async function(req, res) {
         total_price: total_price
     });
     await newOrder.save();
+
+    // Email Notifications
+    try {
+        const user = await UserModel.findOne({_id: newOrder.user_id});
+        const user_email = user.email;
+
+        console.log(user_email, newOrder.status, newOrder);
+        await sendEmail(user_email, newOrder.status, newOrder);
+        
+      } catch (error) {
+        console.error(error);
+      }
 
     await UserCartModel.updateOne({user_id: curr_user._id,},{
         $pullAll: {
@@ -712,7 +727,8 @@ app.get('/advance-status/:order_id/:status', async function(req, res) {
     res.redirect('/admin/:order_id/:status');
 });
 // UPDATE ORDER STATUS
-app.post('/update-order-status', async function(req, res) {
+
+app.post('/update-order-status', async function(req, res) { 
 
     const order_id = req.body.order_id;
     const order_status = req.body.order_status
@@ -720,6 +736,19 @@ app.post('/update-order-status', async function(req, res) {
     const updated_status = await updateOrderStatus(order_id, order_status)
 
     console.log(updated_status._id + " " + updated_status.username +" " + updated_status.status);
+
+    // Email Notifications
+    try {
+        const order = await OrdersModel.findOne({_id: order_id});
+        const user = await UserModel.findOne({_id: order.user_id});
+        const user_email = user.email;
+
+        console.log(user_email, order_status, order);
+        await sendEmail(user_email, order_status, order);
+        
+      } catch (error) {
+        console.error(error);
+      }
 
     return res.redirect('/admin');
 })
