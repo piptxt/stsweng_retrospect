@@ -43,11 +43,18 @@
                 <label for="login-password">Password</label><br>
                 <input type="password" name="password" value=""><br>
                 <input type="submit" name="login-submit" value="Login">
-                <p>Or <a href="/signup">Create an Account</a></p>
+                <div class="row">
+                  <div class="col-md-12">
+                    <a class="btn btn-lg btn-google btn-block text-uppercase btn-outline" href="/auth/google"> 
+                      <img src="https://img.icons8.com/color/16/000000/google-logo.png">   Login with Google</a>
+                  </div>
+              </div>
+                <p>Or <a href="/signup" class="create-acc">Create an Account</a></p>
               </form>
               
-              <a href="/auth/google">Login with Google</a>
-
+                <!-- <a href="/auth/google">Login with Google</a> -->
+                
+                
               <!-- <div id="g_id_onload"
                   data-client_id="203874483088-1lnm4pvknegm2fv3keh6kt1c42va47o7.apps.googleusercontent.com"
                   data-callback="handleCredentialResponse">

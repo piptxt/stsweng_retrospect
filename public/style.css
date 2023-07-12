@@ -254,6 +254,7 @@ a{
   background-color: var(--bg-secondary);
 }
 
+
 .login-outer h1{
   margin:1em;
 }
@@ -1049,8 +1050,7 @@ input[type=text]:focus,input[type=password]:focus{
     flex-wrap:wrap;
 }
 
-
-.admin-card{
+.regular-card, .admin-card{
     background-color: var(--bg-secondary);
     color: var(--font-primary);
     max-width: 30rem;
@@ -1058,19 +1058,6 @@ input[type=text]:focus,input[type=password]:focus{
     display: grid;
     padding: 1rem;
     margin: 1rem;
-
-    border-radius: 1rem;
-}
-
-.regular-card{
-    background-color: var(--bg-secondary);
-    color: var(--font-primary);
-    max-width: 30rem;
-    height: fit-content;
-    display: grid;
-    padding: 1rem;
-    margin: 1rem;
-
     border-radius: 1rem;
 }
 
@@ -1321,7 +1308,7 @@ input::-webkit-inner-spin-button {
     width: 100%;
     margin-left:50%;
   }
-  .main-tracker .tracker-container .steps{
+.main-tracker .tracker-container .steps{
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -1329,7 +1316,7 @@ input::-webkit-inner-spin-button {
     justify-content: space-between;
     position: relative;
   }
-  .main-tracker .steps .circle {
+.main-tracker .steps .circle {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1344,40 +1331,40 @@ input::-webkit-inner-spin-button {
     transition: all 200ms ease;
     transition-delay: 0s;
   }
-  .main-tracker .steps .circle.active {
+.main-tracker .steps .circle.active {
     transition-delay: 100ms;
     border-color: var(--font-primary);
     color: var(--bg-secondary);
   }
-  .main-tracker .steps .progress-bar {
+.main-tracker .steps .progress-bar {
     position: absolute;
     height: 4px;
     width: 100%;
     background: #313131;
     z-index: -1;
   }
-  .main-tracker .progress-bar .indicator {
+.main-tracker .progress-bar .indicator {
     position: absolute;
     height: 100%;
     width: 0%;
     background: var(--font-primary);
     transition: all 300ms ease;
   }
-  .main-tracker .container .buttons {
+.main-tracker .container .buttons {
     display: flex;
     gap: 20px;
   }
 
   /*  ORDERS PAGE */
 
-  .order-main{
+.order-main{
     margin-top: 3rem;
     margin-left: 18.5rem;
   }
-  .order-header{
+.order-header{
     margin: 3rem;
   }
-  .order-box{
+.order-box{
     border:rgb(54, 54, 54) solid 1px;
     border-radius: 1rem;
     width: 50%;
@@ -1385,25 +1372,25 @@ input::-webkit-inner-spin-button {
 
     margin: 2rem;
   }
-  .order-address, .order-contact-no{
+.order-address, .order-contact-no{
     margin: 1rem;
     margin-bottom: 2rem;
   }
-  .item-table{
+.item-table{
     width: 100%;
     text-align: center;
   }
-  .item-header, .item-data{
+.item-header, .item-data{
     height: 2rem;
   }
-  .order-total{
+.order-total{
     height: 3rem;
     font-weight: bold;
   }
 
   /* PAYMENT OPTIONS & PAYMENT PROMPT PAGE*/
 
-  .payment-main{
+.payment-main{
     margin: 5rem;
     font-size: 1.5rem;
     height: 100vh;
@@ -1412,17 +1399,17 @@ input::-webkit-inner-spin-button {
     align-items: center;
   }
 
-  .payment-instructions{
+.payment-instructions{
     text-align: center;
   }
-  .gcash-payment{
+.gcash-payment{
     margin: 3rem;
     align-content: center;
   }
-  .highlight{
+.highlight{
     font-weight: bold;
   }
-  .next-btn{
+.next-btn{
     width: 20rem;
     height: 5rem;
 
@@ -1436,24 +1423,100 @@ input::-webkit-inner-spin-button {
     background-color: #3596d2;
     transition: 500ms ease;
   }
-  .next-btn:hover{
+.next-btn:hover{
     background-color: #004671;
     transition: 500ms ease;
   }
 
-  .admin-columns {
+.admin-columns {
     display: flex;
   }
   
-  .regular-users-column {
+.regular-users-column {
     flex: 0.2;
     margin-right: 20px; /* Adjust the spacing between columns */
   }
   
-  .admins-column {
+.admins-column {
     flex: 0.2;
   }
   
-  .admin-UM {
+.admin-UM {
     margin-bottom: 20px; /* Adjust the vertical spacing between user cards */
   }
+
+.btn-google {
+    color: var(--bg-primary);
+    background-color: #ccc;
+}
+
+.btn-google:hover{
+    opacity: 100%;
+  transition: 200ms ease;
+}
+
+.btn {
+    border-radius: 0.2rem;
+    text-transform: capitalize;
+    font-size: 15px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+a.create-acc {
+    color: #3596d2;
+  }
+
+a.create-acc:hover {
+    color: blueviolet;
+}
+
+.regular-users-column.show-all,
+.admins-column.show-all {
+    max-height: none;
+  }
+
+.see-more-btn {
+    height: 35px;
+    width: 100px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+  }
+
+.see-more-container {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+.regular-users-column .regular-user:nth-child(n+6),
+              .admins-column .admin:nth-child(n+6) {
+                display: none;
+              }
+.regular-users-column.show-more .regular-user:nth-child(n+6),
+              .admins-column.show-more .admin:nth-child(n+6) {
+                display: block;
+              }
+
+.search-container {
+  margin-bottom: 10px;
+}
+
+#search-input {
+  padding: 10px;
+  border-color: var(--font-primary);
+  margin-left: 1rem;
+  border-radius: 2rem;
+  border: 2px solid var(--font-primary);
+  color:var(--font-primary);
+  background-color: var(--bg-secondary);
+  font-family: 'Montserrat';
+}
