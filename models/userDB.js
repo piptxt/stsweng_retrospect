@@ -6,7 +6,12 @@ const userSchema = new mongoose.Schema({
     email: {type: String, lowercase: true, unique: true},
     password: { type: String, required: true, min: 3 },
     contact_no: {type: String, default: ""},
-    address: {type: String, default: ""}
+    address: {
+        addressline1: {type: String, default: ""},
+        addressline2: {type: String, default: ""},
+        city: {type: String, default: ""},
+        region: {type: String, default: ""},
+    }
 }); 
 
 const users = mongoose.model('users', userSchema);

@@ -5,7 +5,12 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({ 
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users'}, // Connected to a user by reference
     username: {type: String, required: true},
-    address: {type: String, default: ""},
+    address: {
+        addressline1: {type: String, default: ""},
+        addressline2: {type: String, default: ""},
+        city: {type: String, default: ""},
+        region: {type: String, default: ""},
+    },
     contact_no: {type: String, default: ""},
     status: {type: String, required: true, default: "Waiting for Payment Confirmation."}, // EX. Has Not Been Paid, Payment Confirmed, Items Packed, Ready for Shipping 
     items: [{

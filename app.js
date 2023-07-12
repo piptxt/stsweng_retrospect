@@ -1715,12 +1715,7 @@ app.post('/update-profile', async function(req, res){
         user = await UserModel.findOne({email: req.user.email});
     }
 
-    const {user_id, userName, emailAddress, contactNumber, shippingAddress} = req.body;
-
-    console.log(userName);
-    console.log(emailAddress);
-    console.log(contactNumber);
-    console.log(shippingAddress);
+    const {user_id, userName, emailAddress, contactNumber} = req.body;
 
     const takenUsername = await UserModel.findOne({_id: {$nin: user_id}, username: userName});
     // Validation if there is already an existing record with same username that is not the edited user
@@ -1745,8 +1740,7 @@ app.post('/update-profile', async function(req, res){
         $set: {
             username: userName,
             email: emailAddress,
-            contact_no: contactNumber,
-            address: shippingAddress
+            contact_no: contactNumber
         }
     })
     await UserCartModel.updateOne({user_id: user_id}, {
@@ -1764,6 +1758,28 @@ app.post('/update-profile', async function(req, res){
 
     res.redirect('/profile')
 });
+
+// UPDATE ADDRESS
+app.post('/update-address', async function(req, res){
+    let user = null;
+    if(req.session.isAuth){
+        user = await UserModel.findOne({_id: req.session._id});
+    }
+
+    const {addressline1, addressline2, city, region} = req.body;
+
+    const user_address = await UserModel.findOneAndUpdate({_id: user._id}, {
+        $set: {
+            "address.addressline1": addressline1,
+            "address.addressline2": addressline2,
+            "address.city": city,
+            "address.region": region
+        }
+    })
+    console.log(user_address);
+
+    res.redirect('/profile');
+})
 
 app.get('/tracker', async function(req, res){
     let curr_user = null;

@@ -54,9 +54,19 @@
                     <h2>Contact Number</h2>
                     <input type="number" name="contactNumber" value="<%= user.contact_no %>">
                 </div>
+                <input type="submit">
+            </form>
+
+            <form action="/update-address" class="edit-profile"  method="post">
                 <div>
-                    <h2>Shipping Address</h2>
-                    <input type="text" name="shippingAddress" class="edit-profile-address"value="<%= user.address %>">
+                    <h2> Address Line 1 </h2> 
+                    <input type="text" name="addressline1" placeholder="House/Building Number and/or Unit Number" class="edit-profile-address" value="<%= user.address.addressline1 %>">
+                    <h2> Address Line 2 </h2> 
+                    <input type="text" name="addressline2" placeholder="Street and/or Subdivision" class="edit-profile-address" value="<%= user.address.addressline2 %>">
+                    <h2> City </h2> 
+                    <input type="text" name="city" class="edit-profile-address" value="<%= user.address.city %>">
+                    <h2> Region </h2> 
+                    <input type="text" name="region" class="edit-profile-address" value="<%= user.address.region %>">
                 </div>
                 <input type="submit">
             </form>
