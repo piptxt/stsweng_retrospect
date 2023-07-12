@@ -44,3 +44,14 @@
         </div>
     </ul>
 </nav>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+  var path = window.location.pathname;
+  path = path.replace(/\/$/, '');
+
+  $('nav .navbar-item a[href="' + path + '"]').addClass('active');
+  
+});
+</script>

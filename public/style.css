@@ -39,6 +39,19 @@ main{
     position: fixed;
     background-color: var(--bg-secondary);
 }
+
+.navbar-link.active {
+    color: #00a0fdf8;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.navbar-item.active a {
+    color: #00a0fdf8;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .navbar-nav{
     height: 100%;
     list-style: none;
@@ -97,6 +110,7 @@ main{
 .nav-bot{
     margin-bottom: 2rem;
 }
+
 .nav-item{
     margin-left: 2.5rem;
     margin-top: 1rem;
@@ -105,23 +119,25 @@ main{
 #shopping-cart{
     margin-bottom: -1rem;
 }
+
 .navbar-link{
     display: flex;
     align-items: center;
-
     opacity: 70%;
-
     text-decoration: none;
     color: var(--font-primary);
     transition: 200ms ease;
-}.navbar-link > svg{
+}
+.navbar-link > svg{
     margin-right: 1rem;
 }
+
 .navbar-link:hover{
     opacity: 100%;
     transform: scale(1.05);
     transition: 200ms ease;
 }
+
 .nav-user{
     color: #FFFFFF;
     font-size: 1.5rem;
@@ -1448,11 +1464,6 @@ input::-webkit-inner-spin-button {
 .btn-google {
     color: var(--bg-primary);
     background-color: #ccc;
-}
-
-.btn-google:hover{
-    opacity: 100%;
-  transition: 200ms ease;
 }
 
 .btn {
