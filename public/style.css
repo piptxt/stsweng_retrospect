@@ -26,13 +26,9 @@ body::-webkit-scrollbar-thumb{
     border-radius: 0.5rem;
 }
 
-
-
 main{
     margin-left: 15.5rem;
-    /* margin-top: -2rem; */
 }
-
 
 /* Navigation Bar */
 .navbar{
@@ -52,6 +48,12 @@ main{
     text-decoration: underline;
 }
 
+.nav-bot a.active {
+    color: #00a0fdf8;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .navbar-nav{
     height: 100%;
     list-style: none;
@@ -61,11 +63,13 @@ main{
     flex-direction: column;
     justify-content: space-between;
 }
+
 .nav-logo{
     margin: 2rem;
     display: flex;
     align-items: center;
 }
+
 .navbar-icon{
     height: 6rem;
     width: 6rem;
@@ -74,6 +78,7 @@ main{
     margin-left: 4rem;
     margin-bottom: -2rem;
 }
+
 .navbar-title{
     margin-top: 3rem;
     margin-bottom: 3rem;
@@ -83,30 +88,37 @@ main{
     text-decoration: none;
     color: var(--font-primary);
 }
+
 .navbar-title a{
   color: var(--font-primary);
 }
+
 .navbar-title:hover{
     transform: scale(1.05);
     transition: 200ms ease;
 }
+
 .navbar-title a:visited{
     color: var(--font-primary);
 }
+
 .navbar-item{
     margin-left: 2.5rem;
     margin-bottom: 1rem;
     width: auto;
 }
+
 .navbar-item:last-child{
     margin-top: auto;
     margin-bottom: 10rem;
 }
+
 .nav-top{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
+
 .nav-bot{
     margin-bottom: 2rem;
 }
@@ -128,6 +140,7 @@ main{
     color: var(--font-primary);
     transition: 200ms ease;
 }
+
 .navbar-link > svg{
     margin-right: 1rem;
 }
@@ -144,10 +157,12 @@ main{
     margin-left: 2rem;
     margin-bottom: 1  rem;
 }
+
 .nav-user:hover{
     transform: scale(1.05);
     transition: 200ms ease-in-out;
 }
+
 .nav-admin{
     color: #FFFFFF;
     width: fit-content;
@@ -159,6 +174,7 @@ main{
     padding: .5rem 1rem .5rem 1rem;
     border-radius: 2rem;
 }
+
 @media only screen and (max-width: 800px){
     .navbar{
         top: 0;
@@ -171,6 +187,7 @@ main{
         display: none;
     }
 }
+
 a{
     text-decoration: none;
 }
@@ -197,6 +214,7 @@ a{
     align-items: center;
 
 }
+
 .banner-img{
     flex-shrink: 0;
     height: 5rem;
@@ -214,6 +232,7 @@ a{
     display: flex;
     justify-content: center;
 }
+
 .collection{
     width: 60rem;
     padding-left: 1rem;
@@ -224,14 +243,17 @@ a{
     background-color: #000000;
     text-align: center;
 }
+
 .collection-title{
     font-size: 3rem;
     text-align: left;
 }
+
 .collection-img{
     max-width: 100%;
     border-radius: 2px;
 }
+
 /* FOOTER */
 .links{
     margin-top: 5rem;
@@ -241,16 +263,17 @@ a{
     justify-content: center;
     margin-bottom: 0.5rem;
 }
+
 .icon-link:hover{
     transform: scale(1.05);
     transition: 200ms ease;
 }
+
 .icon-link{
     margin: 2rem;
 }
 
 /* Login Page */
-
 .login-main{
   color: var(--font-primary);
   margin-left: 15.5rem;
@@ -269,7 +292,6 @@ a{
   justify-content: center;
   background-color: var(--bg-secondary);
 }
-
 
 .login-outer h1{
   margin:1em;
@@ -355,6 +377,7 @@ input[type=text]:focus,input[type=password]:focus{
 
     z-index: 99 !important; /* makes it go on top of everything  */
 }
+
 .error-msg-btn {
     position: absolute;
     top: 0;
@@ -398,22 +421,27 @@ input[type=text]:focus,input[type=password]:focus{
     width:92.5%;
     margin-top:32px
 }
+
 .signupform-content .form-left img{
     width:100%
 }
+
 .signupform-content .form-left .text-1,.signupform-content .form-left .text-2{
     position:absolute;
     text-align:center;
     width:100%
 }
+
 .signupform-content .form-left .text-1{
     font-size:38px;
     top:1.5%
 }
+
 .signupform-content .form-left .text-2{
     font-size:38px;
     bottom:11%
 }
+
 .signupform-content .form-left .text-2::after{
     position:absolute;
     content:"";
@@ -429,6 +457,7 @@ input[type=text]:focus,input[type=password]:focus{
     -webkit-transform:translateX(-50%);
     opacity:.5
 }
+
 .signupform-content .form-detail{
     padding:73px 80px 41px;
     position:relative;
@@ -440,10 +469,12 @@ input[type=text]:focus,input[type=password]:focus{
     -moz-box-shadow:0 8px 20px 0 rgba(0,0,0,.15);
     -webkit-box-shadow:0 8px 20px 0 rgba(0,0,0,.15)
 }
+
 .signupform-content .form-detail .form-row{
     width:100%;
     position:relative
 }
+
 .signupform-content .form-detail .form-row label{
     color:#666;
     font-weight:600;
@@ -451,6 +482,7 @@ input[type=text]:focus,input[type=password]:focus{
     margin-bottom:3px;
     font-family:open sans,sans-serif
 }
+
 .signupform-content .form-detail .form-row label#valid{
     position:absolute;
     height:14px;
@@ -473,9 +505,11 @@ input[type=text]:focus,input[type=password]:focus{
     font-family:open sans,sans-serif;
     font-weight:700
 }
+
 .signupform-content .form-detail .input-text{
     margin-bottom:28px
 }
+
 .signupform-content .form-detail input{
     width:100%;
     padding:5px 15px 10px;
@@ -501,9 +535,11 @@ input[type=text]:focus,input[type=password]:focus{
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box
 }
+
 .signupform-content .form-detail .form-row input:focus{
     border-bottom:2px solid var(--bg-admin)
 }
+
 .signupform-content .form-detail .register{
     background:var(--bg-secondary);
     border-radius:4px;
@@ -521,26 +557,32 @@ input[type=text]:focus,input[type=password]:focus{
     font-size:15px;
     float:left
 }
+
 .signupform-content .form-detail .register:hover{
     background:var(--bg-primary)
 }
+
 .signupform-content .form-detail .form-row-last{
     margin-top:35px
 }
+
 .signupform-content .form-detail .form-row-last input{
     padding:15px;
 }
+
 .signupform-content .form-detail .form-row-last p{
     font-weight:600;
     font-size:14px;
     color:#666;
     margin-left:200px
 }
+
 .signupform-content .form-detail .form-row-last a{
     font-size:16px;
     color:var(--bg-secondary);
     padding-left:15px
 }
+
 @media screen and (max-width:991px){
     .signupform-content{
         margin:180px 20px;
@@ -562,8 +604,10 @@ input[type=text]:focus,input[type=password]:focus{
         margin-bottom:80px
     }
 }
+
 @media screen and (max-width:767px){
 }
+
 @media screen and (max-width:575px){
     .signupform-content .form-detail{
         padding:30px 20px;
@@ -578,12 +622,12 @@ input[type=text]:focus,input[type=password]:focus{
         margin-bottom:50px
     }
 }
+
 .form-row{
     margin: 1rem;
 }
 
 /* About-Us & Shopping cart CSS*/
-
 .main_AU{
     text-align: center;
 }
@@ -611,7 +655,6 @@ input[type=text]:focus,input[type=password]:focus{
     width: 75%;
 }
 
-
 .checkout-btn{
     font-size: large;
     font-family: 'Montserrat';
@@ -624,18 +667,22 @@ input[type=text]:focus,input[type=password]:focus{
     width: 100%;
     height: 3rem
 }
+
 .checkout-btn:hover{
     transition: 3000 ease;
     background-color: #3596d2;
 }
+
 .SCart{
     margin-left: 8rem;
 }
+
 .main_SCart{
     max-width: 1000px;
     margin: 0 auto;
     box-sizing: border-box;
 }
+
 .main_SCart h1{
     padding: 30px 0;
     text-align: center;
@@ -643,7 +690,6 @@ input[type=text]:focus,input[type=password]:focus{
 
 .project{
     display: flex;
-
 }
 
 .shop{
@@ -684,15 +730,14 @@ input[type=text]:focus,input[type=password]:focus{
 
 .content h4{
     margin-bottom: 50px;
+
 }
 .payment-options{
     text-decoration: none;
     color: #ffffff;
-
     margin-top: 1rem;
     margin-bottom: 1rem;
     text-align: right;
-
     font-size: large;
 }
 
@@ -708,11 +753,13 @@ input[type=text]:focus,input[type=password]:focus{
     border-radius: 10px;
     font-weight: 600;
 }
+
 .btn2{
     border: none;
     background-color: rgba(0,0,0,0);
     color: #FFFFFF;
 }
+
 .btn-area:hover{
     background-color: #ff0000;
 }
@@ -843,7 +890,6 @@ input[type=text]:focus,input[type=password]:focus{
   width: fit-content;
 }
 
-
 /* SHOP CSS HERE*/
 .shop-filter{
     width: fit-content;
@@ -857,6 +903,7 @@ input[type=text]:focus,input[type=password]:focus{
 	padding: 5px 40px;
 	list-style: none;
 }
+
 .shop-filter a{
 	text-decoration:none;
 }
@@ -882,6 +929,7 @@ input[type=text]:focus,input[type=password]:focus{
     flex-direction: row;
     flex-wrap: wrap;
 }
+
 .item-card{
     display: flex;
     flex-direction: row;
@@ -938,6 +986,7 @@ input[type=text]:focus,input[type=password]:focus{
 	opacity: 70%;
 	text-decoration:none;
 }
+
 .buy-btn:hover{
 	opacity: 100%;
 }
@@ -1006,6 +1055,7 @@ input[type=text]:focus,input[type=password]:focus{
     margin-top: 2rem;
     border-top: #555 solid 1px;
 }
+
 .post{
     width: 60rem;
     min-height: 30rem;
@@ -1019,6 +1069,7 @@ input[type=text]:focus,input[type=password]:focus{
 
     border-bottom: #555 solid 1px;
 }
+
 .post-img{
     max-height: 30rem ;
     max-width: 60rem;
@@ -1026,11 +1077,13 @@ input[type=text]:focus,input[type=password]:focus{
 
     border-radius: 0.3rem;
 }
+
 .post-title{
     font-size: 2rem;
     margin-left: 0.5rem;
     margin-bottom: 2rem;
 }
+
 .post-date{
     color: gray;
     font-size: 1rem;
@@ -1045,9 +1098,7 @@ input[type=text]:focus,input[type=password]:focus{
     margin-bottom: 1.5rem;
 }
 
-
 /*Admin Dash*/
-
 .admin-dash{
     padding: 2rem;
 }
@@ -1165,13 +1216,10 @@ input[type=text]:focus,input[type=password]:focus{
     border-radius: 0.5rem;
     position: absolute;
     top: 0;
-
     margin: 1rem;
     padding: 2rem;
     background-color: rgba(0, 120, 0, 0.9);
-
     font-size: 1rem;
-
     z-index: 99 !important; /* makes it go on top of everything  */
 }
 
@@ -1179,22 +1227,24 @@ input[type=text]:focus,input[type=password]:focus{
 .admin-title{
     margin: 3rem;
 }
+
 .admin-form{
     margin: 3rem;
     padding: 1.5rem;
-
     width: 50%;
     height: 50%;
-
     border: #333 solid 1px;
     border-radius: 1rem;
 }
+
 .admin-form-inputs{
     margin: 1rem;
 }
+
 .admin-form-inputs{
     margin: 1rem;
 }
+
 .back-btn{
     margin-left: 3rem;
     width: 5rem;
@@ -1207,12 +1257,15 @@ input[type=text]:focus,input[type=password]:focus{
     border: none;
     border-radius: 0.5rem;
 }
+
 .back-btn:hover{
     background-color: rgb(160, 0, 0);
 }
+
 .CA-err-msg{
     margin-left: 30rem;
 }
+
 .user-type-guide, .item-photo-guide{
     margin-left: 3rem;
     color:#777777;
@@ -1222,6 +1275,7 @@ input[type=text]:focus,input[type=password]:focus{
 .item-photo-name{
     margin-bottom: 1rem;
 }
+
 .delete-btn, .edit-btn{
     margin-left: 1rem;
     border: none;
@@ -1230,18 +1284,20 @@ input[type=text]:focus,input[type=password]:focus{
     color: #FFFFFF;
     height: 2rem;
 }
+
 .delete-btn {
     background-color: rgb(160, 0, 0);
 }
+
 .edit-btn {
     background-color: rgb(44, 44, 44);
 }
+
 .delete-btn:hover{
     background-color: rgb(200, 0, 0);
 }
 
 /*Profile */
-
 .main-profile{
     padding:2rem;
 }
@@ -1253,6 +1309,7 @@ input[type=text]:focus,input[type=password]:focus{
     width: fit-content;
     font-size: 2rem;
 }
+
 .main-profile h1 span{
     font-size: 1.5rem;
 }
@@ -1261,11 +1318,13 @@ input[type=text]:focus,input[type=password]:focus{
     margin-bottom:.75rem;
 
 }
+
 .profile-container{
     border-bottom: var(--bg-secondary) solid 2px;
     width: fit-content;
     margin-bottom: 1rem;
 }
+
 .profile-content{
     margin-bottom: 2rem;
 }
@@ -1281,6 +1340,7 @@ input[type=text]:focus,input[type=password]:focus{
     border-radius: 4px;
     border: none;
 }
+
 .main-profile input[type=button]:hover, input[type=submit]:hover{
     background-color: #e8e8e8;
     transition: 200ms ease;
@@ -1323,7 +1383,8 @@ input::-webkit-inner-spin-button {
     max-width: 400px;
     width: 100%;
     margin-left:50%;
-  }
+}
+
 .main-tracker .tracker-container .steps{
     display: flex;
     flex-direction: row;
@@ -1331,7 +1392,8 @@ input::-webkit-inner-spin-button {
     align-items: center;
     justify-content: space-between;
     position: relative;
-  }
+}
+
 .main-tracker .steps .circle {
     display: flex;
     align-items: center;
@@ -1346,40 +1408,44 @@ input::-webkit-inner-spin-button {
     border: 4px solid #3b3b3b;
     transition: all 200ms ease;
     transition-delay: 0s;
-  }
+}
+
 .main-tracker .steps .circle.active {
     transition-delay: 100ms;
     border-color: var(--font-primary);
     color: var(--bg-secondary);
-  }
+}
+
 .main-tracker .steps .progress-bar {
     position: absolute;
     height: 4px;
     width: 100%;
     background: #313131;
     z-index: -1;
-  }
+}
+
 .main-tracker .progress-bar .indicator {
     position: absolute;
     height: 100%;
     width: 0%;
     background: var(--font-primary);
     transition: all 300ms ease;
-  }
+}
+
 .main-tracker .container .buttons {
     display: flex;
     gap: 20px;
-  }
+}
 
   /*  ORDERS PAGE */
-
 .order-main{
     margin-top: 3rem;
     margin-left: 18.5rem;
-  }
+}
+
 .order-header{
     margin: 3rem;
-  }
+}
 .order-box{
     border:rgb(54, 54, 54) solid 1px;
     border-radius: 1rem;
@@ -1387,25 +1453,28 @@ input::-webkit-inner-spin-button {
     padding: 2rem;
 
     margin: 2rem;
-  }
+}
+
 .order-address, .order-contact-no{
     margin: 1rem;
     margin-bottom: 2rem;
-  }
+}
+
 .item-table{
     width: 100%;
     text-align: center;
-  }
+}
+
 .item-header, .item-data{
     height: 2rem;
-  }
+}
+
 .order-total{
     height: 3rem;
     font-weight: bold;
-  }
+}
 
-  /* PAYMENT OPTIONS & PAYMENT PROMPT PAGE*/
-
+/* PAYMENT OPTIONS & PAYMENT PROMPT PAGE*/
 .payment-main{
     margin: 5rem;
     font-size: 1.5rem;
@@ -1418,13 +1487,16 @@ input::-webkit-inner-spin-button {
 .payment-instructions{
     text-align: center;
   }
+
 .gcash-payment{
     margin: 3rem;
     align-content: center;
-  }
+}
+
 .highlight{
     font-weight: bold;
-  }
+}
+
 .next-btn{
     width: 20rem;
     height: 5rem;
@@ -1438,28 +1510,29 @@ input::-webkit-inner-spin-button {
     color: #FFFFFF;
     background-color: #3596d2;
     transition: 500ms ease;
-  }
+}
+
 .next-btn:hover{
     background-color: #004671;
     transition: 500ms ease;
-  }
+}
 
 .admin-columns {
     display: flex;
-  }
+}
   
 .regular-users-column {
     flex: 0.2;
     margin-right: 20px; /* Adjust the spacing between columns */
-  }
+}
   
 .admins-column {
     flex: 0.2;
-  }
+}
   
 .admin-UM {
     margin-bottom: 20px; /* Adjust the vertical spacing between user cards */
-  }
+}
 
 .btn-google {
     color: var(--bg-primary);
@@ -1499,23 +1572,28 @@ a.create-acc:hover {
     font-weight: bold;
 }
 
+.see-more-btn:hover{
+    color: #4CAF50;
+    background-color: white;  
+}
+
 .hidden {
     display: none;
-  }
+}
 
 .see-more-container {
     text-align: center;
     margin-top: 30px;
-  }
+}
   
 .regular-users-column .regular-user:nth-child(n+6),
               .admins-column .admin:nth-child(n+6) {
                 display: none;
-              }
+}
 .regular-users-column.show-more .regular-user:nth-child(n+6),
               .admins-column.show-more .admin:nth-child(n+6) {
                 display: block;
-              }
+}
 
 .search-container {
   margin-bottom: 10px;
