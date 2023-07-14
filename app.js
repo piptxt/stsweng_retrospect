@@ -649,8 +649,8 @@ app.get('/admin', async function(req, res){
         return res.redirect('back');
     }
 
-    const orders = await OrdersModel.find({status: {$not: {$regex: "Order Received."}}}); // Gets all orders
-    const past_orders = await OrdersModel.find({status: "Order Received."}); // Gets all orders
+    const orders = await OrdersModel.find({status: {$not: {$regex: "Orde    r Received."}}}); // Gets all orders
+    const past_orders = await getPastOrders(); // Gets all past orders
     const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
     const all_items = await ItemsModel.find({}); // Gets all items
 	const all_blogs = await BlogsModel.find({}); // Gets all blogs
@@ -668,6 +668,14 @@ app.get('/admin', async function(req, res){
     });
 
 });
+
+async function getPastOrders(){
+    const past_orders = await OrdersModel.find({status: "Order Received"});
+    return past_orders;
+}
+
+module.exports.getPastOrders = getPastOrders;
+
 
 // UPDATE ORDER STATUS
 app.post('/update-order-status', async function(req, res) {
