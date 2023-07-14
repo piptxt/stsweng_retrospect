@@ -20,7 +20,9 @@ const orderSchema = new mongoose.Schema({
         size: {type: String, required: true},
         quantity: {type: Number, required: true}
     }],
-    total_price: {type: Number, required: true}
+    total_price: {type: Number, required: true},
+    date_ordered: {type: String, required: true, default: new Date().toLocaleDateString()},
+    date_delivered: {type: String, default: ""}
 }); 
 
 const orders = mongoose.model('orders', orderSchema);

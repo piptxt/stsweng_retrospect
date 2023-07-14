@@ -234,10 +234,10 @@
               </div>
             </div>
 
-<h2>Current Orders</h2>
+<a id="current_orders"><h2>Current Orders</h2></a>
 
 <div class="orders-container">
-  <% const orderStatuses = ['Waiting for Payment Confirmation.', 'Payment Successful! Preparing your Order.', 'Out for Delivery.', 'Order Received.']; %>
+  <% const orderStatuses = ['Waiting for Payment Confirmation.', 'Payment Successful! Preparing your Order.', 'Out for Delivery.'   ]; %>
   <% orderStatuses.forEach((status) => { %>
   <div class="order-column">
     <h3><%= status %></h3>
@@ -247,6 +247,7 @@
         <h2><%= order.username %></h2>
         <h4>Order #<%= order._id %></h4>
         <h4>Status: <%= order.status %></h4>
+        <h4>Date Ordered: <%= order.date_ordered %></h4>
         <% 
         let num_items = 0;
         order.items.forEach((item) => {
@@ -275,6 +276,45 @@
   </div>
   <% }) %>
 </div>
+<br><br><br>
+
+<a id="current_orders"><h2>Past Orders</h2></a>
+<div class="orders-container">
+  <div class="order-column">
+    <% past_orders.forEach((order) => { %>
+    <div class="current-orders admin-sec">
+      <div class="admin-card orders-card">
+        <h2><%= order.username %></h2>
+        <h4>Order #<%= order._id %></h4>
+        <h4>Status: <%= order.status %></h4>
+        <h4>Date Ordered: <%= order.date_ordered %></h4>
+        <h4>Date Delivered: <%= order.date_delivered %></h4>
+        <% 
+        let num_items = 0;
+        order.items.forEach((item) => {
+          num_items += item.quantity;
+        });
+        %>
+        <h4>Number of Items: <%= num_items %> </h4>
+
+        <form action="/update-order-status" method="post">
+          <input type="hidden" name="order_id" value="<%= order._id %>">
+          <label for="order_status">Edit Order Status</label><br>
+          <select name="order_status" id="order_status">
+            <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
+            <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
+            <option value="Out for Delivery."> Out for Delivery. </option> 
+            <option value="Order Received."> Order Received. </option> 
+          </select>
+          <button class="order-btns" type="submit"> Update Status </button>
+        </form>
+
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
+
             
         </main>
     </body>

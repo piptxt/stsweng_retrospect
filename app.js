@@ -649,10 +649,13 @@ app.get('/admin', async function(req, res){
         return res.redirect('back');
     }
 
-    const orders = await OrdersModel.find({}); // Gets all orders
+    const orders = await OrdersModel.find({status: {$not: {$regex: "Orde    r Received."}}}); // Gets all orders
+    const past_orders = await getPastOrders(); // Gets all past orders
     const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
     const all_items = await ItemsModel.find({}); // Gets all items
 	const all_blogs = await BlogsModel.find({}); // Gets all blogs
+
+    console.log(past_orders);
     
     return res.render('admin-dash',{
         msg: msg,
@@ -660,57 +663,20 @@ app.get('/admin', async function(req, res){
         all_users: all_users,
         all_items: all_items,
 		all_blogs: all_blogs,
-        orders: orders
+        orders: orders,
+        past_orders: past_orders
     });
 
 });
-// Revert Status
-app.get('/revert-status/:order_id/:status', async function(req, res) {
 
-    const status = req.params.status;
-    const order_id = req.params.order_id;
+async function getPastOrders(){
+    const past_orders = await OrdersModel.find({status: "Order Received"});
+    return past_orders;
+}
 
-    console.log("Order: #" + order_id);
-    console.log("Reverted Status: " + status);
+module.exports.getPastOrders = getPastOrders;
 
-    if(status === "Payment Successful! Preparing your Order.") {
-        await OrdersModel.updateOne({_id: order_id},{
-            $set: {status: "Waiting for Payment Confirmation."}
-        })
-    } else if(status === "Out for Delivery.") {
-        await OrdersModel.updateOne({_id: order_id},{
-            $set: {status: "Payment Successful! Preparing your Order."}
-        })
-    } else if(status === "Order Received.") {
-        await OrdersModel.updateOne({_id: order_id},{
-            $set: {status: "Out for Delivery."}
-        })
-    }
 
-    res.redirect('/admin');
-});
-// Revert Status
-app.get('/advance-status/:order_id/:status', async function(req, res) {
-
-    const status = req.params.status;
-    const order_id = req.params.order_id;
-
-    if(status === "Waiting for Payment Confirmation.") {
-        await OrdersModel.updateOne({_id: order_id},{
-            $set: {status: "Payment Successful! Preparing your Order."}
-        })
-    } else if(status === "Payment Successful! Preparing your Order.") {
-        await OrdersModel.updateOne({_id: order_id},{
-            $set: {status: "Out for Delivery."}
-        })
-    } else if(status === "Out for Delivery.") {
-        await OrdersModel.updateOne({_id: order_id},{
-            $set: {status: "Order Received."}
-        })
-    }
-
-    res.redirect('/admin/:order_id/:status');
-});
 // UPDATE ORDER STATUS
 app.post('/update-order-status', async function(req, res) {
 
@@ -726,12 +692,30 @@ app.post('/update-order-status', async function(req, res) {
 // UPDATE ORDER STATUS HELPER
 async function updateOrderStatus(order_id, order_status){
 
-    // gets the order document from the DB and updates the corresponding order status
-    const updated_status = await OrdersModel.findOneAndUpdate({_id: order_id},{
-        $set: {status: order_status}
-    }, {
-        new: true // Gets the updated document
-    });
+    let updated_status;
+    
+    if(order_status === "Order Received."){
+        // gets the order document from the DB and updates the corresponding order status
+        updated_status = await OrdersModel.findOneAndUpdate({_id: order_id},{
+            $set: {
+                status: order_status,
+                date_delivered: new Date().toLocaleDateString()
+            }
+        }, {
+            new: true // Gets the updated document
+        });
+    } else {
+        updated_status = await OrdersModel.findOneAndUpdate({_id: order_id},{
+            $set: {
+                status: order_status,
+                date_delivered: ""
+            }
+        }, {
+            new: true // Gets the updated document
+        });
+    }
+    
+    
     return updated_status;
 }
 
@@ -1804,12 +1788,13 @@ app.get('/orders', async function(req, res) {
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
-    const user_orders = await OrdersModel.find({user_id: curr_user._id});
-    console.log(user_orders);
+    const orders = await OrdersModel.find({user_id: curr_user._id, status: {$not: {$regex: "Order Received"}}});
+    const past_orders = await OrdersModel.find({user_id: curr_user._id, status: "Order Received."});
 
     res.render('orders', {
         curr_user: curr_user,
-        user_orders: user_orders
+        orders: orders,
+        past_orders: past_orders
     })
 });
 
