@@ -670,7 +670,7 @@ app.get('/admin', async function(req, res){
 });
 
 async function getPastOrders(){
-    const past_orders = await OrdersModel.find({status: "Order Received"});
+    const past_orders = await OrdersModel.find({status: "Order Received."});
     return past_orders;
 }
 
@@ -1791,7 +1791,7 @@ app.get('/orders', async function(req, res) {
     const orders = await OrdersModel.find({user_id: curr_user._id, status: {$not: {$regex: "Order Received"}}});
     const past_orders = await OrdersModel.find({user_id: curr_user._id, status: "Order Received."});
 
-    res.render('orders', {
+    return res.render('orders', {
         curr_user: curr_user,
         orders: orders,
         past_orders: past_orders
@@ -1808,7 +1808,7 @@ app.get('/payment-options', async function(req, res){
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
-    res.render('payment-options', {
+    return res.render('payment-options', {
         curr_user: curr_user,
     })
 });
@@ -1822,9 +1822,81 @@ app.get('/payment-prompt', async function(req, res){
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
-    res.render('payment-prompt', {
+    return res.render('payment-prompt', {
         curr_user: curr_user,
     })
 });
 
+// FILTER PAGE FOR PAST ORDERS
+app.get('/view-past-orders', async function(req, res) {
+    let curr_user = null;
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+
+    const {past_orders, cities} = await viewPastOrders();
+    console.log(past_orders, cities);
+
+    return res.render('past-orders', {
+        curr_user: curr_user,
+        past_orders: past_orders,
+        filter_type: null,
+        cities: cities,
+        count: null
+    });
+});
+async function viewPastOrders(){
+    const past_orders = await OrdersModel.find({status: "Order Received."})
+    let cities = new Set();
+    past_orders.forEach((past_order) => {
+        cities.add(past_order.address.city);
+    })
+
+    return {past_orders, cities};
+}
+module.exports.viewPastOrders = viewPastOrders;
+
+// FILTER BY CITY
+app.post('/filter-location', async function(req, res) {
+    let curr_user = null;
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }  
+    const city = req.body.city;
+
+    
+
+    const {past_orders, cities, count} = await getFilterLocation(city);
+    console.log(past_orders, cities, count);
+
+    return res.render('past-orders', {
+        curr_user: curr_user,
+        past_orders: past_orders,
+        filter_type: city,
+        cities: cities,
+        count: count
+    });
+});
+
+async function getFilterLocation(city){
+    const past_orders = await OrdersModel.find({status: "Order Received.", "address.city": city}).sort({date: 1});
+    const all_orders = await OrdersModel.find().sort({date: 1});
+    let cities = new Set();
+    let count =  await OrdersModel.count({status: "Order Received.", "address.city": city})
+
+    all_orders.forEach((order) => {
+        cities.add(order.address.city);
+    }) 
+
+    return {past_orders, cities, count};
+}
+module.exports.getFilterLocation = getFilterLocation
+
+// EXPORTING THE WHOLE FILE 
 module.exports.app = app;

@@ -116,8 +116,8 @@ main{
     transition: 200ms ease;
 }.navbar-link > svg{
     margin-right: 1rem;
-}
-.navbar-link:hover{
+} 
+.navbar-link:hover{ 
     opacity: 100%;
     transform: scale(1.05);
     transition: 200ms ease;
