@@ -22,8 +22,12 @@
     <main class="order-main">
         <!-- PAST ORDERS -->
         <h1 class="order-header"> Past Orders </h1> 
+
+        <% if(filter_type) {%>
         <h2> Filtered By: <%= filter_type %> </h2>
-        
+        <% } else {%>
+        <h2> Filter </h2>
+        <% } %>
         <% if(count) {%>
         <h2> Count: <%= count %> </h2>
         <% } %>
@@ -36,6 +40,7 @@
             </select>
             <button type="submit"> Go </button>
         </form>
+        <a href="/view-past-orders"><button> Reset </button></a>
 
 
         <% past_orders.forEach((order) => {%>

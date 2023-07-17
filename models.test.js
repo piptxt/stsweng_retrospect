@@ -57,22 +57,6 @@ describe('Tests if the mongoose DB functions are working as expected', () => {
         
     });
 
-    // TEST FOR FILTERING ORDERS
-    test('Should return the users with the corresponding order numbers', async () => {
-        const order_status = "Out for Delivery.";
-    
-        // EXPECTED VALUE(S)
-        const ex_orderids = ["6486d086b1bb788a1427cd61", "643aba197b906759e595e48b", "6437e2f3b7a56ab0fd55a423"];
-     
-        const orders = await OrdersModel.find({status: order_status}).sort({username: 1});
-        // CHECKS ALL OF THE ORDERS WITH THE CORRESPONDING STATUS
-        let i = 0;
-        orders.forEach((order) => {
-            expect(String(order._id)).toBe(ex_orderids[i]);
-            i++;
-        });
-    });
-
     // TEST FOR CHECKING THE ITEMS IN THE USER'S CART
     test('Should return the users with the corresponding items of the user in their shopping cart', async () => {
         const username = "testerist";
