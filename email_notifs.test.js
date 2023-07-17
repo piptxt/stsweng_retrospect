@@ -1,5 +1,5 @@
 const sendEmail = require("./utils/sendEmail");
-const UserModel = require('./models/userDB');
+// const UserModel = require('./models/userDB');
 const OrdersModel = require('./models/ordersDB');
 
 const expected_message = {
@@ -29,14 +29,23 @@ const expected_message = {
   };
 
 test('Returns the correct recipient, email subject, and message for email to be sent', async () => {
-    const order_id = '64b4dc2d06efd9837c642b6b'
+    const order_id = '64b50b190e69a5cb1daef225'
     const order_status = 'Payment Successful! Preparing your Order.'
+    const user_email = 'priscilla_licup@dlsu.edu.ph'
 
-    const order = await OrdersModel.findOne({_id: order_id});
-    const user = await UserModel.findOne({_id: order.user_id});
-    const user_email = user.email;
+    const newOrder = await OrdersModel({
+        user_id: '64b50b190e69a5cb1daef225',
+        username: 'priscilla',
+        address: 'Metro Manila',
+        contact_no: '639171234567',
+        total_price: 100
+    });
 
-    const final_message = await sendEmail(user_email, order_status, order);
+    // const order = await OrdersModel.findOne({_id: order_id});
+    // const user = await UserModel.findOne({_id: order.user_id});
+    // const user_email = user.email;
+
+    const final_message = await sendEmail(user_email, order_status, newOrder);
 
     expect(final_message[0]).toBe(expected_message[0]);
     expect(final_message[1]).toBe(expected_message[1]);
