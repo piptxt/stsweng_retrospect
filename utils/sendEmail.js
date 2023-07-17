@@ -108,6 +108,7 @@ function status_message(to, order_status, order) {
 }
 
 const sendEmail = async (to, order_status, order) => {
+  var message;
   try {
     //create transporter
     const transporter = nodemailer.createTransport({
@@ -120,7 +121,7 @@ const sendEmail = async (to, order_status, order) => {
       },
     });
     //message obj
-    const message = status_message(to, order_status, order);
+    message = status_message(to, order_status, order);
     //send the email
     const info = await transporter.sendMail(message);
     console.log("Message sent", info.messageId);
@@ -130,6 +131,7 @@ const sendEmail = async (to, order_status, order) => {
     // how to popup alert NOT SENT
     throw new Error("Email could not be sent");
   }
+  return message; 
 };
 
 // TO DO: 

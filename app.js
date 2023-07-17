@@ -495,7 +495,8 @@ app.post('/checkout', async function(req, res) {
         const user_email = user.email;
 
         console.log(user_email, newOrder.status, newOrder);
-        await sendEmail(user_email, newOrder.status, newOrder);
+        const final_message = await sendEmail(user_email, newOrder.status, newOrder);
+        console.log(final_message);
         
       } catch (error) {
         console.error(error);
@@ -744,7 +745,9 @@ app.post('/update-order-status', async function(req, res) {
         const user_email = user.email;
 
         console.log(user_email, order_status, order);
-        await sendEmail(user_email, order_status, order);
+        const final_message = await sendEmail(user_email, order_status, order);
+
+        console.log(final_message);
         
       } catch (error) {
         console.error(error);
