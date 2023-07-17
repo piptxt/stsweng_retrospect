@@ -1,12 +1,8 @@
 <!-- NAVBAR -->
 <nav class="navbar">
-    
-    
-    <ul class="navbar-nav">
-        
+    <ul class="navbar-nav">    
         <div class="nav-top">
             <div class="nav-admin"> Administrator</div>
-
             <div class="navbar-logo">
                 <div class="navbar-title">Retrospect</div>
             </div>
@@ -44,3 +40,17 @@
         </div>
     </ul>
 </nav>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+      var path = window.location.pathname;
+      path = path.replace(/\/$/, '');
+    
+      $('nav .navbar-item a[href="' + path + '"]').addClass('active');
+    
+      if ($('.nav-bot a[href="' + path + '"]').length) {
+        $('.nav-bot a[href="' + path + '"]').addClass('active');
+      }
+    });
+</script>

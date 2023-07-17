@@ -153,105 +153,125 @@
             </div>
 			
 			
-
-          <h2>Admin User Management</h2>
-            <div class = "container">     
-                  <input type="text" id="search-input" placeholder="Search User" />
-                    <button id="search-button" onclick="searchUsers()">Search</i></button>              
+            <h2>Admin User Management</h2>
+            <div class="search-container">
+              <input type="text" id="search-input" placeholder="Search User" oninput="searchUsers()" />
+              <!-- <button id="search-button">Search</button> -->
             </div>
-              <div class="admin-columns">
-                <div class="regular-users-column">
-                  <% all_users.forEach((user) => { %>
-                  <% if(user.user_type == 0) { %>
+            
+            <div class="admin-columns">
+              <div class="regular-users-column">
+                <% let regularUsers = all_users.filter(user => user.user_type === 0); %>
+                <% for (let i = 0; i < regularUsers.length; i++) { %>
                   <div class="admin-UM admin-sec regular-user">
                     <div class="regular-card">
-                      <h2><%= user.username %></h2>
+                      <h2><%= regularUsers[i].username %></h2>
                       <% let user_type = "Regular User"; %>
-                      <h3>User Type: <%= user_type %></h3>
+                      <h4>User Type: <%= user_type %></h3>
                       <form action="/edit-user" method="post">
-                        <input type="hidden" name="user_id" value="<%= user._id %>">
+                        <input type="hidden" name="user_id" value="<%= regularUsers[i]._id %>">
                         <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
                       </form>
-                      <a href="/delete-user/<%= user._id %>">
+                      <a href="/delete-user/<%= regularUsers[i]._id %>">
                         <button class="user-btns" type="button" name="delete-user">Delete User</button>
                       </a>
                     </div>
                   </div>
-                  <% } %>
-                  <% }) %>
-                </div>
-              
-                <div class="admins-column">
-                  <% all_users.forEach((user) => { %>
-                  <% if(user.user_type == 1) { %>
+                <% } %>
+              </div>
+            
+              <div class="admins-column">
+                <% let adminUsers = all_users.filter(user => user.user_type === 1); %>
+                <% for (let i = 0; i < adminUsers.length; i++) { %>
                   <div class="admin-UM admin-sec admin">
                     <div class="admin-card2">
-                      <h2><%= user.username %></h2>
+                      <h2><%= adminUsers[i].username %></h2>
                       <% let user_type = "Admin"; %>
                       <h3>User Type: <%= user_type %></h3>
                       <form action="/edit-user" method="post">
-                        <input type="hidden" name="user_id" value="<%= user._id %>">
+                        <input type="hidden" name="user_id" value="<%= adminUsers[i]._id %>">
                         <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
                       </form>
-                      <a href="/delete-user/<%= user._id %>">
+                      <a href="/delete-user/<%= adminUsers[i]._id %>">
                         <button class="user-btns" type="button" name="delete-user">Delete User</button>
                       </a>
                     </div>
-                  </div>  
-                  <% } %>
-                  <% }) %>
-                </div>
+                  </div>
+                <% } %>
               </div>
 
-              <script>
-                function searchUsers() {
-                  var searchInput = document.getElementById("search-input").value.toLowerCase();
-                  var regularUsers = document.getElementsByClassName("regular-user");
-                  var admins = document.getElementsByClassName("admin");
-              
-                  Array.from(regularUsers).forEach(function(user) {
-                    var username = user.querySelector("h2").textContent.toLowerCase();
-                    if (username.includes(searchInput)) {
-                      user.style.display = "block";
-                    } else {
-                      user.style.display = "none";
-                    }
-                  });
-              
-                  Array.from(admins).forEach(function(user) {
-                    var username = user.querySelector("h2").textContent.toLowerCase();
-                    if (username.includes(searchInput)) {
-                      user.style.display = "block";
-                    } else {
-                      user.style.display = "none";
-                    }
-                  });
-                }
-              </script>
+              <div class="see-more-container">
+                <button class="see-more-btn" onclick="toggleUsers()">See More</button>
+              </div>
+            </div>
+            
+            <script>
+              document.getElementById("search-input").addEventListener("input", searchUsers);
 
+              function searchUsers() {
+                var searchInput = document.getElementById("search-input").value.toLowerCase();
+                var regularUsers = document.querySelectorAll('.regular-users-column .regular-user');
+                var admins = document.querySelectorAll('.admins-column .admin');
+
+                Array.from(regularUsers).forEach(function(user) {
+                  var username = user.querySelector("h2").textContent.toLowerCase();
+                  if (username.includes(searchInput)) {
+                    user.style.display = "block";
+                  } else {
+                    user.style.display = "none";
+                  }
+                });
+
+                Array.from(admins).forEach(function(user) {
+                  var username = user.querySelector("h2").textContent.toLowerCase();
+                  if (username.includes(searchInput)) {
+                    user.style.display = "block";
+                  } else {
+                    user.style.display = "none";
+                  }
+                });
+              }
+            
+              function toggleUsers() {
+                const regularUsersColumn = document.querySelector('.regular-users-column');
+                const adminsColumn = document.querySelector('.admins-column');
+                const seeMoreBtn = document.querySelector('.see-more-btn');
+
+                if (regularUsersColumn.classList.contains('show-more')) {
+                  regularUsersColumn.classList.remove('show-more');
+                  adminsColumn.classList.remove('show-more');
+                  seeMoreBtn.textContent = 'See More';
+                } else {
+                  regularUsersColumn.classList.add('show-more');
+                  adminsColumn.classList.add('show-more');
+                  seeMoreBtn.textContent = 'See Less';
+                }
+              }
+            </script>
+            
             <div class="item-edit-modal" id="admin-edit-modal">
               <div class="item-edit-modal-content">
                 <form class=admin-add-form action="add-admin" method="POST">
-                  <label for="admin-name"> Username Name<label><br>
+                  <label for="admin-name">Username Name</label><br>
                   <input type="text" name="admin-name" value=""><br>
-                  <label for="admin-pass"> Admin Password<label><br>
+                  <label for="admin-pass">Admin Password</label><br>
                   <input type="text" name="admin-password" value=""><br>
                   <input type="submit" name="admin-add" value="Create Admin User">
                   <button type="button" class="close" onclick="">Close</button>
                 </form>
               </div>
             </div>
-
+            
             <div class="admin-card additem">
-              <a href="/create-admin"><input class="additem-btns" type="button" name="inv-edit" value="Create Admin" ></input></a> <!--id="myBtn-modal-add-user"-->
+              <a href="/create-admin"><input class="additem-btns" type="button" name="inv-edit" value="Create Admin"></a>
             </div>
-
+            
             <div class="item-edit-modal" id="admin-add-modal">
               <div class="item-edit-modal-content">
                 <form class=admin-add-form action="add-admin" method="POST">
-                  <label for="admin-name"> Username Name<label><br>
+                  <label for="admin-name">Username Name</label><br>
                   <input type="text" name="admin-name" value=""><br>
-                  <label for="admin-pass"> Admin Password<label><br>
+                  <label for="admin-pass">Admin Password</label><br>
                   <input type="text" name="admin-password" value=""><br>
                   <input type="submit" name="admin-add" value="Create Admin User">
                   <button type="button" class="close" onclick="">Close</button>
