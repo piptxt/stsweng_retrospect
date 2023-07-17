@@ -2,7 +2,7 @@ const {getFilterLocation} = require('./app');
 
 describe('Should test the filter locations function of the app', () => {
     test('Should return the corresponding orders with the given city location', async () => {
-        const city = 'Mandaluyong';
+        const city = 'Pasig';
 
         const {past_orders, cities, count} = await getFilterLocation(city);
 

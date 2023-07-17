@@ -5,7 +5,7 @@ const OrdersModel = require('./models/ordersDB');
 // TEST FOR ALL ORDER STATUS
 describe('Should update the status of the corresponding order', () => {
     test('updated order status input is equal to the order status in the DB', async () => {
-        const orig_order = await OrdersModel.findOne({_id: '64b4268e8eb8ee75b44d8729'})
+        const orig_order = await OrdersModel.findOne({_id: '64b506ca2a0d9298a1854a61'})
 
         const orig_status = orig_order.status;
         const order_id = orig_order._id;
