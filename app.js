@@ -1780,8 +1780,11 @@ app.post('/update-address', async function(req, res){
     let user = null;
 
     if(req.session.isAuth){
-        user = await UserModel.findOne({user: req.session.username});
+        user = await UserModel.findOne({user: req.session._id});
     } 
+    if(req.user){
+        user = await UserModel.findOne({email: req.user.email});
+    }
 
     const {addressline1, addressline2, city, region} = req.body;
 
@@ -1792,7 +1795,7 @@ app.post('/update-address', async function(req, res){
             "address.city": city,
             "address.region": region
         }
-    });
+    }); 
     console.log(user_address);
 
     return res.redirect('/profile');
