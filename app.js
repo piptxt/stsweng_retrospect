@@ -1902,8 +1902,6 @@ app.post('/filter-location', async function(req, res) {
     }  
     const city = req.body.city;
 
-    
-
     const {past_orders, cities, count} = await getFilterLocation(city);
     console.log(past_orders, cities, count);
 
@@ -1918,7 +1916,7 @@ app.post('/filter-location', async function(req, res) {
 
 async function getFilterLocation(city){
     const past_orders = await OrdersModel.find({status: "Order Received.", "address.city": city}).sort({date: 1});
-    const all_orders = await OrdersModel.find().sort({date: 1});
+    const all_orders = await OrdersModel.find({status: "Order Received."}).sort({date: 1});
     let cities = new Set();
     let count =  await OrdersModel.count({status: "Order Received.", "address.city": city})
 
