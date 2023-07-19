@@ -1785,7 +1785,7 @@ app.post('/update-address', async function(req, res){
 
     const {addressline1, addressline2, city, region} = req.body;
 
-    const user_address = await UserModel.findOneAndUpdate({_id: user.username}, {
+    const user_address = await UserModel.findOneAndUpdate({_id: user._id}, {
         $set: {
             "address.addressline1": addressline1,
             "address.addressline2": addressline2,
