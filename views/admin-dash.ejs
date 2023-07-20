@@ -61,6 +61,12 @@
 
             <h2>Inventory Management</h2>
 
+            <a href="/create-item">
+              <div class="additem-container">
+                <input class="additem-btns" type="button" name="inv-edit" value="+ ADD ITEM"></input>
+              </div>
+            </a>
+
             <!-- INVENTORY TRACKING --> 
             <div class="inventory-tracking admin-sec">
 
@@ -103,10 +109,6 @@
                 </div>
               </div>
 
-              <div class="admin-card additem">
-                  <a href="/create-item"><input class="additem-btns" type="button" name="inv-edit" value="+ ADD ITEM"></input></a>
-              </div>
-
                 <div class="item-edit-modal" id="item-add-modal">
                   <div class="item-edit-modal-content">
                     <form class=item-edit-form action="add-item" method="POST">
@@ -127,9 +129,14 @@
 			
 			<h2>Blog Management</h2>
 
+      <a href="/create-blog">
+        <div class="additem-container">
+          <input class="additem-btns" type="button" name="inv-edit" value="+ ADD BLOG"></input>
+        </div>
+      </a>
+
             <!-- BLOG TRACKING --> 
             <div class="inventory-tracking admin-sec">
-
               <% all_blogs.forEach((blog) => {%>
               <div class="admin-card">
                   <h2> <%= blog.blog_name %></h2>
@@ -146,19 +153,22 @@
                   <a href="/delete-blog/<%=blog._id%>"><input class="blog-btns" type="button" name="inv-del" value="Delete Blog"></input></a>
               </div>
               <% }); %>
-
-              <div class="admin-card additem">
-                  <a href="/create-blog"><input class="additem-btns" type="button" name="inv-edit" value="+ ADD BLOG"></input></a>
-              </div>
             </div>
 			
-			
-            <h2>Admin User Management</h2>
+          <h2>Admin User Management</h2>
+
             <div class="search-container">
               <input type="text" id="search-input" placeholder="Search User" oninput="searchUsers()" />
-              <!-- <button id="search-button">Search</button> -->
-            </div>
+            </div>    
             
+            <div class="admin-container">
+              <a href="/create-admin">
+                <div class="additem-container">
+                  <input class="additem-btns2" type="button" name="inv-edit" value="Create Admin"></input>
+                </div>
+              </a>
+            </div>
+
             <div class="admin-columns">
               <div class="regular-users-column">
                 <% let regularUsers = all_users.filter(user => user.user_type === 0); %>
@@ -203,6 +213,7 @@
               <div class="see-more-container">
                 <button class="see-more-btn" onclick="toggleUsers()">See More</button>
               </div>
+              
             </div>
             
             <script>
@@ -260,11 +271,7 @@
                   <button type="button" class="close" onclick="">Close</button>
                 </form>
               </div>
-            </div>
-            
-            <div class="admin-card additem">
-              <a href="/create-admin"><input class="additem-btns" type="button" name="inv-edit" value="Create Admin"></a>
-            </div>
+            </div>           
             
             <div class="item-edit-modal" id="admin-add-modal">
               <div class="item-edit-modal-content">
@@ -326,7 +333,9 @@
 <a id="current_orders"><h2>Past Orders</h2></a>
 
 <a href="/view-past-orders">
-  <button> View All Past Orders </button>
+  <div class="view-orders-container">
+    <button class="view-orders-btn"> View All Past Orders </button>
+  </div>
 </a>
 
 <div class="orders-container">

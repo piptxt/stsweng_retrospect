@@ -173,6 +173,7 @@ main{
     margin-bottom: 0;
     padding: .5rem 1rem .5rem 1rem;
     border-radius: 2rem;
+    border: 2px solid var(--font-primary);
 }
 
 @media only screen and (max-width: 800px){
@@ -1117,10 +1118,10 @@ input[type=text]:focus,input[type=password]:focus{
     flex-wrap:wrap;
 }
 
-.regular-card, .admin-card{
+.admin-card, .regular-card, .admin-card2{
     background-color: var(--bg-secondary);
     color: var(--font-primary);
-    max-width: 30rem;
+    width: fit-content;
     height: fit-content;
     display: grid;
     padding: 1rem;
@@ -1128,17 +1129,17 @@ input[type=text]:focus,input[type=password]:focus{
     border-radius: 1rem;
 }
 
-.admin-card2{
-    background-color: var(--bg-secondary);
-    color: var(--bg-admin);
-    max-width: 30rem;
-    height: fit-content;
-    display: grid;
-    padding: 1rem;
-    margin: 1rem;
+.regular-card, .admin-card2{
     font-family: 'Montserrat';
     font-weight: bold;
-    border-radius: 1rem; 
+}
+
+.regular-card{
+    color: var(--font-primary);
+}
+
+.admin-card2{
+    color: var(--bg-admin);
 }
 
 .inv-item-card{
@@ -1206,10 +1207,15 @@ input[type=text]:focus,input[type=password]:focus{
     margin-top: 1rem;
 }
 
+
 .additem-btns{
-    width: 100%;
+    width: fit-content;
     font-family: 'Montserrat';
     font-weight: bold;
+    text-align: center;
+    color:  var(--font-primary);
+    background-color: var(--bg-admin);
+    border: 2px solid var(--font-primary);
 }
 
 .success-msg{
@@ -1517,6 +1523,35 @@ input::-webkit-inner-spin-button {
     transition: 500ms ease;
 }
 
+.hidden {
+    display: none;
+}
+
+.regular-users-column .regular-user:nth-child(n+6),
+              .admins-column .admin:nth-child(n+6) {
+                display: none;
+}
+.regular-users-column.show-more .regular-user:nth-child(n+6),
+              .admins-column.show-more .admin:nth-child(n+6) {
+                display: block;
+}
+
+.search-container {
+    margin-bottom: 10px;
+}
+
+#search-input {
+    width: 250px;
+    padding: 10px;
+    border-color: var(--font-primary);
+    margin-left: 1rem;
+    border-radius: 2rem;
+    border: 2px solid var(--font-primary);
+    color:var(--font-primary);
+    background-color: var(--bg-secondary);
+    font-family: 'Montserrat';
+}
+
 .admin-columns {
     display: flex;
 }
@@ -1537,7 +1572,13 @@ input::-webkit-inner-spin-button {
 .btn-google {
     color: var(--bg-primary);
     background-color: #ccc;
+    vertical-align: middle;
+    margin-top: 10px;
 }
+
+.button-image {
+    vertical-align: middle;
+  }
 
 .btn {
     border-radius: 0.2rem;
@@ -1560,52 +1601,58 @@ a.create-acc:hover {
     max-height: none;
   }
 
-.see-more-btn {
-    height: 35px;
-    width: 100px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
+.admin-container{
+    max-width: max-content;
+}
+
+.additem-btns2{
     border: none;
+    margin-top: 30px;
+}
+
+.additem-btns2:hover{
+    color: var(--font-primary);
+    background-color: var(--bg-primary);
+    border: 2px solid var(--font-primary);
+}
+
+.see-more-btn,.view-orders-btn, .additem-btns, .additem-btns2{
+    height: 35px;
+    width: fit-content;
     border-radius: 2rem;
     cursor: pointer;
     font-weight: bold;
-}
-
-.see-more-btn:hover{
-    color: #4CAF50;
-    background-color: white;  
-}
-
-.hidden {
-    display: none;
+    padding: 0px 20px;
 }
 
 .see-more-container {
     text-align: center;
     margin-top: 30px;
 }
-  
-.regular-users-column .regular-user:nth-child(n+6),
-              .admins-column .admin:nth-child(n+6) {
-                display: none;
-}
-.regular-users-column.show-more .regular-user:nth-child(n+6),
-              .admins-column.show-more .admin:nth-child(n+6) {
-                display: block;
+
+.see-more-btn {
+    background-color: var(--bg-admin);
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);
 }
 
-.search-container {
-  margin-bottom: 10px;
+.see-more-btn:hover, .additem-btns:hover{
+    color: var(--bg-admin);
+    background-color: var(--font-primary);  
 }
 
-#search-input {
-  padding: 10px;
-  border-color: var(--font-primary);
-  margin-left: 1rem;
-  border-radius: 2rem;
-  border: 2px solid var(--font-primary);
-  color:var(--font-primary);
-  background-color: var(--bg-secondary);
-  font-family: 'Montserrat';
+.view-orders-container, .additem-container{
+   margin: auto;
+   margin-left: 20px;
+}
+
+.view-orders-btn{
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);
+}
+
+.view-orders-btn:hover{
+    color: var(--bg-primary);
+    background-color: var(--font-primary);
 }
