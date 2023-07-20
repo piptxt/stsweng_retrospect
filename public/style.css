@@ -351,7 +351,7 @@ input[type=text]:focus,input[type=password]:focus{
   font-family: 'Montserrat';
   color: var(--font-primary);
   opacity: 80%;
-  background-color: var(--bg-primary);
+  background-color: #6b6b6b;
   border-radius: 4px;
 }
 
