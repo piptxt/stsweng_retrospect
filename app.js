@@ -224,6 +224,23 @@ app.get('/about-us', async function(req, res){
     });
 });
 
+// FAQs
+app.get('/faqs', async function(req, res){
+    let curr_user = null;
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+
+    res.render('faqs',{
+        curr_user: curr_user
+    });
+});
+
 // SHOP
 app.get('/shop', async function(req, res){
     let curr_user = null;

@@ -344,22 +344,62 @@ input[type=text]:focus,input[type=password]:focus{
 }
 
 .login-form input[type=submit]{
-  width:100%;
+  width:95%;
   padding: 1em;
   font-size: 16px;
   margin-top: 1em;
   font-family: 'Montserrat';
-  color: var(--bg-secondary);
-  background-color: var(--font-primary);
-  opacity: 70%;
+  color: var(--font-primary);
+  opacity: 80%;
+  background-color: var(--bg-primary);
   border-radius: 4px;
-  border: none;
 }
 
-.login-form input[type=submit]:hover{
-  opacity: 100%;
+.login-form input[type=submit]:hover, .btn-google:hover{
   transition: 200ms ease;
+  opacity: 100%;
 }
+
+.btn-google:hover{
+    background-color: var(--font-primary);
+    color: #3596d2;
+}
+
+.google-btn {
+    width: 184px;
+    height: 42px;
+    background-color: #3596d2;
+    border-radius: 2px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    .google-icon-wrapper {
+      position: absolute;
+      margin-top: 1px;
+      margin-left: 1px;
+      width: 40px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: var(--font-primary);
+    }
+    .google-icon {
+      position: absolute;
+      margin-top: 11px;
+      margin-left: 11px;
+      width: 18px;
+      height: 18px;
+    }
+    .btn-text {
+      float: right;
+      margin: 11px 11px 0 0;
+      color: var(--font-primary);
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      font-family: "Roboto";
+    }
+    &:hover {
+      box-shadow: 0 0 6px #3596d2;
+    }
+ 
+  }
 
 .error-msg{
     width: 40rem;
@@ -1196,7 +1236,7 @@ input[type=text]:focus,input[type=password]:focus{
   }
 
 .order-column h3{
-    text-align: center;
+    text-align: left;
     font-size: 7;
 }
 
@@ -1570,10 +1610,12 @@ input::-webkit-inner-spin-button {
 }
 
 .btn-google {
-    color: var(--bg-primary);
-    background-color: #ccc;
+    color: var(--font-primary);
+    background-color: #3596d2;
     vertical-align: middle;
     margin-top: 10px;
+    font-size: 16px;
+    opacity: 80%;
 }
 
 .button-image {
@@ -1588,12 +1630,17 @@ input::-webkit-inner-spin-button {
     cursor: pointer;
 }
 
+.reg-acc{
+    padding-top: 15px;
+}
+
 a.create-acc {
-    color: #3596d2;
+    color: #0022e2;
   }
 
 a.create-acc:hover {
     color: blueviolet;
+    text-decoration: underline;
 }
 
 .regular-users-column.show-all,
@@ -1655,4 +1702,72 @@ a.create-acc:hover {
 .view-orders-btn:hover{
     color: var(--bg-primary);
     background-color: var(--font-primary);
+}
+
+.faqs-main{
+    padding: 0;
+    margin: auto;
+    box-sizing: border-box;
+    max-width: 75%;
+    font-size: 18px;
+}
+
+.faqs-main h1, p{
+    margin: 2rem;
+    padding: 2rem;
+    width: fit-content;
+}
+
+.faqs-main h1{
+    letter-spacing: 2px;
+    border-bottom: var(--font-primary) solid 1px;
+}
+
+.question{
+    width: 100%;
+    padding: 2rem 2.5rem;
+    border: none;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+    outline: none;
+    transition: 0.4s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.question i {
+    font-size: 1.3rem;
+}
+
+.question:hover{
+    text-decoration: underline;
+}
+
+.answer{
+    background-color: var(--bg-primary);
+    display: none;
+    overflow: hidden;
+    padding: 0 2rem 2.5rem 2rem;
+}
+
+.answer p{
+    color: var(--font-primary);
+    line-height: 1.3;
+}
+
+.bullet-list {
+    list-style-type: disc;
+    text-align: left;
+    line-height: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 2px solid var(--font-primary);
+  }
+
+.faq-questions.active{
+    border: none;
 }
