@@ -254,11 +254,18 @@ app.get('/shop', async function(req, res){
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
-    const items = await ItemsModel.find({});
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
 
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
     res.render('shop',{
         curr_user: curr_user,
-        items: items
+        items: items, 
+        product_filter: product_filter
     });
 });
 
@@ -682,10 +689,10 @@ app.get('/admin', async function(req, res){
         return res.redirect('back');
     }
 
-    const orders = await OrdersModel.find({status: {$not: {$regex: "Orde    r Received."}}}); // Gets all orders
+    const orders = await OrdersModel.find({status: {$not: {$regex: "Order Received."}}}); // Gets all orders
     const past_orders = await getPastOrders(); // Gets all past orders
-    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
-    const all_items = await ItemsModel.find({}); // Gets all items
+    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}).collation({locale:'en',strength: 2}).sort({username:1});// Gets all lower or equal users except current user
+    const all_items = await ItemsModel.find({}).sort({collection_type: 1}); // Gets all items
 	const all_blogs = await BlogsModel.find({}); // Gets all blogs
 
     console.log(past_orders);
@@ -1156,7 +1163,7 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
         return res.redirect('back');
     }
 
-    const {collection, item_name, description, price} = req.body;
+    const {collection, item_name, product_type, description, price} = req.body;
     const item_photo = req.file.filename;
 
     const takenItemName = await ItemsModel.findOne({item_name: item_name});
@@ -1170,13 +1177,13 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
     const newItem = await ItemsModel({
         collection_type: collection,
         item_name: item_name,
+        product_type: String(product_type).toLowerCase(), 
         description: description,
         price: price,
         item_photo: item_photo
     }); 
     await newItem.save();
 
-    console.log(collection + " " + item_name + " "  + description + " "  + price + " " + item_photo);
     return res.redirect('/admin');
 });
 
@@ -1247,7 +1254,7 @@ app.post('/update-item-details', async function(req, res) {
         return res.redirect('back');
     }
 
-    const {item_id, collection, item_name, description, price} = req.body;
+    const {item_id, collection, item_name, product_type, description, price} = req.body;
 
     const edit_item = await ItemsModel.findOne({_id: item_id});
 
@@ -1263,6 +1270,7 @@ app.post('/update-item-details', async function(req, res) {
     await ItemsModel.updateOne({_id: item_id},{
         collection_type: collection,
         item_name: item_name,
+        product_type: String(product_type).toLowerCase(),
         description: description,
         price: price
     })
@@ -1951,3 +1959,72 @@ module.exports.getFilterLocation = getFilterLocation
 
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;
+
+
+// FILTER PRODUCTS
+app.post('/filter-product', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const filter = req.body.filter;
+
+    let filtered_items;
+    if(filter === "ALL"){
+        filtered_items = await ItemsModel.find({}).sort({collection_type: 1});
+    } else {
+        filtered_items = await ItemsModel.find({product_type: String(filter).toLowerCase()}).sort({collection_type: 1});
+    }
+        
+
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
+
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+
+// FILTER PRODUCTS
+app.post('/search-products', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const search = req.body.product
+
+    const filtered_items = await ItemsModel.find({item_name: { $regex : search, $options:'i'}}).sort({collection_type: 1});
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+
+    let product_filter = new Set();
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+

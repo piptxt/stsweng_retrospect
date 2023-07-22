@@ -121,7 +121,7 @@ main{
 }
 
 .nav-bot{
-    margin-bottom: 2rem;
+    margin-top: -100%;
 }
 
 .nav-item{
@@ -896,7 +896,6 @@ input[type=text]:focus,input[type=password]:focus{
 .shop-filter{
     width: fit-content;
     margin: auto;
-    margin-top: 2rem;
     margin-bottom: 2rem;
     border-bottom: var(--font-primary) solid 1px;
 	display: flex;
@@ -1046,6 +1045,43 @@ input[type=text]:focus,input[type=password]:focus{
 
 .item-card:hover .buy-btn{
 	display:flex;
+}
+
+.select-filter{
+    display: table-row;
+    border: none;
+    overflow: hidden;
+    outline: none;
+    table-layout: unset;
+    height: 14px;
+}
+.select-filter option{
+    display: table-row;
+    border: none;
+    overflow: hidden;
+    outline: none;
+    table-layout: unset;
+    height: 14px;
+    display: table-cell;
+}
+.search-filter-bar {
+    margin-top: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	list-style: none;
+    min-height: 2rem;
+}
+
+.filter-shop-btn{
+    border: none;
+    background: none;
+
+    margin: 1rem;
+
+    color: #FFFFFF;
+    font-family: 'Montserrat';
+    font-size: 1.1rem;
 }
 
 /* POST.HTML */
