@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title> Set </title>
+        <title> Past Orders - Retrospect Apparel Co. </title>
 
         <!-- STYLE LINKS -->
         <link href="style.css" rel="stylesheet" >
@@ -23,24 +23,27 @@
         <!-- PAST ORDERS -->
         <h1 class="order-header"> Past Orders </h1> 
 
+        <div class ="filter">
         <% if(filter_type) {%>
         <h2> Filtered By: <%= filter_type %> </h2>
         <% } else {%>
-        <h2> Filter </h2>
+        <h2> Filter Orders By Location </h2>
         <% } %>
         <% if(count) {%>
         <h2> Count: <%= count %> </h2>
         <% } %>
-
-        <form action="/filter-location" method="post">
-            <select name="city" id="city">
-                <% cities.forEach((city) => { %>
-                <option value="<%= city %>"> <%= city %> </option>
-                <% }); %>
-            </select>
-            <button type="submit"> Go </button>
-        </form>
-        <a href="/view-past-orders"><button> Reset </button></a>
+            <div class="filter2">
+                <form action="/filter-location" method="post">
+                    <select name="city" id="city">
+                        <% cities.forEach((city) => { %>
+                        <option value="<%= city %>"> <%= city %> </option>
+                        <% }); %>
+                    </select>
+                    <button class="filter-btn" type="submit"> Filter </button>
+                </form>
+                <a href="/view-past-orders"><button class="clear-filter-btn"> Clear Filter </button></a>
+            </div>
+        </div>
 
 
         <% past_orders.forEach((order) => {%>
@@ -51,21 +54,23 @@
                 <div class="order-status">
                     <h2>Status: <%= order.status %></h2>
                 </div>
-                <div class="order-address">
+                
+                <div class="order-details">
                     <h3> Date Ordered: </h3>
                     <p> <%= order.date_ordered %> </p>
                 </div>
-                <div class="order-address">
+
+                <div class="order-details">
                     <h3> Date Delivered: </h3>
                     <p> <%= order.date_delivered %> </p>
                 </div>
-                <div class="order-contact-no">
+                <div class="order-details">
                     <h3> Contact Number: </h3>
                     <p> <%= order.contact_no %> </p>
                 </div>
-                <div class="order-address">
+                <div class="order-details">
                     <h3> Address: </h3>
-                    <p> <%= order.address.addressline1 %>, <%= order.address.addressline2 %>, <%= order.address.city %>, <%= order.address.region %></p>
+                    <p> <%= order.address.addressline1 %>, <%= order.address.addressline2 %>, <%= order.address.city %>, <%= order.address.region %> </p>
                 </div>
                 <div class="order-item-list">
                     <table class="item-table">

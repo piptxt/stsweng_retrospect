@@ -37,21 +37,22 @@ main{
 }
 
 .navbar-link.active {
-    color: #00a0fdf8;
+    opacity: 120%;
     font-weight: bold;
     text-decoration: underline;
 }
 
 .navbar-item.active a {
-    color: #00a0fdf8;
+    opacity: 120%;
     font-weight: bold;
     text-decoration: underline;
 }
 
 .nav-bot a.active {
-    color: #00a0fdf8;
+    opacity: 120%;
     font-weight: bold;
     text-decoration: underline;
+    text-decoration-color: var(--font-primary) ;
 }
 
 .navbar-nav{
@@ -155,7 +156,7 @@ main{
     color: #FFFFFF;
     font-size: 1.5rem;
     margin-left: 2rem;
-    margin-bottom: 1  rem;
+    margin-bottom: 1rem;
 }
 
 .nav-user:hover{
@@ -365,45 +366,8 @@ input[type=text]:focus,input[type=password]:focus{
     color: #3596d2;
 }
 
-.google-btn {
-    width: 184px;
-    height: 42px;
-    background-color: #3596d2;
-    border-radius: 2px;
-    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
-    .google-icon-wrapper {
-      position: absolute;
-      margin-top: 1px;
-      margin-left: 1px;
-      width: 40px;
-      height: 40px;
-      border-radius: 2px;
-      background-color: var(--font-primary);
-    }
-    .google-icon {
-      position: absolute;
-      margin-top: 11px;
-      margin-left: 11px;
-      width: 18px;
-      height: 18px;
-    }
-    .btn-text {
-      float: right;
-      margin: 11px 11px 0 0;
-      color: var(--font-primary);
-      font-size: 14px;
-      letter-spacing: 0.2px;
-      font-family: "Roboto";
-    }
-    &:hover {
-      box-shadow: 0 0 6px #3596d2;
-    }
- 
-  }
-
 .error-msg{
     width: 40rem;
-
     border-radius: 0.5rem;
     position: absolute;
     top: 0;
@@ -413,9 +377,7 @@ input[type=text]:focus,input[type=password]:focus{
     margin: 1rem;
     padding: 2rem;
     background-color: rgba(160, 0, 0, 0.9);
-
     font-size: 1rem;
-
     z-index: 99 !important; /* makes it go on top of everything  */
 }
 
@@ -788,7 +750,7 @@ input[type=text]:focus,input[type=password]:focus{
     bottom: 20px;
     right: 20px;
     padding: 10px 25px;
-    background-color: #000000;
+    background-color: #850000;
     color: #fff;
     cursor: pointer;
     border-radius: 10px;
@@ -797,7 +759,6 @@ input[type=text]:focus,input[type=password]:focus{
 
 .btn2{
     border: none;
-    background-color: rgba(0,0,0,0);
     color: #FFFFFF;
 }
 
@@ -1497,13 +1458,21 @@ input::-webkit-inner-spin-button {
     border-radius: 1rem;
     width: 50%;
     padding: 2rem;
-
     margin: 2rem;
 }
 
 .order-address, .order-contact-no{
     margin: 1rem;
     margin-bottom: 2rem;
+}
+
+#order_status{
+    font-size: 14px;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+    font-family: 'Montserrat';
 }
 
 .item-table{
@@ -1565,6 +1534,13 @@ input::-webkit-inner-spin-button {
 
 .hidden {
     display: none;
+}
+
+.right-bar p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .regular-users-column .regular-user:nth-child(n+6),
@@ -1663,7 +1639,7 @@ a.create-acc:hover {
     border: 2px solid var(--font-primary);
 }
 
-.see-more-btn,.view-orders-btn, .additem-btns, .additem-btns2{
+.see-more-btn,.view-orders-btn, .filter-btn, .clear-filter-btn, .additem-btns, .additem-btns2{
     height: 35px;
     width: fit-content;
     border-radius: 2rem;
@@ -1712,7 +1688,7 @@ a.create-acc:hover {
     font-size: 18px;
 }
 
-.faqs-main h1, p{
+.faqs-main h1 {
     margin: 2rem;
     padding: 2rem;
     width: fit-content;
@@ -1770,4 +1746,63 @@ a.create-acc:hover {
 
 .faq-questions.active{
     border: none;
+}
+
+.filter{
+    border:rgb(54, 54, 54) solid 1px;
+    border-radius: 1rem;
+    width: fit-content;
+    padding: 2rem;
+    margin: 2rem;
+    vertical-align: middle;
+}
+
+.filter2{
+    display: flex;
+}
+
+.filter-btn{
+    background-color: #001485;
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+.filter-btn:hover{
+    background-color: var(--font-primary);
+    color: #001485;
+}
+
+.clear-filter-btn{
+    background-color: #383838;
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);  
+    margin-top: 3px;
+}
+
+.clear-filter-btn:hover{
+    background-color: var(--font-primary);
+    color: #383838;
+    border: 2px solid var(--font-primary);  
+}
+
+#city {
+    font-size: 18px;
+    padding: 8px;
+    border: 1px solid var(--font-primary);
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+  }
+
+.order-details{
+    display: flex;
+    align-items: center; /* Optional: To vertically center the text */
+}
+  
+.order-details p {
+    margin-left: 15px; /* Optional: Add some space between the heading and the word */
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
