@@ -1957,10 +1957,6 @@ async function getFilterLocation(city){
 }
 module.exports.getFilterLocation = getFilterLocation
 
-// EXPORTING THE WHOLE FILE 
-module.exports.app = app;
-
-
 // FILTER PRODUCTS
 app.post('/filter-product', async function(req, res){ 
     let curr_user = null;
@@ -1975,13 +1971,7 @@ app.post('/filter-product', async function(req, res){
     }
     const filter = req.body.filter;
 
-    let filtered_items;
-    if(filter === "ALL"){
-        filtered_items = await ItemsModel.find({}).sort({collection_type: 1});
-    } else {
-        filtered_items = await ItemsModel.find({product_type: String(filter).toLowerCase()}).sort({collection_type: 1});
-    }
-        
+    const filtered_items = await filterProducts(filter);        
 
     const items = await ItemsModel.find({}).sort({collection_type: 1});
     let product_filter = new Set();
@@ -1990,13 +1980,24 @@ app.post('/filter-product', async function(req, res){
         product_filter.add(item.product_type);
     });
 
-    console.log(product_filter);
     res.render('shop',{
         curr_user: curr_user,
         items: filtered_items, 
         product_filter: product_filter
     });
 });
+
+async function filterProducts(filter){
+    let filtered_items;
+    if(filter === "ALL"){
+        filtered_items = await ItemsModel.find({}).sort({collection_type: 1});
+    } else {
+        filtered_items = await ItemsModel.find({product_type: String(filter).toLowerCase()}).sort({collection_type: 1});
+    }
+    return filtered_items;
+}
+
+module.exports.filterProducts = filterProducts;
 
 // FILTER PRODUCTS
 app.post('/search-products', async function(req, res){ 
@@ -2010,9 +2011,9 @@ app.post('/search-products', async function(req, res){
     if (req.user) {
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
-    const search = req.body.product
+    const query = req.body.product
 
-    const filtered_items = await ItemsModel.find({item_name: { $regex : search, $options:'i'}}).sort({collection_type: 1});
+    const filtered_items = await searchProduct(query);
     const items = await ItemsModel.find({}).sort({collection_type: 1});
 
     let product_filter = new Set();
@@ -2028,3 +2029,14 @@ app.post('/search-products', async function(req, res){
     });
 });
 
+async function searchProduct(query) {
+    const filtered_items = await ItemsModel.find({item_name: { $regex : query, $options:'i'}}).sort({collection_type: 1});
+
+    return filtered_items;
+}
+
+module.exports.searchProduct = searchProduct;
+
+
+// EXPORTING THE WHOLE FILE 
+module.exports.app = app;
