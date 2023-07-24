@@ -39,11 +39,11 @@
 		<section>
 			<div class="search-filter-bar">
 				<form action="/search-products" method="post">
-					<input type="text" name="product" id="product" placeholder="Product Name">
-					<button type="submit"> SEARCH </button>
+					<input type="text" name="product" id="product" placeholder="Search Product">
+					<button class="shop-search-btn" type="submit"> Search </button>
 				</form>
 			</div>
-			<div >
+			<div>
 				<ul class="shop-filter">
 					| <li> <form action="/filter-product" method="post"><input type="hidden" name="filter" value="ALL"> <button class="filter-shop-btn" type="submit"> ALL </button>  </form> </li> | 
 					<% product_filter.forEach((filter) => { %>

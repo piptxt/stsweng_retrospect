@@ -4,7 +4,7 @@
 
     --bg-primary: #000000;
     --bg-secondary: #1c1c1c;
-    --bg-admin: #2bb33e;
+    --bg-admin: #009213;
     --font-primary: #ffffff;
 }
 
@@ -1245,7 +1245,6 @@ input[type=text]:focus,input[type=password]:focus{
     margin-top: 1rem;
 }
 
-
 .additem-btns{
     width: fit-content;
     font-family: 'Montserrat';
@@ -1320,25 +1319,36 @@ input[type=text]:focus,input[type=password]:focus{
     margin-bottom: 1rem;
 }
 
-.delete-btn, .edit-btn{
-    margin-left: 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    background-color: rgb(160, 0, 0);
-    color: #FFFFFF;
-    height: 2rem;
+.item-mainbtns{
+    display: flex;
 }
 
-.delete-btn {
-    background-color: rgb(160, 0, 0);
+.delete-btn, .edit-btn, .update-btn{
+    /* margin-left: 1rem; */
+    width: max-content;
+    border: 2px solid var(--bg-primary);
+    border-radius: 0.5rem;
+    color: #FFFFFF;
+    height: 2rem;
+    opacity: 80%;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.edit-btn:hover, .delete-btn:hover, .update-btn{
+    opacity: 140%;
 }
 
 .edit-btn {
-    background-color: rgb(44, 44, 44);
+    background-color: rgb(0, 140, 145);
 }
 
-.delete-btn:hover{
-    background-color: rgb(200, 0, 0);
+.delete-btn {
+    background-color: rgb(190, 0, 0);
+}
+
+.update-btn{
+    background-color: var(--bg-admin);
 }
 
 /*Profile */
@@ -1593,7 +1603,7 @@ input::-webkit-inner-spin-button {
     margin-bottom: 10px;
 }
 
-#search-input {
+#search-input, #product {
     width: 250px;
     padding: 10px;
     border-color: var(--font-primary);
@@ -1676,13 +1686,25 @@ a.create-acc:hover {
     border: 2px solid var(--font-primary);
 }
 
-.see-more-btn,.view-orders-btn, .filter-btn, .clear-filter-btn, .additem-btns, .additem-btns2{
+.see-more-btn,.view-orders-btn, .filter-btn, .clear-filter-btn, .additem-btns, .additem-btns2, .shop-search-btn{
     height: 35px;
     width: fit-content;
     border-radius: 2rem;
     cursor: pointer;
     font-weight: bold;
     padding: 0px 20px;
+}
+
+.shop-search-btn{
+    background-color: var(--font-primary);
+    color: var(--bg-primary);
+    border: 2px solid var(--font-primary);
+    margin-left: 5px;
+}
+
+.shop-search-btn:hover{
+    background-color: #6b6b6b;
+    color: var(--font-primary);
 }
 
 .see-more-container {
