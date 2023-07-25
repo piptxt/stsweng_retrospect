@@ -1335,7 +1335,7 @@ input[type=text]:focus,input[type=password]:focus{
     margin-right: 5px;
 }
 
-.edit-btn:hover, .delete-btn:hover, .update-btn{
+.edit-btn:hover, .delete-btn:hover, .update-btn:hover{
     opacity: 140%;
 }
 
