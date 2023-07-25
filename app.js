@@ -1526,7 +1526,7 @@ app.post('/edit-availability', async function(req, res) {
 
     const takenSize = await ItemsModel.findOne({_id: item_id, availability: { $elemMatch: {size: new_size, stock: new_stock}}});
     if(takenSize) {
-        res.render('edit-item', {
+        return res.render('edit-item', {
             curr_user: curr_user,
             msg: "Size already exists",
             edit_item: edit_item 
@@ -1534,7 +1534,7 @@ app.post('/edit-availability', async function(req, res) {
     }
     // console.log(item_id + " " + size + " " + stock + " " + new_size + " " + new_stock); 
     
-    editStockAvailability(item_id, size, stock, new_size, new_stock);
+    const editedItemStock = await editStockAvailability(item_id, size, stock, new_size, new_stock);
 
     return res.redirect('admin');
 
