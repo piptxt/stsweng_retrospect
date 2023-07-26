@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Retrospect Apparel Co.</title>
+
+        <!-- STYLE LINKS -->
+        <link href="style.css" rel="stylesheet" >
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <script src="https://kit.fontawesome.com/679532c273.js" crossorigin="anonymous"></script>
+        <!-- ICON -->
+        <link rel="icon" href="images/retrospect-icon.png" type="image/png">
+        <!-- SCRIPT -->
+        
+        <style>
+          .column {
+            float: left;
+            width:fit-content;
+            margin-right: 30px;
+          }
+
+          /* Clear floats after the columns */
+          .row:after {
+            content: "";
+            display: table;
+            clear: both;
+          }
+          </style>
+        </head>
+
+    <body>
+        <!-- NAVBAR -->
+        <%- include ('partials/admin-navbar')  %>
+
+
+        <% if(msg){ %>
+        <div class="msg-wrapper">
+          <div class="success-msg" id="success-msg">
+            <%= msg %>
+            <div class="error-msg-btn" onclick="hideMSG()">x</div>
+          </div>
+        </div>
+        <%} %>
+
+        <main class="admin-dash">
+            <h1>Admin User Management</h1>
+            <div class="search-container">
+              <input type="text" id="search-input" placeholder="Search User" oninput="searchUsers()" />
+              
+              <div class="checkbox-dropdown">
+                <span>Number of Transactions</span>
+                <form action="/filter-transactions" method="POST">
+                  <div class="row">
+                    <div class="column">
+                      <label><input type="checkbox" name="transact_0" value="0"> 0</label><br>
+                      <label><input type="checkbox" name="transact_1" value="1"> 1</label><br>
+                      <label><input type="checkbox" name="transact_2" value="2"> 2</label>
+                    </div>
+                    <div class="column">
+                      <label><input type="checkbox" name="transact_3" value="3"> 3</label><br>
+                      <label><input type="checkbox" name="transact_4" value="4"> 4</label><br>
+                      <label><input type="checkbox" name="transact_5" value="5"> 5 or more</label>
+                    </div>
+                  </div>
+                  <button type="submit" id ="filter_transact">Filter</button>
+                  <button type="submit" id="reset_filter_transact">Reset</button>
+                </form>
+                <span><%= results%></span>
+              </div>
+              <!-- <button id="search-button">Search</button> -->
+            </div>
+
+            <div class="admin-columns">
+              <div class="regular-users-column">
+                <% let regularUsers = all_users.filter(user => user.user_type === 0); %>
+                <% for (let i = 0; i < regularUsers.length; i++) { %>
+                  <div class="admin-UM admin-sec regular-user">
+                    <div class="regular-card">
+                      <h2><%= regularUsers[i].username %></h2>
+                      <% let user_type = "Regular User"; %>
+                      <h4>User Type: <%= user_type %></h3>
+                      <form action="/edit-user" method="post">
+                        <input type="hidden" name="user_id" value="<%= regularUsers[i]._id %>">
+                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
+                      </form>
+                      <a href="/delete-user/<%= regularUsers[i]._id %>">
+                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
+                      </a>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            
+              <div class="admins-column">
+                <% let adminUsers = all_users.filter(user => user.user_type === 1); %>
+                <% for (let i = 0; i < adminUsers.length; i++) { %>
+                  <div class="admin-UM admin-sec admin">
+                    <div class="admin-card2">
+                      <h2><%= adminUsers[i].username %></h2>
+                      <% let user_type = "Admin"; %>
+                      <h3>User Type: <%= user_type %></h3>
+                      <form action="/edit-user" method="post">
+                        <input type="hidden" name="user_id" value="<%= adminUsers[i]._id %>">
+                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
+                      </form>
+                      <a href="/delete-user/<%= adminUsers[i]._id %>">
+                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
+                      </a>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+
+              <div class="see-more-container">
+                <button class="see-more-btn" onclick="toggleUsers()">See More</button>
+              </div>
+            </div>
+            
+            <script>
+              document.getElementById("search-input").addEventListener("input", searchUsers);
+
+              function searchUsers() {
+                var searchInput = document.getElementById("search-input").value.toLowerCase();
+                var regularUsers = document.querySelectorAll('.regular-users-column .regular-user');
+                var admins = document.querySelectorAll('.admins-column .admin');
+
+                Array.from(regularUsers).forEach(function(user) {
+                  var username = user.querySelector("h2").textContent.toLowerCase();
+                  if (username.includes(searchInput)) {
+                    user.style.display = "block";
+                  } else {
+                    user.style.display = "none";
+                  }
+                });
+
+                Array.from(admins).forEach(function(user) {
+                  var username = user.querySelector("h2").textContent.toLowerCase();
+                  if (username.includes(searchInput)) {
+                    user.style.display = "block";
+                  } else {
+                    user.style.display = "none";
+                  }
+                });
+              }
+            
+              function toggleUsers() {
+                const regularUsersColumn = document.querySelector('.regular-users-column');
+                const adminsColumn = document.querySelector('.admins-column');
+                const seeMoreBtn = document.querySelector('.see-more-btn');
+
+                if (regularUsersColumn.classList.contains('show-more')) {
+                  regularUsersColumn.classList.remove('show-more');
+                  adminsColumn.classList.remove('show-more');
+                  seeMoreBtn.textContent = 'See More';
+                } else {
+                  regularUsersColumn.classList.add('show-more');
+                  adminsColumn.classList.add('show-more');
+                  seeMoreBtn.textContent = 'See Less';
+                }
+              }
+            </script>
+
+  
+
+
+
+
+            
+        </main>
+    </body>
+
+    <!-- Inventory Management Modal -->
+    <script>
+      var modal = document.getElementById("item-modal");
+      var addModal = document.getElementById("item-add-modal");
+      var addUserModal = document.getElementById("admin-add-modal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+      var btnAdd = document.getElementById("myBtn-modal");
+      var btnAddUser = document.getElementById("myBtn-modal-add-user");
+      // Get the <span> element that closes the modal
+      var span = document.querySelector('.close');
+
+      // When the user clicks on the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
+      btnAdd.onclick = function() {
+        addModal.style.display = "block";
+      }
+      btnAddUser.onclick = function() {
+        addUserModal.style.display = "block";
+      }
+
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+    </script>
+
+    <!-- Hide Success MSG -->
+    <script>
+      function hideMSG(){
+        const msg = document.getElementById("success-msg");
+        msg.style.display = "none";
+        msg.style.backgroundColor = "rgba(0, 120, 0, 0.9)";
+      }
+    </script>
+</html>

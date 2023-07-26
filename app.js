@@ -83,6 +83,7 @@ const items = require('./models/itemsDB');
 const { AsyncResource } = require('async_hooks');
 const usercart = require('./models/user_cartDB');
 const blogs = require('./models/blogsDB');
+const { errorMonitor } = require('events');
 
 // Google Login Pages
 app.get('/auth/google',
@@ -1931,6 +1932,144 @@ async function getFilterLocation(city){
     return {past_orders, cities, count};
 }
 module.exports.getFilterLocation = getFilterLocation
+
+// VIEW ALL USERS
+app.get('/view-all-users', async function(req, res) {
+    let curr_user = null;
+    let msg = null;
+    let results = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    if(!curr_user){
+        return res.redirect('back');
+    }
+
+    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
+
+    return res.render('view-users', {
+        curr_user: curr_user,
+        msg: msg,
+        all_users: all_users,
+        results: results
+    });
+});
+
+// FILTER USERS BY TRANSACTIONS
+app.post('/filter-transactions', async function(req, res) {
+    let curr_user = null;
+    let msg = null;
+    let results = "Showing users with ";
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }  
+    
+    const selectedOptions = req.body; // The form data will be available in req.body
+    var array_length = Object.keys(selectedOptions).length;
+    var array_values = Object.values(selectedOptions)
+
+    console.log('Received data:', selectedOptions);
+    console.log('Length:', Object.keys(selectedOptions).length);
+    console.log('Values:', Object.values(selectedOptions));
+
+    for (const num in array_values) {
+        if (num == array_length-1) {
+            results = results.concat(array_values[num])
+        } else {
+            results = results.concat(array_values[num], ", ")
+        }
+    }
+
+    results = results.concat(" transaction/s.")
+
+    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
+    var final_users = await filterUserTransactions(array_length, array_values, all_users);
+    console.log(Array.isArray(final_users))
+    console.log("Print Users:")
+    console.log(final_users)
+
+    return res.render('view-users', {
+        curr_user: curr_user,
+        msg: msg,
+        all_users: final_users,
+        results: results
+    });
+});
+
+async function getUserTransactions(userId){
+    const user_orders = await OrdersModel.find({user_id: userId});
+    // console.log(user_orders.length);
+    return user_orders.length;
+    
+}
+
+async function filterUserTransactions(array_length, array_values, all_users){
+    var final_users = [];
+
+    for (let i = 0; i < array_length; i++) {
+        var num;
+        switch(array_values[i]) {
+            case "0": num = 0; break;
+            case "1": num = 1; break;
+            case "2": num = 2; break;
+            case "3": num = 3; break;
+            case "4": num = 4; break;
+            case "5": num = 5; break;
+        }
+
+        for(const user of all_users) {
+
+                // const transactions = getUserTransactions(user._id)
+                var num_transacts = await getUserTransactions(user._id)
+
+                // console.log(transactions)
+                console.log('User: ', user.username);
+                console.log('Transactions: ', num_transacts);
+                console.log(" ")
+
+                if (num == 5) {
+                    if (num <= num_transacts) {
+                        final_users.push(user)
+                    }
+                } else {
+                    if (num == num_transacts) {
+                        console.log(user)
+                        final_users.push(user)
+                    }
+                }
+            // } catch (error) {
+            //     console.log(error)
+            // }
+            
+        }
+    }
+    console.log(Array.isArray(final_users))
+    // console.log("Print Users:")
+    // console.log(final_users)
+    return final_users
+}
+
+// async function getFilterLocation(city){
+//     const past_orders = await OrdersModel.find({status: "Order Received.", "address.city": city}).sort({date: 1});
+//     const all_orders = await OrdersModel.find({status: "Order Received."}).sort({date: 1});
+//     let cities = new Set();
+//     let count =  await OrdersModel.count({status: "Order Received.", "address.city": city})
+
+//     all_orders.forEach((order) => {
+//         cities.add(order.address.city);
+//     }) 
+
+//     return {past_orders, cities, count};
+// }
+// module.exports.getFilterLocation = getFilterLocation
 
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;

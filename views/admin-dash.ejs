@@ -16,31 +16,22 @@
         <!-- ICON -->
         <link rel="icon" href="images/retrospect-icon.png" type="image/png">
         <!-- SCRIPT -->
-        <!-- <script src="https://smtpjs.com/v3/smtp.js"></script>
-        <script type="text/javascript">
-          function sendEmail() {
-            Email.send({
-              Host: "smtp.elasticemail.com",
-              Username: "priscillalicup@gmail.com",
-              Password: "1A421FC3EEDE5C5A62BD801844735D8BAA56",
-              To: 'priscillalicup@gmail.com',
-              From: "priscillalicup@gmail.com",
-              Subject: "Sending Email using javascript",
-              Body: "Well that was easy!!",
-            })
-              .then(function (message) {
-                alert("mail sent successfully")
-              });
+        
+        <style>
+          .column {
+            float: left;
+            width:fit-content;
+            margin-right: 30px;
           }
-        </script> -->
-        <!-- <script src="email.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-        <script type="text/javascript">
-          (function(){
-              emailjs.init("_sI28sXdyQhXw1IpJ");
-          })();
-        </script> -->
-    </head>
+
+          /* Clear floats after the columns */
+          .row:after {
+            content: "";
+            display: table;
+            clear: both;
+          }
+          </style>
+        </head>
 
     <body>
         <!-- NAVBAR -->
@@ -156,9 +147,12 @@
             <h2>Admin User Management</h2>
             <div class="search-container">
               <input type="text" id="search-input" placeholder="Search User" oninput="searchUsers()" />
+              <a href="/view-all-users">
+                <button> View All Users </button>
+              </a>
               <!-- <button id="search-button">Search</button> -->
             </div>
-            
+
             <div class="admin-columns">
               <div class="regular-users-column">
                 <% let regularUsers = all_users.filter(user => user.user_type === 0); %>
@@ -248,6 +242,7 @@
                 }
               }
             </script>
+
             
             <div class="item-edit-modal" id="admin-edit-modal">
               <div class="item-edit-modal-content">
