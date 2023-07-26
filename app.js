@@ -1980,11 +1980,17 @@ app.post('/filter-transactions', async function(req, res) {
     console.log('Length:', Object.keys(selectedOptions).length);
     console.log('Values:', Object.values(selectedOptions));
 
-    for (const num in array_values) {
-        if (num == array_length-1) {
-            results = results.concat(array_values[num])
-        } else {
-            results = results.concat(array_values[num], ", ")
+    if (array_length == 1) {
+        results = results.concat(array_values[0]);
+    } else if (array_length == 2) {
+        results = results.concat(array_values[0], " or ", array_values[1]);
+    } else {
+        for (const num in array_values) {
+            if (num == array_length-1) {
+                results = results.concat("or ", array_values[num]);
+            } else {
+                results = results.concat(array_values[num], ", ");
+            }
         }
     }
 
@@ -2026,50 +2032,30 @@ async function filterUserTransactions(array_length, array_values, all_users){
         }
 
         for(const user of all_users) {
+            var num_transacts = await getUserTransactions(user._id)
 
-                // const transactions = getUserTransactions(user._id)
-                var num_transacts = await getUserTransactions(user._id)
+            console.log('User: ', user.username);
+            console.log('Transactions: ', num_transacts);
+            console.log(" ")
 
-                // console.log(transactions)
-                console.log('User: ', user.username);
-                console.log('Transactions: ', num_transacts);
-                console.log(" ")
-
-                if (num == 5) {
-                    if (num <= num_transacts) {
-                        final_users.push(user)
-                    }
-                } else {
-                    if (num == num_transacts) {
-                        console.log(user)
-                        final_users.push(user)
-                    }
+            if (num == 5) {
+                if (num <= num_transacts) {
+                    final_users.push(user)
                 }
-            // } catch (error) {
-            //     console.log(error)
-            // }
+            } else {
+                if (num == num_transacts) {
+                    console.log(user)
+                    final_users.push(user)
+                }
+            }
             
         }
     }
     console.log(Array.isArray(final_users))
-    // console.log("Print Users:")
-    // console.log(final_users)
     return final_users
 }
-
-// async function getFilterLocation(city){
-//     const past_orders = await OrdersModel.find({status: "Order Received.", "address.city": city}).sort({date: 1});
-//     const all_orders = await OrdersModel.find({status: "Order Received."}).sort({date: 1});
-//     let cities = new Set();
-//     let count =  await OrdersModel.count({status: "Order Received.", "address.city": city})
-
-//     all_orders.forEach((order) => {
-//         cities.add(order.address.city);
-//     }) 
-
-//     return {past_orders, cities, count};
-// }
-// module.exports.getFilterLocation = getFilterLocation
+module.exports.getUserTransactions = getUserTransactions
+module.exports.filterUserTransactions = filterUserTransactions 
 
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;
