@@ -10,6 +10,7 @@
           <li class="navbar-item"><a href="/blog" class="navbar-link">Blog</a></li>
           <li class="navbar-item"><a href="/size-chart" class="navbar-link">Size Chart</a></li>
           <li class="navbar-item"><a href="/about-us" class="navbar-link">About Us</a></li>
+          <li class="navbar-item"><a href="/faqs" class="navbar-link">FAQs</a></li>
       </div>
 
       <div class="nav-bot">
@@ -44,14 +45,14 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(document).ready(function() {
-    var path = window.location.pathname;
-    path = path.replace(/\/$/, '');
-
-    $('nav .navbar-item a[href="' + path + '"]').addClass('active');
-
-    if ($('.nav-bot a[href="' + path + '"]').length) {
-      $('.nav-bot a[href="' + path + '"]').addClass('active');
-    }
-  });
+    $(document).ready(function() {
+      var path = window.location.pathname;
+      path = path.replace(/\/$/, '');
+    
+      $('nav .navbar-item a[href="' + path + '"]').addClass('active');
+    
+      if ($('.nav-bot a[href="' + path + '"]').length) {
+        $('.nav-bot a[href="' + path + '"]').addClass('active');
+      }
+    });
 </script>

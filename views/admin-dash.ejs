@@ -12,35 +12,13 @@
         <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script src="https://kit.fontawesome.com/679532c273.js" crossorigin="anonymous"></script>
         <!-- ICON -->
         <link rel="icon" href="images/retrospect-icon.png" type="image/png">
         <!-- SCRIPT -->
-        <!-- <script src="https://smtpjs.com/v3/smtp.js"></script>
-        <script type="text/javascript">
-          function sendEmail() {
-            Email.send({
-              Host: "smtp.elasticemail.com",
-              Username: "priscillalicup@gmail.com",
-              Password: "1A421FC3EEDE5C5A62BD801844735D8BAA56",
-              To: 'priscillalicup@gmail.com',
-              From: "priscillalicup@gmail.com",
-              Subject: "Sending Email using javascript",
-              Body: "Well that was easy!!",
-            })
-              .then(function (message) {
-                alert("mail sent successfully")
-              });
-          }
-        </script> -->
-        <!-- <script src="email.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-        <script type="text/javascript">
-          (function(){
-              emailjs.init("_sI28sXdyQhXw1IpJ");
-          })();
-        </script> -->
-    </head>
+        </head>
 
     <body>
         <!-- NAVBAR -->
@@ -61,6 +39,12 @@
 
             <h2>Inventory Management</h2>
 
+            <a href="/create-item">
+              <div class="additem-container">
+                <input class="additem-btns" type="button" name="inv-edit" value="+ ADD ITEM"></input>
+              </div>
+            </a>
+
             <!-- INVENTORY TRACKING --> 
             <div class="inventory-tracking admin-sec">
 
@@ -76,12 +60,14 @@
                       <%})                                      %>
                       <li> Total Stock: <%= total_stock %></li>
                   </ul>
-
-                  <form action="/edit-item" method="post">
-                    <input type="hidden" name="edit_item" value="<%=item._id%>">
-                    <button class="item-btns" type="submit"> Edit Item </button>
-                  </form>
-                  <a href="/delete-item/<%=item._id%>"><input class="item-btns" type="button" name="inv-del" value="Delete Item"></input></a>
+                  
+                  <div class="item-mainbtns">
+                    <form action="/edit-item" method="post">
+                      <input class type="hidden" name="edit_item" value="<%=item._id%>">
+                      <button class="item-btns edit-btn" type="submit"> Edit Item </button>
+                    </form>
+                    <a href="/delete-item/<%=item._id%>"><input class="item-btns delete-btn" type="button" name="inv-del" value="Delete Item"></input></a>
+                </div>
               </div>
               <% }); %>
 
@@ -101,10 +87,6 @@
                     <button type="button" class="close">Close</button>
                   </form>
                 </div>
-              </div>
-
-              <div class="admin-card additem">
-                  <a href="/create-item"><input class="additem-btns" type="button" name="inv-edit" value="+ ADD ITEM"></input></a>
               </div>
 
                 <div class="item-edit-modal" id="item-add-modal">
@@ -127,9 +109,14 @@
 			
 			<h2>Blog Management</h2>
 
+        <a href="/create-blog">
+          <div class="additem-container">
+            <input class="additem-btns" type="button" name="inv-edit" value="+ ADD BLOG"></input>
+          </div>
+        </a>
+
             <!-- BLOG TRACKING --> 
             <div class="inventory-tracking admin-sec">
-
               <% all_blogs.forEach((blog) => {%>
               <div class="admin-card">
                   <h2> <%= blog.blog_name %></h2>
@@ -139,26 +126,34 @@
                       <li> Description: <%= blog.description %></li>
                   </ul>
 
-                  <form action="/edit-blog" method="post">
-                    <input type="hidden" name="edit_blog" value="<%=blog._id%>">
-                    <button class="blog-btns" type="submit"> Edit Blog </button>
-                  </form>
-                  <a href="/delete-blog/<%=blog._id%>"><input class="blog-btns" type="button" name="inv-del" value="Delete Blog"></input></a>
+                  <div class="item-mainbtns">
+                    <form action="/edit-blog" method="post">
+                      <input type="hidden" name="edit_blog" value="<%=blog._id%>">
+                      <button class="blog-btns edit-btn" type="submit"> Edit Blog </button>
+                    </form>
+                    <a href="/delete-blog/<%=blog._id%>"><input class="blog-btns delete-btn" type="button" name="inv-del" value="Delete Blog"></input></a>
+                  </div>
               </div>
               <% }); %>
-
-              <div class="admin-card additem">
-                  <a href="/create-blog"><input class="additem-btns" type="button" name="inv-edit" value="+ ADD BLOG"></input></a>
-              </div>
             </div>
 			
-			
-            <h2>Admin User Management</h2>
+          <h2>Admin User Management</h2>
+
             <div class="search-container">
               <input type="text" id="search-input" placeholder="Search User" oninput="searchUsers()" />
-              <!-- <button id="search-button">Search</button> -->
-            </div>
+            </div>    
             
+            <div class="admin-container">
+              <a href="/create-admin">
+                <div class="additem-container">
+                  <input class="see-more-btn" type="button" name="inv-edit" value="+ Create Admin"></input>      
+                  <a href="/view-all-users">
+                    <button class="goto-btns"> View All Users </button>
+                  </a>        
+                </div>
+              </a>
+            </div>
+
             <div class="admin-columns">
               <div class="regular-users-column">
                 <% let regularUsers = all_users.filter(user => user.user_type === 0); %>
@@ -170,10 +165,10 @@
                       <h4>User Type: <%= user_type %></h3>
                       <form action="/edit-user" method="post">
                         <input type="hidden" name="user_id" value="<%= regularUsers[i]._id %>">
-                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
+                        <button class="user-btns edit-btn" type="submit" name="edit-user">Edit User Details</button>
                       </form>
                       <a href="/delete-user/<%= regularUsers[i]._id %>">
-                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
+                        <button class="user-btns delete-btn" type="button" name="delete-user">Delete User</button>
                       </a>
                     </div>
                   </div>
@@ -190,10 +185,10 @@
                       <h3>User Type: <%= user_type %></h3>
                       <form action="/edit-user" method="post">
                         <input type="hidden" name="user_id" value="<%= adminUsers[i]._id %>">
-                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
+                        <button class="user-btns edit-btn" type="submit" name="edit-user">Edit User Details</button>
                       </form>
                       <a href="/delete-user/<%= adminUsers[i]._id %>">
-                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
+                        <button class="user-btns delete-btn" type="button" name="delete-user">Delete User</button>
                       </a>
                     </div>
                   </div>
@@ -201,54 +196,10 @@
               </div>
 
               <div class="see-more-container">
-                <button class="see-more-btn" onclick="toggleUsers()">See More</button>
+                <button class="see-more-btn" onclick="toggleUsers()" id="seeMoreBtn">See More</button>
               </div>
             </div>
-            
-            <script>
-              document.getElementById("search-input").addEventListener("input", searchUsers);
-
-              function searchUsers() {
-                var searchInput = document.getElementById("search-input").value.toLowerCase();
-                var regularUsers = document.querySelectorAll('.regular-users-column .regular-user');
-                var admins = document.querySelectorAll('.admins-column .admin');
-
-                Array.from(regularUsers).forEach(function(user) {
-                  var username = user.querySelector("h2").textContent.toLowerCase();
-                  if (username.includes(searchInput)) {
-                    user.style.display = "block";
-                  } else {
-                    user.style.display = "none";
-                  }
-                });
-
-                Array.from(admins).forEach(function(user) {
-                  var username = user.querySelector("h2").textContent.toLowerCase();
-                  if (username.includes(searchInput)) {
-                    user.style.display = "block";
-                  } else {
-                    user.style.display = "none";
-                  }
-                });
-              }
-            
-              function toggleUsers() {
-                const regularUsersColumn = document.querySelector('.regular-users-column');
-                const adminsColumn = document.querySelector('.admins-column');
-                const seeMoreBtn = document.querySelector('.see-more-btn');
-
-                if (regularUsersColumn.classList.contains('show-more')) {
-                  regularUsersColumn.classList.remove('show-more');
-                  adminsColumn.classList.remove('show-more');
-                  seeMoreBtn.textContent = 'See More';
-                } else {
-                  regularUsersColumn.classList.add('show-more');
-                  adminsColumn.classList.add('show-more');
-                  seeMoreBtn.textContent = 'See Less';
-                }
-              }
-            </script>
-            
+             
             <div class="item-edit-modal" id="admin-edit-modal">
               <div class="item-edit-modal-content">
                 <form class=admin-add-form action="add-admin" method="POST">
@@ -260,11 +211,7 @@
                   <button type="button" class="close" onclick="">Close</button>
                 </form>
               </div>
-            </div>
-            
-            <div class="admin-card additem">
-              <a href="/create-admin"><input class="additem-btns" type="button" name="inv-edit" value="Create Admin"></a>
-            </div>
+            </div>           
             
             <div class="item-edit-modal" id="admin-add-modal">
               <div class="item-edit-modal-content">
@@ -279,96 +226,143 @@
               </div>
             </div>
 
-<a id="current_orders"><h2>Current Orders</h2></a>
+          <a id="current_orders"><h2>Current Orders</h2></a>
 
-<div class="orders-container">
-  <% const orderStatuses = ['Waiting for Payment Confirmation.', 'Payment Successful! Preparing your Order.', 'Out for Delivery.'   ]; %>
-  <% orderStatuses.forEach((status) => { %>
-  <div class="order-column">
-    <h3><%= status %></h3>
-    <% orders.filter(order => order.status === status).forEach((order) => { %>
-    <div class="current-orders admin-sec">
-      <div class="admin-card orders-card">
-        <h2><%= order.username %></h2>
-        <h4>Order #<%= order._id %></h4>
-        <h4>Status: <%= order.status %></h4>
-        <h4>Date Ordered: <%= order.date_ordered %></h4>
-        <% 
-        let num_items = 0;
-        order.items.forEach((item) => {
-          num_items += item.quantity;
-        });
-        %>
-        <h4>Number of Items: <%= num_items %> </h4>
+          <div class="orders-container">
+            <% const orderStatuses = ['Waiting for Payment Confirmation.', 'Payment Successful! Preparing your Order.', 'Out for Delivery.'   ]; %>
+            <% orderStatuses.forEach((status) => { %>
+            <div class="order-column">
+              <h3><%= status %></h3>
+              <% orders.filter(order => order.status === status).forEach((order) => { %>
+              <div class="current-orders admin-sec">
+                <div class="admin-card orders-card">
+                  <h2><%= order.username %></h2>
+                  <h4>Order #<%= order._id %></h4>
+                  <h4>Status: <%= order.status %></h4>
+                  <h4>Date Ordered: <%= order.date_ordered %></h4>
+                  <% 
+                  let num_items = 0;
+                  order.items.forEach((item) => {
+                    num_items += item.quantity;
+                  });
+                  %>
+                  <h4>Number of Items: <%= num_items %> </h4>
+                    
+                      <form action="/update-order-status" method="post">
+                        <input type="hidden" name="order_id" value="<%= order._id %>">
+                        <label for="order_status">Edit Order Status</label><br>
+                        <select name="order_status" id="order_status">
+                          <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
+                          <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
+                          <option value="Out for Delivery."> Out for Delivery. </option> 
+                          <option value="Order Received."> Order Received. </option> 
+                        </select>
+                      <div class="item-mainbtns">
+                        <button class="order-btns update-btn" type="submit"> Update Status </button>
+                      </form>                    
+                    <a href="/cancel-order/<%= order._id %>"><input class="order-btns delete-btn" type="button" name="order-cancel" value="Cancel Order"></input></a>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+            <% }) %>
+          </div>
+          <br><br>
 
-        <form action="/update-order-status" method="post">
-          <input type="hidden" name="order_id" value="<%= order._id %>">
-          <label for="order_status">Edit Order Status</label><br>
-          <select name="order_status" id="order_status">
-            <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
-            <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
-            <option value="Out for Delivery."> Out for Delivery. </option> 
-            <option value="Order Received."> Order Received. </option> 
-          </select>
+          <a id="current_orders"><h2>Past Orders</h2></a>
 
-          <button class="order-btns" type="submit"> Update Status </button>
-        </form>
+          <a href="/view-past-orders">
+            <div class="view-orders-container">
+              <button class="goto-btns"> View All Past Orders </button>
+            </div>
+          </a>
 
-        <a href="/cancel-order/<%= order._id %>"><input class="order-btns" type="button" name="order-cancel" value="Cancel Order"></input></a>
-      </div>
-    </div>
-    <% }) %>
-  </div>
-  <% }) %>
-</div>
-<br><br><br>
-
-<a id="current_orders"><h2>Past Orders</h2></a>
-
-<a href="/view-past-orders">
-  <button> View All Past Orders </button>
-</a>
-
-<div class="orders-container">
-  <div class="order-column">
-    <% past_orders.forEach((order) => { %>
-    <div class="current-orders admin-sec">
-      <div class="admin-card orders-card">
-        <h2><%= order.username %></h2>
-        <h4>Order #<%= order._id %></h4>
-        <h4>Status: <%= order.status %></h4>
-        <h4>Date Ordered: <%= order.date_ordered %></h4>
-        <h4>Date Delivered: <%= order.date_delivered %></h4>
-        <% 
-        let num_items = 0;
-        order.items.forEach((item) => {
-          num_items += item.quantity;
-        });
-        %>
-        <h4>Number of Items: <%= num_items %> </h4>
-
-        <form action="/update-order-status" method="post">
-          <input type="hidden" name="order_id" value="<%= order._id %>">
-          <label for="order_status">Edit Order Status</label><br>
-          <select name="order_status" id="order_status">
-            <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
-            <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
-            <option value="Out for Delivery."> Out for Delivery. </option> 
-            <option value="Order Received."> Order Received. </option> 
-          </select>
-          <button class="order-btns" type="submit"> Update Status </button>
-        </form>
-
-      </div>
-    </div>
-    <% }) %>
-  </div>
-</div>
-
-            
+          <div class="orders-container">
+            <div class="order-column">
+              <% past_orders.sort((a, b) => a.username.localeCompare(b.username)).forEach((order, index) => { %>
+                <div class="current-orders admin-sec">
+                  <div class="admin-card orders-card">
+                    <h2><%= order.username %></h2>
+                    <h4>Order #<%= order._id %></h4>
+                    <h4>Status: <%= order.status %></h4>
+                    <h4>Date Ordered: <%= order.date_ordered %></h4>
+                    <h4>Date Delivered: <%= order.date_delivered %></h4>
+                    <% 
+                    let num_items = 0;
+                    order.items.forEach((item) => {
+                      num_items += item.quantity;
+                    });
+                    %>
+                    <h4>Number of Items: <%= num_items %> </h4>
+          
+                    <form action="/update-order-status" method="post">
+                      <input type="hidden" name="order_id" value="<%= order._id %>">
+                      <label for="order_status">Edit Order Status</label><br>
+                      <select name="order_status" id="order_status">
+                        <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
+                        <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
+                        <option value="Out for Delivery."> Out for Delivery. </option> 
+                        <option value="Order Received."> Order Received. </option> 
+                      </select>
+                      <button class="order-btns update-btn" type="submit"> Update Status </button>
+                    </form>
+                  </div>
+                </div>
+                <% if ((index + 1) === Math.ceil(past_orders.length / 2)) { %>
+            </div>
+            <div class="past-order-column">
+              <% } %>
+              <% }) %>
+            </div>
+          </div>          
         </main>
     </body>
 
+    <script>
+      document.getElementById("search-input").addEventListener("input", searchUsers);
+
+      function searchUsers() {
+        var searchInput = document.getElementById("search-input").value.toLowerCase();
+        var regularUsers = document.querySelectorAll('.regular-users-column .regular-user');
+        var admins = document.querySelectorAll('.admins-column .admin');
+
+        Array.from(regularUsers).forEach(function(user) {
+          var username = user.querySelector("h2").textContent.toLowerCase();
+          if (username.includes(searchInput)) {
+            user.style.display = "block";
+          } else {
+            user.style.display = "none";
+          }
+        });
+
+        Array.from(admins).forEach(function(user) {
+          var username = user.querySelector("h2").textContent.toLowerCase();
+          if (username.includes(searchInput)) {
+            user.style.display = "block";
+          } else {
+            user.style.display = "none";
+          }
+        });
+      }
+    
+      function toggleUsers() {
+        const regularUsersColumn = document.querySelector('.regular-users-column');
+        const adminsColumn = document.querySelector('.admins-column');
+        const seeMoreBtn = document.getElementById('seeMoreBtn');
+
+        if (regularUsersColumn.classList.contains('show-more')) {
+          regularUsersColumn.classList.remove('show-more');
+          adminsColumn.classList.remove('show-more');
+          seeMoreBtn.textContent = 'See More';
+        } else {
+          regularUsersColumn.classList.add('show-more');
+          adminsColumn.classList.add('show-more');
+          seeMoreBtn.textContent = 'See Less';
+        }
+      }
+    </script> 
+    
     <!-- Inventory Management Modal -->
     <script>
       var modal = document.getElementById("item-modal");
@@ -392,7 +386,6 @@
       btnAddUser.onclick = function() {
         addUserModal.style.display = "block";
       }
-
 
       // When the user clicks on <span> (x), close the modal
       span.onclick = function() {

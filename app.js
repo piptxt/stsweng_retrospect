@@ -83,6 +83,7 @@ const items = require('./models/itemsDB');
 const { AsyncResource } = require('async_hooks');
 const usercart = require('./models/user_cartDB');
 const blogs = require('./models/blogsDB');
+const { errorMonitor } = require('events');
 
 // Google Login Pages
 app.get('/auth/google',
@@ -224,6 +225,23 @@ app.get('/about-us', async function(req, res){
     });
 });
 
+// FAQs
+app.get('/faqs', async function(req, res){
+    let curr_user = null;
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+
+    res.render('faqs',{
+        curr_user: curr_user
+    });
+});
+
 // SHOP
 app.get('/shop', async function(req, res){
     let curr_user = null;
@@ -237,11 +255,18 @@ app.get('/shop', async function(req, res){
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
-    const items = await ItemsModel.find({});
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
 
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
     res.render('shop',{
         curr_user: curr_user,
-        items: items
+        items: items, 
+        product_filter: product_filter
     });
 });
 
@@ -665,10 +690,10 @@ app.get('/admin', async function(req, res){
         return res.redirect('back');
     }
 
-    const orders = await OrdersModel.find({status: {$not: {$regex: "Orde    r Received."}}}); // Gets all orders
+    const orders = await OrdersModel.find({status: {$not: {$regex: "Order Received."}}}); // Gets all orders
     const past_orders = await getPastOrders(); // Gets all past orders
-    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
-    const all_items = await ItemsModel.find({}); // Gets all items
+    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}).collation({locale:'en',strength: 2}).sort({username:1});// Gets all lower or equal users except current user
+    const all_items = await ItemsModel.find({}).sort({collection_type: 1}); // Gets all items
 	const all_blogs = await BlogsModel.find({}); // Gets all blogs
 
     console.log(past_orders);
@@ -1139,7 +1164,7 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
         return res.redirect('back');
     }
 
-    const {collection, item_name, description, price} = req.body;
+    const {collection, item_name, product_type, description, price} = req.body;
     const item_photo = req.file.filename;
 
     const takenItemName = await ItemsModel.findOne({item_name: item_name});
@@ -1153,13 +1178,14 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
     const newItem = await ItemsModel({
         collection_type: collection,
         item_name: item_name,
+        product_type: String(product_type).toLowerCase(), 
         description: description,
+        product_type: product_type,
         price: price,
         item_photo: item_photo
     }); 
     await newItem.save();
 
-    console.log(collection + " " + item_name + " "  + description + " "  + price + " " + item_photo);
     return res.redirect('/admin');
 });
 
@@ -1230,7 +1256,7 @@ app.post('/update-item-details', async function(req, res) {
         return res.redirect('back');
     }
 
-    const {item_id, collection, item_name, description, price} = req.body;
+    const {item_id, collection, item_name, product_type, description, price} = req.body;
 
     const edit_item = await ItemsModel.findOne({_id: item_id});
 
@@ -1246,6 +1272,7 @@ app.post('/update-item-details', async function(req, res) {
     await ItemsModel.updateOne({_id: item_id},{
         collection_type: collection,
         item_name: item_name,
+        product_type: String(product_type).toLowerCase(),
         description: description,
         price: price
     })
@@ -1885,7 +1912,7 @@ app.get('/view-past-orders', async function(req, res) {
     });
 });
 async function viewPastOrders(){
-    const past_orders = await OrdersModel.find({status: "Order Received."})
+    const past_orders = await OrdersModel.find({status: "Order Received."}).sort({date_delivered: 1})
     let cities = new Set();
     past_orders.forEach((past_order) => {
         cities.add(past_order.address.city);
@@ -1932,5 +1959,208 @@ async function getFilterLocation(city){
 }
 module.exports.getFilterLocation = getFilterLocation
 
+// FILTER PRODUCTS
+app.post('/filter-product', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const filter = req.body.filter;
+
+    const filtered_items = await filterProducts(filter);        
+
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
+
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+
+async function filterProducts(filter){
+    let filtered_items;
+    if(filter === "ALL"){
+        filtered_items = await ItemsModel.find({}).sort({collection_type: 1});
+    } else {
+        filtered_items = await ItemsModel.find({product_type: String(filter).toLowerCase()}).sort({collection_type: 1});
+    }
+    return filtered_items;
+}
+
+module.exports.filterProducts = filterProducts;
+
+// FILTER PRODUCTS
+app.post('/search-products', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const query = req.body.product
+
+    const filtered_items = await searchProduct(query);
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+
+    let product_filter = new Set();
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+
+async function searchProduct(query) {
+    const filtered_items = await ItemsModel.find({item_name: { $regex : query, $options:'i'}}).sort({collection_type: 1});
+
+    return filtered_items;
+}
+
+module.exports.searchProduct = searchProduct;
+
+// VIEW ALL USERS
+app.get('/view-all-users', async function(req, res) {
+    let curr_user = null;
+    let msg = null;
+    let results = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    if(!curr_user){
+        return res.redirect('back');
+    }
+
+    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
+
+    return res.render('view-users', {
+        curr_user: curr_user,
+        msg: msg,
+        all_users: all_users,
+        results: results
+    });
+});
+
+// FILTER USERS BY TRANSACTIONS
+app.post('/filter-transactions', async function(req, res) {
+    let curr_user = null;
+    let msg = null;
+    let results = "Showing users with ";
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+    if(req.user){
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }  
+    
+    const selectedOptions = req.body; // The form data will be available in req.body
+    var array_length = Object.keys(selectedOptions).length;
+    var array_values = Object.values(selectedOptions)
+
+    console.log('Received data:', selectedOptions);
+    console.log('Length:', Object.keys(selectedOptions).length);
+    console.log('Values:', Object.values(selectedOptions));
+
+    for (const num in array_values) {
+        if (num == array_length-1) {
+            results = results.concat(array_values[num])
+        } else {
+            results = results.concat(array_values[num], ", ")
+        }
+    }
+
+    results = results.concat(" transaction/s.")
+
+    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
+    var final_users = await filterUserTransactions(array_length, array_values, all_users);
+    console.log(Array.isArray(final_users))
+    console.log("Print Users:")
+    console.log(final_users)
+
+    return res.render('view-users', {
+        curr_user: curr_user,
+        msg: msg,
+        all_users: final_users,
+        results: results
+    });
+});
+
+async function getUserTransactions(userId){
+    const user_orders = await OrdersModel.find({user_id: userId});
+    // console.log(user_orders.length);
+    return user_orders.length;
+    
+}
+
+async function filterUserTransactions(array_length, array_values, all_users){
+    var final_users = [];
+
+    for (let i = 0; i < array_length; i++) {
+        var num;
+        switch(array_values[i]) {
+            case "0": num = 0; break;
+            case "1": num = 1; break;
+            case "2": num = 2; break;
+            case "3": num = 3; break;
+            case "4": num = 4; break;
+            case "5": num = 5; break;
+        }
+
+        for(const user of all_users) {
+
+                // const transactions = getUserTransactions(user._id)
+                var num_transacts = await getUserTransactions(user._id)
+
+                // console.log(transactions)
+                console.log('User: ', user.username);
+                console.log('Transactions: ', num_transacts);
+                console.log(" ")
+
+                if (num == 5) {
+                    if (num <= num_transacts) {
+                        final_users.push(user)
+                    }
+                } else {
+                    if (num == num_transacts) {
+                        console.log(user)
+                        final_users.push(user)
+                    }
+                }
+            // } catch (error) {
+            //     console.log(error)
+            // }
+            
+        }
+    }
+    console.log(Array.isArray(final_users))
+    // console.log("Print Users:")
+    // console.log(final_users)
+    return final_users
+}
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;

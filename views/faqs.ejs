@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs - Retrospect Apparel Co.</title>
+
+    <!-- STYLE LINKS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat%3Ai%2Cbi%2C700%2C400display=swap" rel="stylesheet" nonce="">
+    <link rel="icon" href="images/retrospect-icon.png" type="image/png">
+    <script src="https://kit.fontawesome.com/679532c273.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <% if(curr_user){                                    %>
+    <%      if(curr_user.user_type == 0) {               %>
+    <%-         include ('partials/user-navbar')    %>
+    <%      } else if (curr_user.user_type > 0){         %>
+    <%-          include ('partials/admin-navbar')  %>
+    <%      }                                       %>
+    <%} else{                                       %>
+    <%-     include ('partials/navbar')             %>
+    <%}                                             %>
+
+    <!-- MAIN CONTENT -->
+    <main class = "main_AU">
+
+        <section>
+            <div class="banner">
+                <img src="../images/banner-no-bg.png" alt="banner-img" class="banner-img">
+            </div>    
+        </section>
+
+        <div class="faqs-main">
+            <h1>Frequently Asked Questions</h1>
+        
+            <div class="faqs-questions">
+                <button class="question"> 1. How do I place an order? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    <li>Go to the SHOP section & browse through the selection of available products.</li>
+                    <li>Add & manage desired items into your cart.</li>
+                    <li>Proceed to checkout and fill out the form before your screen.</li>
+                    <li>Once your orders are received, you will receive an email that notifies you of a change in your order status. Once you see that it says "order processing," you can settle your payment.</li>
+                    <li>Take a picture of the deposit slip which will serve as your proof of payment & send it over at our email (retrospecttm@gmail.com) for GCash Payment Method.</li>
+                    <li>Wait for an email confirmation from us, and your orders will be shipped right away.</li>
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 2. I order online, how or where do I pay? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    Once you have successfully placed your orders, you may settle your payments via:
+                    <li>COD for selected couriers only</li>
+                    <li>GCash</li>
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 3. What courier do you use when shipping items within the country? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    We use J&T for transactions within both Provincial areas and Metro Manila and we also offer deliveries for our customers within 
+                    San Pedro Laguna, Biñan Laguna, Carmona Cavite SIlang Cavite and Bacoor Cavite.
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 4. How much is the shipping fee? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    The shipping fee for J&T would be P120 Flat rate, and for deliveries within San Pedro Laguna, Biñan Laguna, Carmona Cavite, 
+                    Silang Cavite, and Bacoor Cavite would be P50. 
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 5. How many days will it take to receive my order(s)? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    You can expect to have your orders after 7-14 working days from the date of receiving your email confirmation.
+                    You may track your orders through the email confirmation that will be sent to you. 
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 6. I still haven't received my shipment. What do I do with this? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    Once the orders are shipped out. What we can do is help you guys track your parcels and monitor its current location - but with regards to the date on when you'll 
+                    receive the items ordered is already out of our control. For this matter, you can verify and ask for a follow-up of the parcel with the courier chosen.
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 7. Where's the size chart? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list"> 
+                    The size chart has its own page. Kindly check it out at the Size Chart page, which can be accessed through the navigation bar.
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 8. Why is my order status Cancelled and Will not deliver? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    It means that the specific item you ordered is already out of stock.
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 9. How should I order if I want my Mode-of-Payment to be Cash-on-Delivery (CoD)? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    Orders with CoD should be ordered through Shopee.
+                  </ul>
+                </div>
+            </div>
+
+            <div class="faqs-questions">
+                <button class="question"> 10. If I chose J&T as my courier what billing method should I choose? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="answer">
+                  <ul class="bullet-list">
+                    For J&T shipping method you should choose GCash as your billing option.
+                  </ul>
+                </div>
+            </div>
+
+
+            <!-- FOOTER -->
+            <%- include('partials/footer-links')%>
+        </div>
+    </main>
+
+    <script>
+        var question = document.getElementsByClassName("question");
+        var i;
+
+        for(i = 0; i < question.length; i++){
+            question[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                this.parentElement.classList.toggle("active");
+
+                var answer = this.nextElementSibling;
+                if (answer.style.display === "block") {
+                    answer.style.display = "none";
+                } else {
+                    answer.style.display = "block"
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
