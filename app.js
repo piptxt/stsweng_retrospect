@@ -1912,7 +1912,7 @@ app.get('/view-past-orders', async function(req, res) {
     });
 });
 async function viewPastOrders(){
-    const past_orders = await OrdersModel.find({status: "Order Received."})
+    const past_orders = await OrdersModel.find({status: "Order Received."}).sort({date_delivered: 1})
     let cities = new Set();
     past_orders.forEach((past_order) => {
         cities.add(past_order.address.city);
