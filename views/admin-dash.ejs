@@ -18,21 +18,6 @@
         <!-- ICON -->
         <link rel="icon" href="images/retrospect-icon.png" type="image/png">
         <!-- SCRIPT -->
-        
-        <style>
-          .column {
-            float: left;
-            width:fit-content;
-            margin-right: 30px;
-          }
-
-          /* Clear floats after the columns */
-          .row:after {
-            content: "";
-            display: table;
-            clear: both;
-          }
-          </style>
         </head>
 
     <body>
@@ -156,16 +141,15 @@
 
             <div class="search-container">
               <input type="text" id="search-input" placeholder="Search User" oninput="searchUsers()" />
-              <a href="/view-all-users">
-                <button> View All Users </button>
-              </a>
-              <!-- <button id="search-button">Search</button> -->
             </div>    
             
             <div class="admin-container">
               <a href="/create-admin">
                 <div class="additem-container">
-                  <input class="additem-btns2" type="button" name="inv-edit" value="Create Admin"></input>
+                  <input class="see-more-btn" type="button" name="inv-edit" value="+ Create Admin"></input>      
+                  <a href="/view-all-users">
+                    <button class="goto-btns"> View All Users </button>
+                  </a>        
                 </div>
               </a>
             </div>
@@ -212,56 +196,10 @@
               </div>
 
               <div class="see-more-container">
-                <button class="see-more-btn" onclick="toggleUsers()">See More</button>
+                <button class="see-more-btn" onclick="toggleUsers()" id="seeMoreBtn">See More</button>
               </div>
-              
             </div>
-            
-            <script>
-              document.getElementById("search-input").addEventListener("input", searchUsers);
-
-              function searchUsers() {
-                var searchInput = document.getElementById("search-input").value.toLowerCase();
-                var regularUsers = document.querySelectorAll('.regular-users-column .regular-user');
-                var admins = document.querySelectorAll('.admins-column .admin');
-
-                Array.from(regularUsers).forEach(function(user) {
-                  var username = user.querySelector("h2").textContent.toLowerCase();
-                  if (username.includes(searchInput)) {
-                    user.style.display = "block";
-                  } else {
-                    user.style.display = "none";
-                  }
-                });
-
-                Array.from(admins).forEach(function(user) {
-                  var username = user.querySelector("h2").textContent.toLowerCase();
-                  if (username.includes(searchInput)) {
-                    user.style.display = "block";
-                  } else {
-                    user.style.display = "none";
-                  }
-                });
-              }
-            
-              function toggleUsers() {
-                const regularUsersColumn = document.querySelector('.regular-users-column');
-                const adminsColumn = document.querySelector('.admins-column');
-                const seeMoreBtn = document.querySelector('.see-more-btn');
-
-                if (regularUsersColumn.classList.contains('show-more')) {
-                  regularUsersColumn.classList.remove('show-more');
-                  adminsColumn.classList.remove('show-more');
-                  seeMoreBtn.textContent = 'See More';
-                } else {
-                  regularUsersColumn.classList.add('show-more');
-                  adminsColumn.classList.add('show-more');
-                  seeMoreBtn.textContent = 'See Less';
-                }
-              }
-            </script>
-
-            
+             
             <div class="item-edit-modal" id="admin-edit-modal">
               <div class="item-edit-modal-content">
                 <form class=admin-add-form action="add-admin" method="POST">
@@ -330,55 +268,101 @@
             </div>
             <% }) %>
           </div>
-          <br><br><br>
+          <br><br>
 
           <a id="current_orders"><h2>Past Orders</h2></a>
 
           <a href="/view-past-orders">
             <div class="view-orders-container">
-              <button class="view-orders-btn"> View All Past Orders </button>
+              <button class="goto-btns"> View All Past Orders </button>
             </div>
           </a>
 
           <div class="orders-container">
             <div class="order-column">
-              <% past_orders.forEach((order) => { %>
-              <div class="current-orders admin-sec">
-                <div class="admin-card orders-card">
-                  <h2><%= order.username %></h2>
-                  <h4>Order #<%= order._id %></h4>
-                  <h4>Status: <%= order.status %></h4>
-                  <h4>Date Ordered: <%= order.date_ordered %></h4>
-                  <h4>Date Delivered: <%= order.date_delivered %></h4>
-                  <% 
-                  let num_items = 0;
-                  order.items.forEach((item) => {
-                    num_items += item.quantity;
-                  });
-                  %>
-                  <h4>Number of Items: <%= num_items %> </h4>
-
-                  <form action="/update-order-status" method="post">
-                    <input type="hidden" name="order_id" value="<%= order._id %>">
-                    <label for="order_status">Edit Order Status</label><br>
-                    <select name="order_status" id="order_status">
-                      <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
-                      <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
-                      <option value="Out for Delivery."> Out for Delivery. </option> 
-                      <option value="Order Received."> Order Received. </option> 
-                    </select>
-                    <button class="order-btns update-btn" type="submit"> Update Status </button>
-                  </form>
-
+              <% past_orders.sort((a, b) => a.username.localeCompare(b.username)).forEach((order, index) => { %>
+                <div class="current-orders admin-sec">
+                  <div class="admin-card orders-card">
+                    <h2><%= order.username %></h2>
+                    <h4>Order #<%= order._id %></h4>
+                    <h4>Status: <%= order.status %></h4>
+                    <h4>Date Ordered: <%= order.date_ordered %></h4>
+                    <h4>Date Delivered: <%= order.date_delivered %></h4>
+                    <% 
+                    let num_items = 0;
+                    order.items.forEach((item) => {
+                      num_items += item.quantity;
+                    });
+                    %>
+                    <h4>Number of Items: <%= num_items %> </h4>
+          
+                    <form action="/update-order-status" method="post">
+                      <input type="hidden" name="order_id" value="<%= order._id %>">
+                      <label for="order_status">Edit Order Status</label><br>
+                      <select name="order_status" id="order_status">
+                        <option value="Waiting for Payment Confirmation."> Waiting for Payment Confirmation. </option> 
+                        <option value="Payment Successful! Preparing your Order."> Payment Successful! Preparing your Order. </option> 
+                        <option value="Out for Delivery."> Out for Delivery. </option> 
+                        <option value="Order Received."> Order Received. </option> 
+                      </select>
+                      <button class="order-btns update-btn" type="submit"> Update Status </button>
+                    </form>
+                  </div>
                 </div>
-              </div>
+                <% if ((index + 1) === Math.ceil(past_orders.length / 2)) { %>
+            </div>
+            <div class="past-order-column">
+              <% } %>
               <% }) %>
             </div>
-          </div>
-         
+          </div>          
         </main>
     </body>
 
+    <script>
+      document.getElementById("search-input").addEventListener("input", searchUsers);
+
+      function searchUsers() {
+        var searchInput = document.getElementById("search-input").value.toLowerCase();
+        var regularUsers = document.querySelectorAll('.regular-users-column .regular-user');
+        var admins = document.querySelectorAll('.admins-column .admin');
+
+        Array.from(regularUsers).forEach(function(user) {
+          var username = user.querySelector("h2").textContent.toLowerCase();
+          if (username.includes(searchInput)) {
+            user.style.display = "block";
+          } else {
+            user.style.display = "none";
+          }
+        });
+
+        Array.from(admins).forEach(function(user) {
+          var username = user.querySelector("h2").textContent.toLowerCase();
+          if (username.includes(searchInput)) {
+            user.style.display = "block";
+          } else {
+            user.style.display = "none";
+          }
+        });
+      }
+    
+      function toggleUsers() {
+        const regularUsersColumn = document.querySelector('.regular-users-column');
+        const adminsColumn = document.querySelector('.admins-column');
+        const seeMoreBtn = document.getElementById('seeMoreBtn');
+
+        if (regularUsersColumn.classList.contains('show-more')) {
+          regularUsersColumn.classList.remove('show-more');
+          adminsColumn.classList.remove('show-more');
+          seeMoreBtn.textContent = 'See More';
+        } else {
+          regularUsersColumn.classList.add('show-more');
+          adminsColumn.classList.add('show-more');
+          seeMoreBtn.textContent = 'See Less';
+        }
+      }
+    </script> 
+    
     <!-- Inventory Management Modal -->
     <script>
       var modal = document.getElementById("item-modal");

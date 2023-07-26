@@ -1149,7 +1149,8 @@ input[type=text]:focus,input[type=password]:focus{
 }
 
 .admin-dash h1{
-    margin-bottom: 5rem;
+    width: fit-content;
+    margin-bottom: 3rem;
 }
 
 .inventory-tracking{
@@ -1214,7 +1215,7 @@ input[type=text]:focus,input[type=password]:focus{
 }
 
 .current-orders{
-
+    width: fit-content;
     display: grid;
     gap: 0.1rem;
     grid-template-columns: repeat(4, 1fr);
@@ -1226,11 +1227,13 @@ input[type=text]:focus,input[type=password]:focus{
 }
 
 .orders-container {
+    width: fit-content;
     display: flex;
     justify-content: space-between;
   }
   
 .order-column {
+    width: fit-content;
     flex: 1;
     margin: 0 5px;
   }
@@ -1602,7 +1605,7 @@ input::-webkit-inner-spin-button {
 }
 
 .search-container {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 #search-input, #product {
@@ -1633,6 +1636,10 @@ input::-webkit-inner-spin-button {
 .admin-UM {
     margin-bottom: 20px; /* Adjust the vertical spacing between user cards */
 }
+
+.admin-user h2, .admin-user h4 {
+    color: var(--bg-admin);
+  }
 
 .btn-google {
     color: var(--font-primary);
@@ -1677,18 +1684,19 @@ a.create-acc:hover {
     max-width: max-content;
 }
 
-.additem-btns2{
+.goto-btns{
     border: none;
-    margin-top: 30px;
+    margin-top: 15px;
+    margin-left: 5px;
 }
 
-.additem-btns2:hover{
+.goto-btns:hover{
     color: var(--font-primary);
     background-color: var(--bg-primary);
     border: 2px solid var(--font-primary);
 }
 
-.see-more-btn,.view-orders-btn, .filter-btn, .clear-filter-btn, .additem-btns, .additem-btns2, .shop-search-btn{
+.see-more-btn, .filter-btn, .clear-filter-btn, .additem-btns, .goto-btns, .shop-search-btn{
     height: 35px;
     width: fit-content;
     border-radius: 2rem;
@@ -1803,13 +1811,13 @@ a.create-acc:hover {
     margin-left: 10px;
     margin-right: 10px;
     border: 2px solid var(--font-primary);
-  }
+}
 
 .faq-questions.active{
     border: none;
 }
 
-.filter{
+.filter, .checkbox-dropdown{
     border:rgb(54, 54, 54) solid 1px;
     border-radius: 1rem;
     width: fit-content;
@@ -1859,11 +1867,44 @@ a.create-acc:hover {
 
 .order-details{
     display: flex;
-    align-items: center; /* Optional: To vertically center the text */
+    align-items: center;
 }
   
 .order-details p {
-    margin-left: 15px; /* Optional: Add some space between the heading and the word */
+    margin-left: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+.column {
+    float: left;
+    width:fit-content;
+    margin-right: 30px;
+}
+
+.row1{
+    width: max-content;
+    padding: 15px;
+}
+
+.row1:after {
+    content: "";
+    display: table;
+    clear: both;
+    width: max-content;
+}
+
+.checkbox-dropdown{
+    margin-left: 35px;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.checkbox-dropdown label {
+    font-size: 16px;
 }
