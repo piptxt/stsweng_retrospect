@@ -37,21 +37,22 @@ main{
 }
 
 .navbar-link.active {
-    color: #00a0fdf8;
+    opacity: 120%;
     font-weight: bold;
     text-decoration: underline;
 }
 
 .navbar-item.active a {
-    color: #00a0fdf8;
+    opacity: 120%;
     font-weight: bold;
     text-decoration: underline;
 }
 
 .nav-bot a.active {
-    color: #00a0fdf8;
+    opacity: 120%;
     font-weight: bold;
     text-decoration: underline;
+    text-decoration-color: var(--font-primary) ;
 }
 
 .navbar-nav{
@@ -155,7 +156,7 @@ main{
     color: #FFFFFF;
     font-size: 1.5rem;
     margin-left: 2rem;
-    margin-bottom: 1  rem;
+    margin-bottom: 1rem;
 }
 
 .nav-user:hover{
@@ -173,6 +174,7 @@ main{
     margin-bottom: 0;
     padding: .5rem 1rem .5rem 1rem;
     border-radius: 2rem;
+    border: 2px solid var(--font-primary);
 }
 
 @media only screen and (max-width: 800px){
@@ -343,26 +345,29 @@ input[type=text]:focus,input[type=password]:focus{
 }
 
 .login-form input[type=submit]{
-  width:100%;
+  width:95%;
   padding: 1em;
   font-size: 16px;
   margin-top: 1em;
   font-family: 'Montserrat';
-  color: var(--bg-secondary);
-  background-color: var(--font-primary);
-  opacity: 70%;
+  color: var(--font-primary);
+  opacity: 80%;
+  background-color: #6b6b6b;
   border-radius: 4px;
-  border: none;
 }
 
-.login-form input[type=submit]:hover{
-  opacity: 100%;
+.login-form input[type=submit]:hover, .btn-google:hover{
   transition: 200ms ease;
+  opacity: 100%;
+}
+
+.btn-google:hover{
+    background-color: var(--font-primary);
+    color: #3596d2;
 }
 
 .error-msg{
     width: 40rem;
-
     border-radius: 0.5rem;
     position: absolute;
     top: 0;
@@ -372,9 +377,7 @@ input[type=text]:focus,input[type=password]:focus{
     margin: 1rem;
     padding: 2rem;
     background-color: rgba(160, 0, 0, 0.9);
-
     font-size: 1rem;
-
     z-index: 99 !important; /* makes it go on top of everything  */
 }
 
@@ -747,7 +750,7 @@ input[type=text]:focus,input[type=password]:focus{
     bottom: 20px;
     right: 20px;
     padding: 10px 25px;
-    background-color: #000000;
+    background-color: #850000;
     color: #fff;
     cursor: pointer;
     border-radius: 10px;
@@ -756,7 +759,6 @@ input[type=text]:focus,input[type=password]:focus{
 
 .btn2{
     border: none;
-    background-color: rgba(0,0,0,0);
     color: #FFFFFF;
 }
 
@@ -1117,10 +1119,10 @@ input[type=text]:focus,input[type=password]:focus{
     flex-wrap:wrap;
 }
 
-.regular-card, .admin-card{
+.admin-card, .regular-card, .admin-card2{
     background-color: var(--bg-secondary);
     color: var(--font-primary);
-    max-width: 30rem;
+    width: fit-content;
     height: fit-content;
     display: grid;
     padding: 1rem;
@@ -1128,17 +1130,17 @@ input[type=text]:focus,input[type=password]:focus{
     border-radius: 1rem;
 }
 
-.admin-card2{
-    background-color: var(--bg-secondary);
-    color: var(--bg-admin);
-    max-width: 30rem;
-    height: fit-content;
-    display: grid;
-    padding: 1rem;
-    margin: 1rem;
+.regular-card, .admin-card2{
     font-family: 'Montserrat';
     font-weight: bold;
-    border-radius: 1rem; 
+}
+
+.regular-card{
+    color: var(--font-primary);
+}
+
+.admin-card2{
+    color: var(--bg-admin);
 }
 
 .inv-item-card{
@@ -1195,7 +1197,7 @@ input[type=text]:focus,input[type=password]:focus{
   }
 
 .order-column h3{
-    text-align: center;
+    text-align: left;
     font-size: 7;
 }
 
@@ -1206,10 +1208,15 @@ input[type=text]:focus,input[type=password]:focus{
     margin-top: 1rem;
 }
 
+
 .additem-btns{
-    width: 100%;
+    width: fit-content;
     font-family: 'Montserrat';
     font-weight: bold;
+    text-align: center;
+    color:  var(--font-primary);
+    background-color: var(--bg-admin);
+    border: 2px solid var(--font-primary);
 }
 
 .success-msg{
@@ -1451,13 +1458,21 @@ input::-webkit-inner-spin-button {
     border-radius: 1rem;
     width: 50%;
     padding: 2rem;
-
     margin: 2rem;
 }
 
 .order-address, .order-contact-no{
     margin: 1rem;
     margin-bottom: 2rem;
+}
+
+#order_status{
+    font-size: 14px;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+    font-family: 'Montserrat';
 }
 
 .item-table{
@@ -1517,6 +1532,42 @@ input::-webkit-inner-spin-button {
     transition: 500ms ease;
 }
 
+.hidden {
+    display: none;
+}
+
+.right-bar p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.regular-users-column .regular-user:nth-child(n+6),
+              .admins-column .admin:nth-child(n+6) {
+                display: none;
+}
+.regular-users-column.show-more .regular-user:nth-child(n+6),
+              .admins-column.show-more .admin:nth-child(n+6) {
+                display: block;
+}
+
+.search-container {
+    margin-bottom: 10px;
+}
+
+#search-input {
+    width: 250px;
+    padding: 10px;
+    border-color: var(--font-primary);
+    margin-left: 1rem;
+    border-radius: 2rem;
+    border: 2px solid var(--font-primary);
+    color:var(--font-primary);
+    background-color: var(--bg-secondary);
+    font-family: 'Montserrat';
+}
+
 .admin-columns {
     display: flex;
 }
@@ -1535,9 +1586,17 @@ input::-webkit-inner-spin-button {
 }
 
 .btn-google {
-    color: var(--bg-primary);
-    background-color: #ccc;
+    color: var(--font-primary);
+    background-color: #3596d2;
+    vertical-align: middle;
+    margin-top: 10px;
+    font-size: 16px;
+    opacity: 80%;
 }
+
+.button-image {
+    vertical-align: middle;
+  }
 
 .btn {
     border-radius: 0.2rem;
@@ -1547,12 +1606,17 @@ input::-webkit-inner-spin-button {
     cursor: pointer;
 }
 
+.reg-acc{
+    padding-top: 15px;
+}
+
 a.create-acc {
-    color: #3596d2;
+    color: #0022e2;
   }
 
 a.create-acc:hover {
     color: blueviolet;
+    text-decoration: underline;
 }
 
 .regular-users-column.show-all,
@@ -1560,52 +1624,185 @@ a.create-acc:hover {
     max-height: none;
   }
 
-.see-more-btn {
-    height: 35px;
-    width: 100px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
+.admin-container{
+    max-width: max-content;
+}
+
+.additem-btns2{
     border: none;
+    margin-top: 30px;
+}
+
+.additem-btns2:hover{
+    color: var(--font-primary);
+    background-color: var(--bg-primary);
+    border: 2px solid var(--font-primary);
+}
+
+.see-more-btn,.view-orders-btn, .filter-btn, .clear-filter-btn, .additem-btns, .additem-btns2{
+    height: 35px;
+    width: fit-content;
     border-radius: 2rem;
     cursor: pointer;
     font-weight: bold;
-}
-
-.see-more-btn:hover{
-    color: #4CAF50;
-    background-color: white;  
-}
-
-.hidden {
-    display: none;
+    padding: 0px 20px;
 }
 
 .see-more-container {
     text-align: center;
     margin-top: 30px;
 }
+
+.see-more-btn {
+    background-color: var(--bg-admin);
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);
+}
+
+.see-more-btn:hover, .additem-btns:hover{
+    color: var(--bg-admin);
+    background-color: var(--font-primary);  
+}
+
+.view-orders-container, .additem-container{
+   margin: auto;
+   margin-left: 20px;
+}
+
+.view-orders-btn{
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);
+}
+
+.view-orders-btn:hover{
+    color: var(--bg-primary);
+    background-color: var(--font-primary);
+}
+
+.faqs-main{
+    padding: 0;
+    margin: auto;
+    box-sizing: border-box;
+    max-width: 75%;
+    font-size: 18px;
+}
+
+.faqs-main h1 {
+    margin: 2rem;
+    padding: 2rem;
+    width: fit-content;
+}
+
+.faqs-main h1{
+    letter-spacing: 2px;
+    border-bottom: var(--font-primary) solid 1px;
+}
+
+.question{
+    width: 100%;
+    padding: 2rem 2.5rem;
+    border: none;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+    outline: none;
+    transition: 0.4s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.question i {
+    font-size: 1.3rem;
+}
+
+.question:hover{
+    text-decoration: underline;
+}
+
+.answer{
+    background-color: var(--bg-primary);
+    display: none;
+    overflow: hidden;
+    padding: 0 2rem 2.5rem 2rem;
+}
+
+.answer p{
+    color: var(--font-primary);
+    line-height: 1.3;
+}
+
+.bullet-list {
+    list-style-type: disc;
+    text-align: left;
+    line-height: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 2px solid var(--font-primary);
+  }
+
+.faq-questions.active{
+    border: none;
+}
+
+.filter{
+    border:rgb(54, 54, 54) solid 1px;
+    border-radius: 1rem;
+    width: fit-content;
+    padding: 2rem;
+    margin: 2rem;
+    vertical-align: middle;
+}
+
+.filter2{
+    display: flex;
+}
+
+.filter-btn{
+    background-color: #001485;
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+.filter-btn:hover{
+    background-color: var(--font-primary);
+    color: #001485;
+}
+
+.clear-filter-btn{
+    background-color: #383838;
+    color: var(--font-primary);
+    border: 2px solid var(--font-primary);  
+    margin-top: 3px;
+}
+
+.clear-filter-btn:hover{
+    background-color: var(--font-primary);
+    color: #383838;
+    border: 2px solid var(--font-primary);  
+}
+
+#city {
+    font-size: 18px;
+    padding: 8px;
+    border: 1px solid var(--font-primary);
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
+  }
+
+.order-details{
+    display: flex;
+    align-items: center; /* Optional: To vertically center the text */
+}
   
-.regular-users-column .regular-user:nth-child(n+6),
-              .admins-column .admin:nth-child(n+6) {
-                display: none;
-}
-.regular-users-column.show-more .regular-user:nth-child(n+6),
-              .admins-column.show-more .admin:nth-child(n+6) {
-                display: block;
-}
-
-.search-container {
-  margin-bottom: 10px;
-}
-
-#search-input {
-  padding: 10px;
-  border-color: var(--font-primary);
-  margin-left: 1rem;
-  border-radius: 2rem;
-  border: 2px solid var(--font-primary);
-  color:var(--font-primary);
-  background-color: var(--bg-secondary);
-  font-family: 'Montserrat';
+.order-details p {
+    margin-left: 15px; /* Optional: Add some space between the heading and the word */
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
