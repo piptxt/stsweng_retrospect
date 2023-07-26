@@ -6,7 +6,7 @@ describe('Should test the filter locations function of the app', () => {
 
         const {past_orders, cities, count} = await getFilterLocation(city);
 
-        expect(count).toBe(1);
+        expect(count).toBe(4);
         past_orders.forEach((order) => {
             expect(order.address.city).toBe(city);
         });
