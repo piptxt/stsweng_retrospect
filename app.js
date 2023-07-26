@@ -225,6 +225,23 @@ app.get('/about-us', async function(req, res){
     });
 });
 
+// FAQs
+app.get('/faqs', async function(req, res){
+    let curr_user = null;
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+
+    res.render('faqs',{
+        curr_user: curr_user
+    });
+});
+
 // SHOP
 app.get('/shop', async function(req, res){
     let curr_user = null;
@@ -238,11 +255,18 @@ app.get('/shop', async function(req, res){
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
-    const items = await ItemsModel.find({});
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
 
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
     res.render('shop',{
         curr_user: curr_user,
-        items: items
+        items: items, 
+        product_filter: product_filter
     });
 });
 
@@ -666,10 +690,10 @@ app.get('/admin', async function(req, res){
         return res.redirect('back');
     }
 
-    const orders = await OrdersModel.find({status: {$not: {$regex: "Orde    r Received."}}}); // Gets all orders
+    const orders = await OrdersModel.find({status: {$not: {$regex: "Order Received."}}}); // Gets all orders
     const past_orders = await getPastOrders(); // Gets all past orders
-    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
-    const all_items = await ItemsModel.find({}); // Gets all items
+    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}).collation({locale:'en',strength: 2}).sort({username:1});// Gets all lower or equal users except current user
+    const all_items = await ItemsModel.find({}).sort({collection_type: 1}); // Gets all items
 	const all_blogs = await BlogsModel.find({}); // Gets all blogs
 
     console.log(past_orders);
@@ -1140,7 +1164,7 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
         return res.redirect('back');
     }
 
-    const {collection, item_name, description, price} = req.body;
+    const {collection, item_name, product_type, description, price} = req.body;
     const item_photo = req.file.filename;
 
     const takenItemName = await ItemsModel.findOne({item_name: item_name});
@@ -1154,13 +1178,14 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
     const newItem = await ItemsModel({
         collection_type: collection,
         item_name: item_name,
+        product_type: String(product_type).toLowerCase(), 
         description: description,
+        product_type: product_type,
         price: price,
         item_photo: item_photo
     }); 
     await newItem.save();
 
-    console.log(collection + " " + item_name + " "  + description + " "  + price + " " + item_photo);
     return res.redirect('/admin');
 });
 
@@ -1231,7 +1256,7 @@ app.post('/update-item-details', async function(req, res) {
         return res.redirect('back');
     }
 
-    const {item_id, collection, item_name, description, price} = req.body;
+    const {item_id, collection, item_name, product_type, description, price} = req.body;
 
     const edit_item = await ItemsModel.findOne({_id: item_id});
 
@@ -1247,6 +1272,7 @@ app.post('/update-item-details', async function(req, res) {
     await ItemsModel.updateOne({_id: item_id},{
         collection_type: collection,
         item_name: item_name,
+        product_type: String(product_type).toLowerCase(),
         description: description,
         price: price
     })
@@ -1527,7 +1553,7 @@ app.post('/edit-availability', async function(req, res) {
 
     const takenSize = await ItemsModel.findOne({_id: item_id, availability: { $elemMatch: {size: new_size, stock: new_stock}}});
     if(takenSize) {
-        res.render('edit-item', {
+        return res.render('edit-item', {
             curr_user: curr_user,
             msg: "Size already exists",
             edit_item: edit_item 
@@ -1535,7 +1561,7 @@ app.post('/edit-availability', async function(req, res) {
     }
     // console.log(item_id + " " + size + " " + stock + " " + new_size + " " + new_stock); 
     
-    editStockAvailability(item_id, size, stock, new_size, new_stock);
+    const editedItemStock = await editStockAvailability(item_id, size, stock, new_size, new_stock);
 
     return res.redirect('admin');
 
@@ -1886,7 +1912,7 @@ app.get('/view-past-orders', async function(req, res) {
     });
 });
 async function viewPastOrders(){
-    const past_orders = await OrdersModel.find({status: "Order Received."})
+    const past_orders = await OrdersModel.find({status: "Order Received."}).sort({date_delivered: 1})
     let cities = new Set();
     past_orders.forEach((past_order) => {
         cities.add(past_order.address.city);
@@ -1932,6 +1958,86 @@ async function getFilterLocation(city){
     return {past_orders, cities, count};
 }
 module.exports.getFilterLocation = getFilterLocation
+
+// FILTER PRODUCTS
+app.post('/filter-product', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const filter = req.body.filter;
+
+    const filtered_items = await filterProducts(filter);        
+
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
+
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+
+async function filterProducts(filter){
+    let filtered_items;
+    if(filter === "ALL"){
+        filtered_items = await ItemsModel.find({}).sort({collection_type: 1});
+    } else {
+        filtered_items = await ItemsModel.find({product_type: String(filter).toLowerCase()}).sort({collection_type: 1});
+    }
+    return filtered_items;
+}
+
+module.exports.filterProducts = filterProducts;
+
+// FILTER PRODUCTS
+app.post('/search-products', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const query = req.body.product
+
+    const filtered_items = await searchProduct(query);
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+
+    let product_filter = new Set();
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+
+async function searchProduct(query) {
+    const filtered_items = await ItemsModel.find({item_name: { $regex : query, $options:'i'}}).sort({collection_type: 1});
+
+    return filtered_items;
+}
+
+module.exports.searchProduct = searchProduct;
 
 // VIEW ALL USERS
 app.get('/view-all-users', async function(req, res) {
@@ -2054,8 +2160,5 @@ async function filterUserTransactions(array_length, array_values, all_users){
     console.log(Array.isArray(final_users))
     return final_users
 }
-module.exports.getUserTransactions = getUserTransactions
-module.exports.filterUserTransactions = filterUserTransactions 
-
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;

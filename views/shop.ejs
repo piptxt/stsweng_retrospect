@@ -37,11 +37,20 @@
         </section>
 		
 		<section>
-			<ul class="shop-filter">
-				<li><a href="#">NEW</a></li> |
-				<li><a href="#">ALL</a></li> |
-				<li><a href="#">SHIRTS</a></li>
-			</ul>
+			<div class="search-filter-bar">
+				<form action="/search-products" method="post">
+					<input type="text" name="product" id="product" placeholder="Search Product">
+					<button class="shop-search-btn" type="submit"> Search </button>
+				</form>
+			</div>
+			<div>
+				<ul class="shop-filter">
+					| <li> <form action="/filter-product" method="post"><input type="hidden" name="filter" value="ALL"> <button class="filter-shop-btn" type="submit"> ALL </button>  </form> </li> | 
+					<% product_filter.forEach((filter) => { %>
+						<li> <form action="/filter-product" method="post"><input type="hidden" name="filter" value="<%=filter%>"> <button  class="filter-shop-btn" type="submit"> <%=String(filter).toUpperCase()%> </button>  </form> </li> |
+					<% }) %> 
+				</ul>
+			</div>
 		</section>
         
         <section>

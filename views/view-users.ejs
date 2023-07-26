@@ -16,23 +16,7 @@
         <!-- ICON -->
         <link rel="icon" href="images/retrospect-icon.png" type="image/png">
         <!-- SCRIPT -->
-        
-        <style>
-          .column {
-            float: left;
-            width:fit-content;
-            margin-right: 30px;
-          }
-
-          /* Clear floats after the columns */
-          .row:after {
-            content: "";
-            display: table;
-            clear: both;
-          }
-          </style>
         </head>
-
     <body>
         <!-- NAVBAR -->
         <%- include ('partials/admin-navbar')  %>
@@ -49,10 +33,8 @@
 
         <main class="admin-dash">
             <h1>Admin User Management</h1>
-            <div class="search-container">
-              <input type="text" id="search-input" placeholder="Search User" oninput="searchUsers()" />
-              
-              <div class="checkbox-dropdown">
+
+              <!-- <div class="checkbox-dropdown">
                 <span>Number of Transactions</span>
                 <form action="/filter-transactions" method="POST">
                   <div class="row">
@@ -68,109 +50,59 @@
                     </div>
                   </div>
                   <button type="submit" id ="filter_transact">Filter</button>
-                  <button type="submit" id="reset_filter_transact">Reset</button>
+
                 </form>
+                <a href="/view-all-users"><button id="reset_filter_transact">Reset</button></a>
                 <span><%= results%></span>
+              </div> -->
+
+              <div class="checkbox-dropdown">
+                <h2>Filter Users by Number of Transactions</h2>
+                <h3> Result: <%= results%></h3>
+                <form id="filterForm" action="/filter-transactions" method="POST">
+                  <div class="row1">
+                    <div class="column">
+                      <label><input type="checkbox" name="transact_0" value="0"> 0</label><br>
+                      <label><input type="checkbox" name="transact_1" value="1"> 1</label><br>
+                      <label><input type="checkbox" name="transact_2" value="2"> 2</label>
+                    </div>
+                    <div class="column">
+                      <label><input type="checkbox" name="transact_3" value="3"> 3</label><br>
+                      <label><input type="checkbox" name="transact_4" value="4"> 4</label><br>
+                      <label><input type="checkbox" name="transact_5" value="5"> 5 or more</label>
+                    </div>                   
+                  
+                    <button type="button" class="filter-btn" onclick="submitFilterForm()">Filter</button>
+                    <!-- Use JavaScript to prevent the default behavior of the link -->
+                    <a href="/view-all-users" onclick="clearFilter(event)"><button class="clear-filter-btn">Clear Filter</button></a>
+                    <!-- </div> -->
+                  </form>
               </div>
-              <!-- <button id="search-button">Search</button> -->
-            </div>
 
             <div class="admin-columns">
-              <div class="regular-users-column">
-                <% let regularUsers = all_users.filter(user => user.user_type === 0); %>
-                <% for (let i = 0; i < regularUsers.length; i++) { %>
-                  <div class="admin-UM admin-sec regular-user">
-                    <div class="regular-card">
-                      <h2><%= regularUsers[i].username %></h2>
-                      <% let user_type = "Regular User"; %>
-                      <h4>User Type: <%= user_type %></h3>
-                      <form action="/edit-user" method="post">
-                        <input type="hidden" name="user_id" value="<%= regularUsers[i]._id %>">
-                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
-                      </form>
-                      <a href="/delete-user/<%= regularUsers[i]._id %>">
-                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
-                      </a>
-                    </div>
+              <% let allUsers = all_users.sort((a, b) => a.username.localeCompare(b.username)); %>
+              <% for (let i = 0; i < allUsers.length; i++) { %>
+                <div class="admin-UM admin-sec <%= allUsers[i].user_type === 0 ? 'regular-user' : 'admin-user' %>">
+                  <div class="regular-card">
+                    <h2 class="<%= allUsers[i].user_type === 1 ? 'admin-user' : '' %>"><%= allUsers[i].username %></h2>
+                    <% let user_type = allUsers[i].user_type === 0 ? 'Regular User' : 'Admin'; %>
+                    <h4>User Type: <%= user_type %></h4>
+                    <form action="/edit-user" method="post">
+                      <input type="hidden" name="user_id" value="<%= allUsers[i]._id %>">
+                      <button class="user-btns edit-btn" type="submit" name="edit-user">Edit User Details</button>
+                    </form>
+                    <a href="/delete-user/<%= allUsers[i]._id %>">
+                      <button class="user-btns delete-btn" type="button" name="delete-user">Delete User</button>
+                    </a>
                   </div>
-                <% } %>
-              </div>
-            
-              <div class="admins-column">
-                <% let adminUsers = all_users.filter(user => user.user_type === 1); %>
-                <% for (let i = 0; i < adminUsers.length; i++) { %>
-                  <div class="admin-UM admin-sec admin">
-                    <div class="admin-card2">
-                      <h2><%= adminUsers[i].username %></h2>
-                      <% let user_type = "Admin"; %>
-                      <h3>User Type: <%= user_type %></h3>
-                      <form action="/edit-user" method="post">
-                        <input type="hidden" name="user_id" value="<%= adminUsers[i]._id %>">
-                        <button class="user-btns" type="submit" name="edit-user">Edit User Details</button>
-                      </form>
-                      <a href="/delete-user/<%= adminUsers[i]._id %>">
-                        <button class="user-btns" type="button" name="delete-user">Delete User</button>
-                      </a>
-                    </div>
+                </div>
+                <% if ((i + 1) % 3 === 0) { %>
                   </div>
+                  <div class="admin-columns">
                 <% } %>
-              </div>
-
-              <div class="see-more-container">
-                <button class="see-more-btn" onclick="toggleUsers()">See More</button>
-              </div>
-            </div>
-            
-            <script>
-              document.getElementById("search-input").addEventListener("input", searchUsers);
-
-              function searchUsers() {
-                var searchInput = document.getElementById("search-input").value.toLowerCase();
-                var regularUsers = document.querySelectorAll('.regular-users-column .regular-user');
-                var admins = document.querySelectorAll('.admins-column .admin');
-
-                Array.from(regularUsers).forEach(function(user) {
-                  var username = user.querySelector("h2").textContent.toLowerCase();
-                  if (username.includes(searchInput)) {
-                    user.style.display = "block";
-                  } else {
-                    user.style.display = "none";
-                  }
-                });
-
-                Array.from(admins).forEach(function(user) {
-                  var username = user.querySelector("h2").textContent.toLowerCase();
-                  if (username.includes(searchInput)) {
-                    user.style.display = "block";
-                  } else {
-                    user.style.display = "none";
-                  }
-                });
-              }
-            
-              function toggleUsers() {
-                const regularUsersColumn = document.querySelector('.regular-users-column');
-                const adminsColumn = document.querySelector('.admins-column');
-                const seeMoreBtn = document.querySelector('.see-more-btn');
-
-                if (regularUsersColumn.classList.contains('show-more')) {
-                  regularUsersColumn.classList.remove('show-more');
-                  adminsColumn.classList.remove('show-more');
-                  seeMoreBtn.textContent = 'See More';
-                } else {
-                  regularUsersColumn.classList.add('show-more');
-                  adminsColumn.classList.add('show-more');
-                  seeMoreBtn.textContent = 'See Less';
-                }
-              }
-            </script>
-
-  
-
-
-
-
-            
+              <% } %>
+            </div>   
+          </div>  
         </main>
     </body>
 
@@ -214,4 +146,33 @@
         msg.style.backgroundColor = "rgba(0, 120, 0, 0.9)";
       }
     </script>
+
+<script>
+  function submitFilterForm() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    let isAnyCheckboxChecked = false;
+
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        isAnyCheckboxChecked = true;
+        return; // Exit the loop early if any checkbox is checked
+      }
+    });
+
+    if (isAnyCheckboxChecked) {
+      document.getElementById('filterForm').submit(); // Submit the form if any checkbox is checked
+    } else {
+      // Do nothing if no checkbox is checked
+      alert("Please select at least one checkbox to apply the filter.");
+    }
+  }
+
+    function clearFilter(event) {
+    // Prevent the default behavior (form submission) of the link
+    event.preventDefault();
+    // Redirect to the "view-all-users" page to clear the filter
+    window.location.href = "/view-all-users";
+  }
+</script>
+
 </html>
