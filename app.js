@@ -2055,7 +2055,7 @@ app.get('/view-all-users', async function(req, res) {
         return res.redirect('back');
     }
 
-    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
+    const all_users = await UserModel.find({}); 
 
     return res.render('view-users', {
         curr_user: curr_user,
@@ -2078,6 +2078,9 @@ app.post('/filter-transactions', async function(req, res) {
         curr_user = await UserModel.findOne({ email:req.user.email});
     }  
     
+    console.log("Curr User:")
+    console.log(curr_user)
+
     const selectedOptions = req.body; // The form data will be available in req.body
     var array_length = Object.keys(selectedOptions).length;
     var array_values = Object.values(selectedOptions)
@@ -2102,11 +2105,11 @@ app.post('/filter-transactions', async function(req, res) {
 
     results = results.concat(" transaction/s.")
 
-    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
-    var final_users = await filterUserTransactions(array_length, array_values, all_users);
-    console.log(Array.isArray(final_users))
-    console.log("Print Users:")
-    console.log(final_users)
+    var final_users = await filterUserTransactions(array_length, array_values, curr_user);
+    // console.log(Array.isArray(final_users))
+    // console.log("Print Users:")
+    // console.log(typeof final_users)
+    // console.log(typeof all_users)
 
     return res.render('view-users', {
         curr_user: curr_user,
@@ -2123,7 +2126,8 @@ async function getUserTransactions(userId){
     
 }
 
-async function filterUserTransactions(array_length, array_values, all_users){
+async function filterUserTransactions(array_length, array_values, curr_user){
+    const all_users = await UserModel.find({});
     var final_users = [];
 
     for (let i = 0; i < array_length; i++) {
@@ -2140,9 +2144,9 @@ async function filterUserTransactions(array_length, array_values, all_users){
         for(const user of all_users) {
             var num_transacts = await getUserTransactions(user._id)
 
-            console.log('User: ', user.username);
-            console.log('Transactions: ', num_transacts);
-            console.log(" ")
+            // console.log('User: ', user.username);
+            // console.log('Transactions: ', num_transacts);
+            // console.log(" ")
 
             if (num == 5) {
                 if (num <= num_transacts) {
@@ -2150,15 +2154,20 @@ async function filterUserTransactions(array_length, array_values, all_users){
                 }
             } else {
                 if (num == num_transacts) {
-                    console.log(user)
+                    // console.log(user)
                     final_users.push(user)
                 }
             }
             
         }
     }
-    console.log(Array.isArray(final_users))
+    // console.log(Array.isArray(final_users))
+    // console.log(final_users)
+
     return final_users
 }
+
+module.exports.filterUserTransactions = filterUserTransactions;
+
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;

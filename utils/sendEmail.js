@@ -124,7 +124,7 @@ const sendEmail = async (to, order_status, order) => {
     message = status_message(to, order_status, order);
     //send the email
     const info = await transporter.sendMail(message);
-    console.log("Message sent", info.messageId);
+    // console.log("Message sent", info.messageId);
     // how to popup alert SENT
   } catch (error) {
     console.log(error);
