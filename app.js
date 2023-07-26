@@ -255,11 +255,18 @@ app.get('/shop', async function(req, res){
         curr_user = await UserModel.findOne({ email:req.user.email});
     }
 
-    const items = await ItemsModel.find({});
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
 
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
     res.render('shop',{
         curr_user: curr_user,
-        items: items
+        items: items, 
+        product_filter: product_filter
     });
 });
 
@@ -1157,7 +1164,7 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
         return res.redirect('back');
     }
 
-    const {collection, item_name, description, price} = req.body;
+    const {collection, item_name, product_type, description, price} = req.body;
     const item_photo = req.file.filename;
 
     const takenItemName = await ItemsModel.findOne({item_name: item_name});
@@ -1172,6 +1179,7 @@ app.post('/add-item', upload.single('item_photo') ,async function(req, res){
         collection_type: collection,
         item_name: item_name,
         description: description,
+        product_type: product_type,
         price: price,
         item_photo: item_photo
     }); 
@@ -1248,7 +1256,7 @@ app.post('/update-item-details', async function(req, res) {
         return res.redirect('back');
     }
 
-    const {item_id, collection, item_name, description, price} = req.body;
+    const {item_id, collection, item_name, product_type ,description, price} = req.body;
 
     const edit_item = await ItemsModel.findOne({_id: item_id});
 
@@ -1264,6 +1272,7 @@ app.post('/update-item-details', async function(req, res) {
     await ItemsModel.updateOne({_id: item_id},{
         collection_type: collection,
         item_name: item_name,
+        product_type: product_type,
         description: description,
         price: price
     })
@@ -2087,6 +2096,87 @@ async function filterUserTransactions(array_length, array_values, all_users){
 //     return {past_orders, cities, count};
 // }
 // module.exports.getFilterLocation = getFilterLocation
+
+// FILTER PRODUCTS
+app.post('/filter-product', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const filter = req.body.filter;
+
+    const filtered_items = await filterProducts(filter);        
+
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+    let product_filter = new Set();
+
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+
+async function filterProducts(filter){
+    let filtered_items;
+    if(filter === "ALL"){
+        filtered_items = await ItemsModel.find({}).sort({collection_type: 1});
+    } else {
+        filtered_items = await ItemsModel.find({product_type: String(filter).toLowerCase()}).sort({collection_type: 1});
+    }
+    return filtered_items;
+}
+
+module.exports.filterProducts = filterProducts;
+
+// FILTER PRODUCTS
+app.post('/search-products', async function(req, res){ 
+    let curr_user = null;
+
+    if(req.session.isAuth){
+        curr_user = await UserModel.findOne({ _id:req.session._id});
+    }
+
+    // Google Account Logged In
+    if (req.user) {
+        curr_user = await UserModel.findOne({ email:req.user.email});
+    }
+    const query = req.body.product
+
+    const filtered_items = await searchProduct(query);
+    const items = await ItemsModel.find({}).sort({collection_type: 1});
+
+    let product_filter = new Set();
+    items.forEach((item) => {
+        product_filter.add(item.product_type);
+    });
+
+    console.log(product_filter);
+    res.render('shop',{
+        curr_user: curr_user,
+        items: filtered_items, 
+        product_filter: product_filter
+    });
+});
+
+async function searchProduct(query) {
+    const filtered_items = await ItemsModel.find({item_name: { $regex : query, $options:'i'}}).sort({collection_type: 1});
+
+    return filtered_items;
+}
+
+module.exports.searchProduct = searchProduct;
+
 
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;

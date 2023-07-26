@@ -744,6 +744,8 @@ input[type=text]:focus,input[type=password]:focus{
     font-size: large;
 }
 
+
+
 /* Trash Bin (remove) */
 .btn-area{
     position: absolute;
@@ -1046,6 +1048,27 @@ input[type=text]:focus,input[type=password]:focus{
 
 .item-card:hover .buy-btn{
 	display:flex;
+}
+
+.search-filter-bar {
+    margin-top: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	list-style: none;
+    min-height: 2rem;
+}
+
+.filter-shop-btn{
+    border: none;
+    background: none;
+
+    margin: 1rem;
+
+    color: #FFFFFF;
+    font-family: 'Montserrat';
+    font-size: 1.1rem;
+    cursor: pointer;
 }
 
 /* POST.HTML */
