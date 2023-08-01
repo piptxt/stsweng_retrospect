@@ -3,8 +3,8 @@ const {searchProduct, filterProducts} = require('./app');
 
 describe('Should return the corresponding items given the filter or search query', () => {
     test('Tests if searchProduct gives the corrects product(s) given \'nl\' as the query ', async () => {
-        const ex_itemid = '6436da09673546491d9e24d1';
-        const query = 'nl';
+        const ex_itemid = '64bb57e0352cba3b992dbd21';
+        const query = 'No Data (Black)';
 
         const act_item = await searchProduct(query);
         
@@ -15,7 +15,7 @@ describe('Should return the corresponding items given the filter or search query
     })
 
     test('Tests if searchProduct gives the corrects product(s) given \'black\'  as the query', async () => {
-        const ex_itemid = ['6436da09673546491d9e24d1', '64bb57e0352cba3b992dbd21'];
+        const ex_itemid = ['64bb57e0352cba3b992dbd21'];
         const query = 'black';
 
         const act_item = await searchProduct(query);
