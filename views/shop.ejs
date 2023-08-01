@@ -39,7 +39,7 @@
 		<section>
 			<div class="search-filter-bar">
 				<form action="/search-products" method="post">
-					<input type="text" name="product" id="product" placeholder="Search Product">
+					<input type="text" name="product" id="product" pattern="[a-zA-Z0-9\s]+" oninvalid="setCustomValidity('Please only enter Alphanumericals')" placeholder="Search Product">
 					<button class="shop-search-btn" type="submit"> Search </button>
 				</form>
 			</div>
