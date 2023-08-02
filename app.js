@@ -514,6 +514,8 @@ app.post('/checkout', async function(req, res) {
     });
     await newOrder.save();
 
+    
+
     // Email Notifications
     try {
         const user = await UserModel.findOne({_id: newOrder.user_id});
@@ -1702,7 +1704,7 @@ app.post('/change-photo', upload.single('item_photo'), async function(req, res) 
     res.redirect('/admin');
 });
 
-//PROFILE PAGE
+//PROFILE PAGE 
 app.get('/profile', async function(req, res){
     let curr_user = null;
     let user = "";
