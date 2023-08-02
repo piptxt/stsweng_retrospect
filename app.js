@@ -134,10 +134,22 @@ app.get('/', async function(req, res){
             
             if(space) {
                 firstname = giveName.split(' ')[0];
+                firstname = firstname.concat("_gmail");
             } else {
                 firstname = giveName;
+                firstname = firstname.concat("_gmail");
             }
             
+            // check if username exists
+            user_exists = await UserModel.findOne({ username:firstname});
+
+            var counter = 1;
+            while (user_exists) {
+                firstname = firstname.concat(counter);
+                user_exists = await UserModel.findOne({ username:firstname});
+                counter = counter + 1;
+            }
+
             curr_user = new UserModel({
                 username: firstname,
                 user_type: 0,
@@ -2055,7 +2067,7 @@ app.get('/view-all-users', async function(req, res) {
         return res.redirect('back');
     }
 
-    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
+    const all_users = await UserModel.find({}); 
 
     return res.render('view-users', {
         curr_user: curr_user,
@@ -2078,6 +2090,9 @@ app.post('/filter-transactions', async function(req, res) {
         curr_user = await UserModel.findOne({ email:req.user.email});
     }  
     
+    console.log("Curr User:")
+    console.log(curr_user)
+
     const selectedOptions = req.body; // The form data will be available in req.body
     var array_length = Object.keys(selectedOptions).length;
     var array_values = Object.values(selectedOptions)
@@ -2086,21 +2101,27 @@ app.post('/filter-transactions', async function(req, res) {
     console.log('Length:', Object.keys(selectedOptions).length);
     console.log('Values:', Object.values(selectedOptions));
 
-    for (const num in array_values) {
-        if (num == array_length-1) {
-            results = results.concat(array_values[num])
-        } else {
-            results = results.concat(array_values[num], ", ")
+    if (array_length == 1) {
+        results = results.concat(array_values[0]);
+    } else if (array_length == 2) {
+        results = results.concat(array_values[0], " or ", array_values[1]);
+    } else {
+        for (const num in array_values) {
+            if (num == array_length-1) {
+                results = results.concat("or ", array_values[num]);
+            } else {
+                results = results.concat(array_values[num], ", ");
+            }
         }
     }
 
     results = results.concat(" transaction/s.")
 
-    const all_users = await UserModel.find({ _id: {$nin: curr_user._id}, user_type: {$lte: curr_user.user_type}}); // Gets all lower or equal users except current user
-    var final_users = await filterUserTransactions(array_length, array_values, all_users);
-    console.log(Array.isArray(final_users))
-    console.log("Print Users:")
-    console.log(final_users)
+    var final_users = await filterUserTransactions(array_length, array_values, curr_user);
+    // console.log(Array.isArray(final_users))
+    // console.log("Print Users:")
+    // console.log(typeof final_users)
+    // console.log(typeof all_users)
 
     return res.render('view-users', {
         curr_user: curr_user,
@@ -2117,7 +2138,8 @@ async function getUserTransactions(userId){
     
 }
 
-async function filterUserTransactions(array_length, array_values, all_users){
+async function filterUserTransactions(array_length, array_values, curr_user){
+    const all_users = await UserModel.find({});
     var final_users = [];
 
     for (let i = 0; i < array_length; i++) {
@@ -2132,35 +2154,32 @@ async function filterUserTransactions(array_length, array_values, all_users){
         }
 
         for(const user of all_users) {
+            var num_transacts = await getUserTransactions(user._id)
 
-                // const transactions = getUserTransactions(user._id)
-                var num_transacts = await getUserTransactions(user._id)
+            // console.log('User: ', user.username);
+            // console.log('Transactions: ', num_transacts);
+            // console.log(" ")
 
-                // console.log(transactions)
-                console.log('User: ', user.username);
-                console.log('Transactions: ', num_transacts);
-                console.log(" ")
-
-                if (num == 5) {
-                    if (num <= num_transacts) {
-                        final_users.push(user)
-                    }
-                } else {
-                    if (num == num_transacts) {
-                        console.log(user)
-                        final_users.push(user)
-                    }
+            if (num == 5) {
+                if (num <= num_transacts) {
+                    final_users.push(user)
                 }
-            // } catch (error) {
-            //     console.log(error)
-            // }
+            } else {
+                if (num == num_transacts) {
+                    // console.log(user)
+                    final_users.push(user)
+                }
+            }
             
         }
     }
-    console.log(Array.isArray(final_users))
-    // console.log("Print Users:")
+    // console.log(Array.isArray(final_users))
     // console.log(final_users)
+
     return final_users
 }
+
+module.exports.filterUserTransactions = filterUserTransactions;
+
 // EXPORTING THE WHOLE FILE 
 module.exports.app = app;
