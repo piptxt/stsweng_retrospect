@@ -2102,13 +2102,26 @@ app.post('/filter-transactions', async function(req, res) {
     console.log('Values:', Object.values(selectedOptions));
 
     if (array_length == 1) {
-        results = results.concat(array_values[0]);
+        if (array_values[0] == 5) {
+            results = results.concat(array_values[0], "+");
+        } else {
+            results = results.concat(array_values[0]);
+        }
+        
     } else if (array_length == 2) {
-        results = results.concat(array_values[0], " or ", array_values[1]);
+        if (array_values[1] == 5) {
+            results = results.concat(array_values[0], " or ", array_values[1], "+");
+        } else {
+            results = results.concat(array_values[0], " or ", array_values[1]);
+        }
     } else {
         for (const num in array_values) {
             if (num == array_length-1) {
-                results = results.concat("or ", array_values[num]);
+                if (array_values[num] == 5) {
+                    results = results.concat("or ", array_values[num], "+");
+                } else {
+                    results = results.concat("or ", array_values[num]);
+                }
             } else {
                 results = results.concat(array_values[num], ", ");
             }

@@ -33,29 +33,6 @@
 
         <main class="admin-dash">
             <h1>Admin User Management</h1>
-
-              <!-- <div class="checkbox-dropdown">
-                <span>Number of Transactions</span>
-                <form action="/filter-transactions" method="POST">
-                  <div class="row">
-                    <div class="column">
-                      <label><input type="checkbox" name="transact_0" value="0"> 0</label><br>
-                      <label><input type="checkbox" name="transact_1" value="1"> 1</label><br>
-                      <label><input type="checkbox" name="transact_2" value="2"> 2</label>
-                    </div>
-                    <div class="column">
-                      <label><input type="checkbox" name="transact_3" value="3"> 3</label><br>
-                      <label><input type="checkbox" name="transact_4" value="4"> 4</label><br>
-                      <label><input type="checkbox" name="transact_5" value="5"> 5 or more</label>
-                    </div>
-                  </div>
-                  <button type="submit" id ="filter_transact">Filter</button>
-
-                </form>
-                <a href="/view-all-users"><button id="reset_filter_transact">Reset</button></a>
-                <span><%= results%></span>
-              </div> -->
-
               <div class="checkbox-dropdown">
                 <h2>Filter Users by Number of Transactions</h2>
                 <h3> Result: <%= results%></h3>
@@ -69,7 +46,7 @@
                     <div class="column">
                       <label><input type="checkbox" name="transact_3" value="3"> 3</label><br>
                       <label><input type="checkbox" name="transact_4" value="4"> 4</label><br>
-                      <label><input type="checkbox" name="transact_5" value="5"> 5 or more</label>
+                      <label><input type="checkbox" name="transact_5" value="5"> 5+</label>
                     </div>                   
                   
                     <button type="button" class="filter-btn" onclick="submitFilterForm()">Filter</button>
