@@ -134,10 +134,22 @@ app.get('/', async function(req, res){
             
             if(space) {
                 firstname = giveName.split(' ')[0];
+                firstname = firstname.concat("_gmail");
             } else {
                 firstname = giveName;
+                firstname = firstname.concat("_gmail");
             }
             
+            // check if username exists
+            user_exists = await UserModel.findOne({ username:firstname});
+
+            var counter = 1;
+            while (user_exists) {
+                firstname = firstname.concat(counter);
+                user_exists = await UserModel.findOne({ username:firstname});
+                counter = counter + 1;
+            }
+
             curr_user = new UserModel({
                 username: firstname,
                 user_type: 0,
