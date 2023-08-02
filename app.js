@@ -194,8 +194,31 @@ app.get('/landing-page', async function(req, res){
             curr_user = await UserModel.findOne({ email:req.user.email});
             console.log(curr_user);
         } else {
+            const space = /\s/.test(req.user.given_name);
+            const giveName = req.user.given_name;
+
+            var firstname = "";
+            
+            if(space) {
+                firstname = giveName.split(' ')[0];
+                firstname = firstname.concat("_gmail");
+            } else {
+                firstname = giveName;
+                firstname = firstname.concat("_gmail");
+            }
+            
+            // check if username exists
+            user_exists = await UserModel.findOne({ username:firstname});
+
+            var counter = 1;
+            while (user_exists) {
+                firstname = firstname.concat(counter);
+                user_exists = await UserModel.findOne({ username:firstname});
+                counter = counter + 1;
+            }
+
             curr_user = new UserModel({
-                username: req.user.displayName,
+                username: firstname,
                 user_type: 0,
                 email: req.user.email,
                 password: "google_account"
@@ -211,6 +234,7 @@ app.get('/landing-page', async function(req, res){
             await newUserCart.save();
 
             console.log('success!')
+            console.log(curr_user);
         } 
     }
 
