@@ -104,7 +104,7 @@
                 </div>
                 <div class="order-address">
                     <h3> Address: </h3>
-                    <p> <%= order.address %> </p>
+                    <p> <%= order.address.addressline1 %>, <%= order.address.addressline2 %>, <%= order.address.city %>, <%= order.address.region %> </p>
                 </div>
                 <div class="order-item-list">
                     <table class="item-table">
