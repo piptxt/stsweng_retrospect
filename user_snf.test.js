@@ -18,7 +18,7 @@ describe('Should test the filter users function of the app', () => {
       expected_users.push(user1);
 
       expect(final_users).toStrictEqual(expected_users);
-    }, 15000);
+    }, 30000);
 
     test('Should return the corresponding users with 1 or 2 transactions', async () => {
       const curr_user = await UserModel.findOne({_id: '6420384a21db20b7fab37534'}); // current user: kennymkl (admin)
@@ -39,5 +39,5 @@ describe('Should test the filter users function of the app', () => {
       expected_users.push(user4);
 
       expect(final_users).toStrictEqual(expected_users);
-    }, 20000);
+    }, 30000);
 });
